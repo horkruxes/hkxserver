@@ -17,8 +17,15 @@ type Message struct {
 	Name          string
 	Content       string
 	Signature     []byte
+	SignatureRep  string
 	SignedCorrect bool
 	Color         string
+}
+
+type SignMessage struct {
+	AuthorPubKey string // base64-encoded
+	AuthorSecKey string // base64-encoded
+	Content      string
 }
 
 type Data struct {
@@ -61,7 +68,7 @@ func main() {
 			fmt.Println(data.Messages[i].SignedCorrect)
 			data.Messages[i].AuthorRep = base64.StdEncoding.EncodeToString(message.AuthorPubKey)
 			data.Messages[i].Color = colorFromString(string(message.AuthorPubKey))
-
+			data.Messages[i].SignatureRep = base64.StdEncoding.EncodeToString(message.Signature)
 		}
 		mainTmpl.Execute(w, data)
 	})
@@ -70,9 +77,26 @@ func main() {
 	keyGenTmpl := template.Must(template.ParseFiles("templates/root.html", "templates/keys/keys.html"))
 	http.HandleFunc("/keys", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Content-Type", "text/html; charset=utf-8")
+		data := KeyGen{}
+		if r.Method != http.MethodPost {
+			data = genKeys()
+			keyGenTmpl.Execute(w, data)
+			return
+		}
+		fmt.Println(r.Header)
 
-		data := genKeys()
+		message := SignMessage{
+			AuthorSecKey: r.FormValue("secret-key"),
+			AuthorPubKey: r.FormValue("public-key"),
+			Content:      r.FormValue("message"),
+		}
+
+		signature := signMessage(message.AuthorSecKey, message.AuthorPubKey, message.Content)
+		fmt.Println("SIG", signature)
+		fmt.Println(message)
+		data.Sig = signature
 		keyGenTmpl.Execute(w, data)
+
 	})
 
 	fs := http.FileServer(http.Dir("./static"))

@@ -2,12 +2,14 @@ package main
 
 import (
 	"crypto/ed25519"
+	"encoding/base64"
 	"fmt"
 )
 
 type KeyGen struct {
-	Pub ed25519.PublicKey
-	Sec ed25519.PrivateKey
+	Pub string
+	Sec string
+	Sig string
 }
 
 func (message Message) verifyOwnerShip() bool {
@@ -21,5 +23,22 @@ func (message Message) verifyOwnerShip() bool {
 
 func genKeys() KeyGen {
 	pub, sec, _ := ed25519.GenerateKey(nil)
-	return KeyGen{pub, sec}
+	pubString := base64.StdEncoding.EncodeToString(pub)
+	secString := base64.StdEncoding.EncodeToString(sec)
+	return KeyGen{pubString, secString, ""}
+}
+
+// signMessage signs messages from base64 and return a base64 signature
+func signMessage(secString, pubString, message string) string {
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Println("Recovered:", r)
+		}
+	}()
+	sec, _ := base64.StdEncoding.DecodeString(secString)
+	pub, _ := base64.StdEncoding.DecodeString(pubString)
+	signature := ed25519.Sign(sec, []byte(message+string(pub)))
+	sigString := base64.StdEncoding.EncodeToString(signature)
+	return sigString
+
 }

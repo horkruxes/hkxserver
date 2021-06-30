@@ -1,11 +1,33 @@
 {{define "page"}}
 
 <div id="danger-zone">
-  <h2>DANGER ZONE</h2>
-  <h3>What is this page ?</h3>
+  <h2 class="safe">SAFE ZONE</h2>
+  <h3>What is this zone ?</h3>
   <p>
-    Here you can find a new key pair, generated randomly each time you visit
-    this page
+    Here you can <strong>verify a signature</strong>, based on the content, the
+    signature and the public key
+  </p>
+
+  <hr />
+  <h3>Verify a signature</h3>
+  <form method="POST" id="verify">
+    <label>Signature:</label><br />
+    <input type="text" name="signature" /><br />
+    <label>Public Key:</label><br />
+    <input type="text" name="public-key" /><br />
+    <label>Message:</label><br />
+    <textarea name="message"></textarea><br />
+    <input type="submit" value="verify" />
+  </form>
+  <p>{{ .Sig}}</p>
+
+  <hr />
+  <hr />
+  <h2 class="danger">DANGER ZONE</h2>
+  <h3>What is this zone ?</h3>
+  <p>
+    Here you can <strong>find a new key pair</strong>, generated randomly each
+    time you visit this page
   </p>
   <p>
     Once you've got a keypair, plaese stick to it so people can identify your
@@ -13,8 +35,8 @@
   </p>
   <p>If you need a new identity, just take new keys</p>
   <p>
-    In this page, you can also generate a signature from your key pair and a
-    message
+    In this page, you can also <strong>generate a signature</strong> from your
+    key pair and a message
   </p>
   <h3>Why is it dangerous ?</h3>
   <p>
@@ -35,20 +57,25 @@
     <li>Run this website yourself</li>
     <li>Use OpenSSL</li>
   </ul>
+
+  <hr />
   <h3>Generated Key Pair</h3>
   <h4>Secret/Private key</h4>
   <p>{{ .Sec }}</p>
   <h4>Public key</h4>
   <p>{{ .Pub }}</p>
+
+  <hr />
   <h3>Get a signature</h3>
-  <form method="POST">
+  <form method="POST" id="generate">
     <label>Secret Key:</label><br />
     <input type="text" name="secret-key" /><br />
     <label>Public Key:</label><br />
     <input type="text" name="public-key" /><br />
     <label>Message:</label><br />
     <textarea name="message"></textarea><br />
-    <input type="submit" />
+    <input type="submit" value="generate" />
   </form>
+  <p>{{ .Sig}}</p>
 </div>
 {{end}}

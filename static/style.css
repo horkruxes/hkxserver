@@ -35,7 +35,8 @@ hr {
 p,
 ul,
 label,
-a {
+a,
+summary {
   font-size: 0.8em;
   margin-top: 0;
 }
@@ -53,11 +54,13 @@ h5 {
   margin: 0.5em;
 }
 
-.pubKeys {
-  color: #888;
+.pubKeys,
+.signature {
+  color: #aaa;
   font-style: italic;
 }
 
+/* MAIN */
 #triptych {
   display: flex;
   flex-direction: row;
@@ -72,11 +75,27 @@ h5 {
   flex: 2;
 }
 
-#danger-zone {
-  max-width: 600px;
-  margin: auto;
+/* MESSAGES */
+input#signatures-switch {
+  display: none;
+}
+input#signatures-switch:checked ~ #triptych .signature {
+  display: none;
 }
 
-#danger-zone > h2 {
+/* KEYS */
+#danger-zone {
+  max-width: 800px;
+  margin: auto;
+}
+#danger-zone > h2.danger {
   color: red;
+}
+#danger-zone > h2.safe {
+  color: green;
+}
+#danger-zone input[type="text"],
+#danger-zone textarea {
+  margin: auto;
+  width: 100%;
 }
