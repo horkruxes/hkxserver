@@ -16,7 +16,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-weight: normal;
+  /* font-weight: normal; */
   color: black;
 }
 
@@ -37,14 +37,9 @@ ul,
 label,
 a,
 summary {
-  font-size: 0.8em;
   margin-top: 0;
 }
-small {
-  font-size: 0.6em;
-}
 a#title {
-  font-size: 1em;
   color: black;
   text-decoration: unset;
 }
@@ -62,6 +57,9 @@ h5 {
   color: #aaa;
   font-style: italic;
 }
+.signature {
+  font-size: 0.83em;
+}
 
 /* MAIN */
 #triptych {
@@ -77,8 +75,10 @@ h5 {
 .panel-main {
   flex: 2;
 }
-input {
+input,
+label {
   margin: 1em 0;
+  margin-top: 5px;
 }
 
 /* MESSAGES */
@@ -87,6 +87,12 @@ input#signatures-switch {
 }
 input#signatures-switch:checked ~ #triptych .signature {
   display: none;
+}
+.message-title {
+  font-weight: normal;
+}
+.form-item {
+  margin: 0.5em 0;
 }
 
 /* KEYS */

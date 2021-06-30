@@ -2,7 +2,7 @@
 <div class="panel panel-main">
   {{range .Messages}}
 
-    <h5>
+    <h5 class="message-title">
       <svg width="1em" height="1em">
         <rect width="1em" height="1em" style="{{ .Color }}" />
       </svg>
@@ -16,10 +16,10 @@
     </h5>
     
     <p class="signature">
-      signature {{ .SignatureRep }}
       {{ if .SignedCorrect }}  
         ✓
       {{ end }}
+      {{ .SignatureRep }}
     </p>
 
     <p>{{.Content}}</p>

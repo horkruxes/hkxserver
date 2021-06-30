@@ -2,7 +2,6 @@
 
 <div id="keys-zone">
   <h2 id="safe-zone" class="safe">SAFE ZONE</h2>
-  <h3>What is this zone ?</h3>
   <p>
     Here you can <strong>verify a signature</strong>, based on the content, the
     signature and the public key
@@ -11,12 +10,18 @@
   <hr />
   <h3>Verify a signature</h3>
   <form method="POST">
-    <label>Public Key:</label><br />
-    <input type="text" name="public-key" value="{{ .Pub }}" /><br />
-    <label>Message:</label><br />
-    <textarea name="message">{{ .Content }}</textarea><br />
-    <label>Signature:</label><br />
-    <input type="text" name="signature" value="{{ .Sig }}" /><br />
+    <div class="form-item">
+      <label>Public Key:</label><br />
+      <input type="text" name="public-key" value="{{ .Pub }}" />
+    </div>
+    <div class="form-item">
+      <label>Message:</label><br />
+      <textarea name="message">{{ .Content }}</textarea>
+    </div>
+    <div class="form-item">
+      <label>Signature:</label><br />
+      <input type="text" name="signature" value="{{ .Sig }}" />
+    </div>
     <input type="submit" value="verify" />
   </form>
   {{ if .Verif }}
@@ -30,29 +35,27 @@
   <hr />
   <hr />
   <h2 class="danger" id="danger-zone">DANGER ZONE</h2>
-  <h3>What is this zone ?</h3>
   <p>
     Here you can <strong>find a new key pair</strong>, generated randomly each
     time you visit this page
   </p>
   <p>
-    In this page, you can also <strong>generate a signature</strong> from your
-    key pair and a message
+    You can also <strong>generate a signature</strong> from your key pair and a
+    message
   </p>
   <h3>Why is it dangerous ?</h3>
   <p>
     This website is server-rendered. If the server is corrupted or HTTPS not set
-    up, people may steal your secret key
+    up, people may steal your secret key. Basically, you shouldn't use the
+    generated keys below except if you run your own instance of the server.
   </p>
   <h3>How can I get a Key Pair otherwise ?</h3>
   <p>
-    Horkruxes uses the ed25519 algorithm, which is common and known for its
-    robustess.
-  </p>
-  <p>
-    As always, it's better to generate a key pair locally (meaning, on YOUR
-    computer, without any network connection) and keep it local (you may use USB
-    Keys but for your own safety, do not put it online or on any cloud)
+    Horkruxes uses the ed25519 algorithm in its base64 form, which is common and
+    known for its robustess. As always, it's better to generate a key pair
+    locally (meaning, on YOUR computer, without any network connection) and keep
+    it local (you may use USB keys but for your own safety, do not put it online
+    or on any "cloud service")
   </p>
   <ul>
     <li>Run this website yourself</li>
@@ -61,8 +64,10 @@
 
   <hr />
   <h3>Generated Key Pair</h3>
-  <p>Once you've got a keypair, please stick to it so people can identify your
-    messages. If you need a new identity, just take new keys</p>
+  <p>
+    Once you've got a keypair, please stick to it so people can identify your
+    messages. If you need a new identity, just take new keys.
+  </p>
   <h4>Secret/Private key</h4>
   <p>{{ .NewSec }}</p>
   <h4>Public key</h4>
@@ -71,12 +76,18 @@
   <hr />
   <h3>Get a signature</h3>
   <form method="POST">
-    <label>Secret Key:</label><br />
-    <input type="text" name="secret-key" value="{{ .Sec }}" /><br />
-    <label>Public Key:</label><br />
-    <input type="text" name="public-key" value="{{ .Pub }}" /><br />
-    <label>Message:</label><br />
-    <textarea name="message">{{ .Content }}</textarea><br />
+    <div class="form-item">
+      <label>Secret Key:</label><br />
+      <input type="text" name="secret-key" value="{{ .Sec }}" />
+    </div>
+    <div class="form-item">
+      <label>Public Key:</label><br />
+      <input type="text" name="public-key" value="{{ .Pub }}" />
+    </div>
+    <div class="form-item">
+      <label>Message:</label><br />
+      <textarea name="message">{{ .Content }}</textarea>
+    </div>
     <input type="submit" value="generate" />
   </form>
   <p>Signature: {{ .Sig }}</p>

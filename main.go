@@ -64,6 +64,7 @@ func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Content-Type", "text/html; charset=utf-8")
 
+		
 		for i, message := range data.Messages {
 			data.Messages[i].SignedCorrect = message.verifyOwnerShip()
 			fmt.Println(data.Messages[i].SignedCorrect)
