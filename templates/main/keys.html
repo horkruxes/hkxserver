@@ -8,17 +8,15 @@
   </ul>
 
   <h3>Post a message</h3>
-  <form method="POST">
+  <form method="POST" action="/api/message">
     <div class="form-item">
-      <label>Public Key:</label><br />
+      <label>Name:</label><br />
       <input
         type="text"
-        name="public-key"
-        value="{{ .Pub }}"
-        placeholder="Your public key is unique and define your identity"
+        name="name"
+        placeholder="Displayed name, can be anything"
       />
     </div>
-
     <div class="form-item">
       <label>Message:</label><br />
       <textarea
@@ -29,14 +27,23 @@
       >
     </div>
     <div class="form-item">
+      <label>Public Key:</label><br />
+      <input
+        type="text"
+        name="public-key"
+        value="{{ .Pub }}"
+        placeholder="Your public key is unique and define your identity"
+      />
+    </div>
+    <div class="form-item">
       <label>Signature:</label><br />
       <input
         type="text"
-        name="secret-key"
+        name="signature"
         placeholder="The signature is different for every message"
       /><br />
       <small id="passwordHelpBlock" class="form-text text-muted"
-        >How do I get one ?</small
+        >How do I get one ? Learn more</small
       >
     </div>
 

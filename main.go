@@ -21,7 +21,7 @@ type SignMessage struct {
 }
 
 func main() {
-	data := mock()
+	// data := mock()
 
 	// Server and middlewares
 	engine := html.New("./templates", ".html")
@@ -49,7 +49,7 @@ func main() {
 	}
 
 	// DB operations routes
-	service.SetupRoutes(app)
+	service.SetupMessagesRoutes(app)
 
 	app.Static("/static", "./static")
 
@@ -59,6 +59,18 @@ func main() {
 	})
 
 	app.Get("/", func(c *fiber.Ctx) error {
+		// call := []string{}
+
+		messages := service.GetMessagesFromDB()
+
+		// for i, ip := range call {
+
+		// 	messages = append(messages, )
+		// }
+
+		// s.DB.Where("correct = ?", true).Find(&messages)
+		fmt.Println(messages)
+		data := model.PageData{Messages: messages}
 		for i, message := range data.Messages {
 			data.Messages[i].Correct = message.VerifyOwnerShip()
 			fmt.Println(data.Messages[i].Correct)

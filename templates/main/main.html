@@ -6,20 +6,20 @@
       <svg width="1em" height="1em">
         <rect width="1em" height="1em" style="{{ .Color }}" />
       </svg>
-      <strong>{{.Name}}</strong>
+      <strong>{{.DisplayedName}}</strong>
       <span class="pubKeys">
-        {{ .AuthorRep }}
-        {{ if not .SignedCorrect }}
+        {{ .AuthorBase64 }}
+        {{ if not .Correct }}
         <span title="DO NOT TRUST THIS CONTENT! The message content could have been changed in the database by a pod admin or a hacker" style="color: red">wrong signature <span style="text-decoration: underline dotted;">(more)</span></span>
         {{ end }}
       </span>
     </h5>
     
     <p class="signature">
-      {{ if .SignedCorrect }}  
+      {{ if .Correct }}  
         ✓
       {{ end }}
-      {{ .SignatureRep }}
+      {{ .SignatureBase64 }}
     </p>
 
     <p>{{.Content}}</p>
