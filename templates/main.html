@@ -1,0 +1,25 @@
+{{define "content"}}
+<div class="panel panel-main">
+  {{range .Messages}}
+
+    <h5>
+      <svg width="1em" height="1em">
+        <rect width="1em" height="1em" style="{{ .Color }}" />
+      </svg>
+      <strong>{{.Name}}</strong>
+      <span class="pubKeys">
+        {{ .AuthorRep }}
+        {{ if not .SignedCorrect }}
+        <span style="color: red">wrong signature</span>
+        {{ end }}
+      </span>
+    </h5>
+
+    <p>{{.Content}}</p>
+    
+    <hr />
+
+  {{end}}
+  
+</div>
+{{end}}
