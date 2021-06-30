@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"fmt"
 
+	"github.com/ewenquim/horkruxes-client/api"
 	"github.com/ewenquim/horkruxes-client/model"
 	"github.com/fatih/structs"
 	"github.com/gofiber/fiber/v2"
@@ -49,7 +50,7 @@ func main() {
 	}
 
 	// DB operations routes
-	service.SetupMessagesRoutes(app)
+	api.SetupMessagesRoutes(service, app)
 
 	app.Static("/static", "./static")
 

@@ -31,23 +31,17 @@ type Service struct {
 	DB *gorm.DB
 }
 
-func (s Service) SetupMessagesRoutes(app *fiber.App) {
-	app.Get("/api/message", s.GetMessagesJSON)
-	app.Get("/api/message/:id", s.GetMessage)
-	app.Post("/api/message", s.NewMessage)
-	app.Delete("/api/message/:id", s.DeleteMessage)
-}
-
 func (s Service) GetMessagesJSON(c *fiber.Ctx) error {
 	data := s.GetMessagesFromDB()
 	c.Status(201).JSON(fiber.Map{"response": data})
 	return nil
 }
 
+// GetMessagesFromDB get data from db and checks some things
 func (s Service) GetMessagesFromDB() []Message {
 	var messages []Message
 	// s.DB.Where("correct = ?", true).Find(&messages)
-	s.DB.Find(&messages)
+	s.DB.Order("created_at desc").Find(&messages)
 	fmt.Println(messages)
 	data := PageData{Messages: messages}
 	for i, message := range data.Messages {
@@ -57,7 +51,6 @@ func (s Service) GetMessagesFromDB() []Message {
 		data.Messages[i].Color = ColorFromString(string(message.AuthorPubKey))
 		data.Messages[i].SignatureBase64 = base64.StdEncoding.EncodeToString(message.Signature)
 	}
-
 	return messages
 }
 
@@ -84,14 +77,10 @@ func (s Service) NewMessage(c *fiber.Ctx) error {
 	message.Content = c.FormValue("message")
 	message.DisplayedName = c.FormValue("name")
 
-	// if err := c.BodyParser(message); err != nil {
-	// 	return c.Status(503).SendString(err.Error())
-	// }
-
 	if message.VerifyOwnerShip() {
 		message.Correct = true
 		s.DB.Create(&message)
-		return c.JSON(message)
+		return c.Redirect("/")
 	}
 	return c.Status(503).SendString("error unvalid public key/signature")
 }
