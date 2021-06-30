@@ -10,16 +10,16 @@
 
   <hr />
   <h3>Verify a signature</h3>
-  <form method="POST" id="verify">
+  <form method="POST">
     <label>Signature:</label><br />
     <input type="text" name="signature" /><br />
     <label>Public Key:</label><br />
     <input type="text" name="public-key" /><br />
     <label>Message:</label><br />
-    <textarea name="message"></textarea><br />
+    <textarea name="message" value="{{printf "%s" .Content }}"></textarea><br />
     <input type="submit" value="verify" />
   </form>
-  <p>{{ .Sig}}</p>
+  <p>{{ .Valid }}</p>
 
   <hr />
   <hr />
@@ -67,7 +67,7 @@
 
   <hr />
   <h3>Get a signature</h3>
-  <form method="POST" id="generate">
+  <form method="POST">
     <label>Secret Key:</label><br />
     <input type="text" name="secret-key" /><br />
     <label>Public Key:</label><br />
@@ -76,6 +76,6 @@
     <textarea name="message"></textarea><br />
     <input type="submit" value="generate" />
   </form>
-  <p>{{ .Sig}}</p>
+  <p>Signature: {{ .Sig }}</p>
 </div>
 {{end}}

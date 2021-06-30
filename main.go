@@ -26,6 +26,7 @@ type SignMessage struct {
 	AuthorPubKey string // base64-encoded
 	AuthorSecKey string // base64-encoded
 	Content      string
+	Signature    string
 }
 
 type Data struct {
@@ -56,7 +57,7 @@ func main() {
 		},
 		KeyGen: KeyGen{},
 	}
-	fmt.Printf("%+v", data.Messages)
+	// fmt.Printf("%+v", data.Messages)
 
 	// serv
 	mainTmpl := template.Must(template.ParseFiles("templates/root.html", "templates/main/_base.html", "templates/main/main.html", "templates/main/pods.html", "templates/main/keys.html"))
@@ -76,27 +77,39 @@ func main() {
 	// keygen
 	keyGenTmpl := template.Must(template.ParseFiles("templates/root.html", "templates/keys/keys.html"))
 	http.HandleFunc("/keys", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("----------")
 		w.Header().Add("Content-Type", "text/html; charset=utf-8")
-		data := KeyGen{}
-		if r.Method != http.MethodPost {
-			data = genKeys()
-			keyGenTmpl.Execute(w, data)
-			return
-		}
-		fmt.Println(r.Header)
-
-		message := SignMessage{
+		outputData := genKeys()
+		
+		// POST Form
+		form := SignMessage{
 			AuthorSecKey: r.FormValue("secret-key"),
 			AuthorPubKey: r.FormValue("public-key"),
 			Content:      r.FormValue("message"),
+			Signature:    r.FormValue("signature"),
 		}
 
-		signature := signMessage(message.AuthorSecKey, message.AuthorPubKey, message.Content)
-		fmt.Println("SIG", signature)
-		fmt.Println(message)
-		data.Sig = signature
-		keyGenTmpl.Execute(w, data)
+		outputData.Content = form.Content
+		fmt.Printf("FORM %+v\n", form)
 
+		// GET Page
+		if r.Method != http.MethodPost {
+			keyGenTmpl.Execute(w, outputData)
+			return
+		}
+
+		// Form "generate"
+		if form.Signature == "" {
+			outputData.Sig = signMessage(form.AuthorSecKey, form.AuthorPubKey, form.Content)
+			form.AuthorSecKey = ""
+			keyGenTmpl.Execute(w, outputData)
+		} else {
+			// Form "verify"
+			outputData.Valid = verifyFromString(form.AuthorPubKey, form.Signature, form.Content)
+			fmt.Println("sig valid", outputData.Valid)
+			form.Signature = ""
+			keyGenTmpl.Execute(w, outputData)
+		}
 	})
 
 	fs := http.FileServer(http.Dir("./static"))
