@@ -1,0 +1,54 @@
+{{define "page"}}
+
+<div id="danger-zone">
+  <h2>DANGER ZONE</h2>
+  <h3>What is this page ?</h3>
+  <p>
+    Here you can find a new key pair, generated randomly each time you visit
+    this page
+  </p>
+  <p>
+    Once you've got a keypair, plaese stick to it so people can identify your
+    identity
+  </p>
+  <p>If you need a new identity, just take new keys</p>
+  <p>
+    In this page, you can also generate a signature from your key pair and a
+    message
+  </p>
+  <h3>Why is it dangerous ?</h3>
+  <p>
+    This website is server-rendered. If the server is corrupted or HTTPS not set
+    up, people may steal your secret key
+  </p>
+  <h3>How can I get a Key Pair otherwise ?</h3>
+  <p>
+    Horkruxes uses the ed25519 algorithm, which is common and known for its
+    robustess.
+  </p>
+  <p>
+    As always, it's better to generate a key pair locally (meaning, on YOUR
+    computer, without any network connection) and keep it local (you may use USB
+    Keys but for your own safety, do not put it online or on any cloud)
+  </p>
+  <ul>
+    <li>Run this website yourself</li>
+    <li>Use OpenSSL</li>
+  </ul>
+  <h3>Generated Key Pair</h3>
+  <h4>Secret/Private key</h4>
+  <p>{{ .Sec }}</p>
+  <h4>Public key</h4>
+  <p>{{ .Pub }}</p>
+  <h3>Get a signature</h3>
+  <form method="POST">
+    <label>Secret Key:</label><br />
+    <input type="text" name="secret-key" /><br />
+    <label>Public Key:</label><br />
+    <input type="text" name="public-key" /><br />
+    <label>Message:</label><br />
+    <textarea name="message"></textarea><br />
+    <input type="submit" />
+  </form>
+</div>
+{{end}}

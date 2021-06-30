@@ -7,10 +7,10 @@
     <link href="/static/style.css" rel="stylesheet" />
   </head>
   <body>
-    <h1>Horcruxes - free & secure expression wall</h1>
+    <h1>
+      <a href="/" id="title">Horcruxes - free & secure expression wall</a>
+    </h1>
 
-    <div id="triptych">
-      {{template "pods" }} {{template "content" . }} {{template "keys" }}
-    </div>
+    {{template "page" . }}
   </body>
 </html>

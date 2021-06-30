@@ -24,15 +24,7 @@ type Message struct {
 type Data struct {
 	PageTitle string
 	Messages  []Message
-}
-
-func (message Message) verifyOwnerShip() bool {
-	defer func() {
-		if r := recover(); r != nil {
-			fmt.Println("Recovered:", r)
-		}
-	}()
-	return ed25519.Verify(message.AuthorPubKey, []byte(message.Content+string(message.AuthorPubKey)), message.Signature)
+	KeyGen    KeyGen
 }
 
 func main() {
@@ -55,11 +47,12 @@ func main() {
 			{Name: "seraph", AuthorPubKey: []byte("2eb1ek2ed9g"), Content: `lorem https://ewen.quimerch.com/ <strong>ipsum</strong>i skip\n lines`},
 			{Name: "marius", AuthorPubKey: pub2, Content: "lorem <strong>ipsum</strong>i skip\n lines", Signature: signature3},
 		},
+		KeyGen: KeyGen{},
 	}
 	fmt.Printf("%+v", data.Messages)
 
 	// serv
-	tmpl := template.Must(template.ParseFiles("templates/_base.html", "templates/main.html", "templates/pods.html", "templates/keys.html"))
+	mainTmpl := template.Must(template.ParseFiles("templates/root.html", "templates/main/_base.html", "templates/main/main.html", "templates/main/pods.html", "templates/main/keys.html"))
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Content-Type", "text/html; charset=utf-8")
 
@@ -70,8 +63,18 @@ func main() {
 			data.Messages[i].Color = colorFromString(string(message.AuthorPubKey))
 
 		}
-		tmpl.Execute(w, data)
+		mainTmpl.Execute(w, data)
 	})
+
+	// keygen
+	keyGenTmpl := template.Must(template.ParseFiles("templates/root.html", "templates/keys/keys.html"))
+	http.HandleFunc("/keys", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Add("Content-Type", "text/html; charset=utf-8")
+
+		data := genKeys()
+		keyGenTmpl.Execute(w, data)
+	})
+
 	fs := http.FileServer(http.Dir("./static"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
 

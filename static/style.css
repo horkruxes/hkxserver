@@ -17,6 +17,7 @@ h4,
 h5,
 h6 {
   font-weight: normal;
+  color: black;
 }
 
 h1 {
@@ -31,9 +32,17 @@ hr {
   height: 2px;
 }
 
-p {
+p,
+ul,
+label,
+a {
   font-size: 0.8em;
   margin-top: 0;
+}
+a#title {
+  font-size: 1em;
+  color: black;
+  text-decoration: unset;
 }
 
 strong {
@@ -61,4 +70,13 @@ h5 {
 
 .panel-main {
   flex: 2;
+}
+
+#danger-zone {
+  max-width: 600px;
+  margin: auto;
+}
+
+#danger-zone > h2 {
+  color: red;
 }

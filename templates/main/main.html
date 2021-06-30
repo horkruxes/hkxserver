@@ -10,7 +10,7 @@
       <span class="pubKeys">
         {{ .AuthorRep }}
         {{ if not .SignedCorrect }}
-        <span style="color: red">wrong signature</span>
+        <span title="DO NOT TRUST THIS CONTENT! The message content could have been changed in the database by a pod admin or a hacker" style="color: red">wrong signature <span style="text-decoration: underline dotted;">(more)</span></span>
         {{ end }}
       </span>
     </h5>
