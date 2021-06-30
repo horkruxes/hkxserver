@@ -1,4 +1,4 @@
-{{define "page"}}
+{{define "keys-page"}}
 
 <div id="keys-zone">
   <h2 id="safe-zone" class="safe">SAFE ZONE</h2>
@@ -90,6 +90,6 @@
     </div>
     <input type="submit" value="generate" />
   </form>
-  <p>Signature: {{ .Sig }}</p>
+  <p id="signature-generated">Signature: {{ .Sig }}</p>
 </div>
 {{end}}

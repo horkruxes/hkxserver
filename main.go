@@ -1,26 +1,17 @@
 package main
 
 import (
-	"crypto/ed25519"
 	"encoding/base64"
 	"fmt"
-	"html/template"
-	"math"
-	"net/http"
-	"strconv"
-	"strings"
-)
 
-type Message struct {
-	AuthorPubKey  []byte
-	AuthorRep     string
-	Name          string
-	Content       string
-	Signature     []byte
-	SignatureRep  string
-	SignedCorrect bool
-	Color         string
-}
+	"github.com/ewenquim/horkruxes-client/model"
+	"github.com/fatih/structs"
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/gofiber/redirect/v2"
+	"github.com/gofiber/template/html"
+)
 
 type SignMessage struct {
 	AuthorPubKey string // base64-encoded
@@ -29,126 +20,90 @@ type SignMessage struct {
 	Signature    string
 }
 
-type Data struct {
-	PageTitle string
-	Messages  []Message
-	KeyGen    KeyGen
-}
-
 func main() {
-	// One time
-	// Generates public and secret key
-	pub, sec, _ := ed25519.GenerateKey(nil)
-	pub2, sec2, _ := ed25519.GenerateKey(nil)
-	// Sign every message TODO: possibility to do it in the site + advices
-	// Needs the message, the pub and secret key. Outputs the signature
-	// When the pod receives the message (content, public and signature) possibility to verify
-	signature := ed25519.Sign(sec, []byte("hey guys, hello world"+string(pub)))
-	signature2 := ed25519.Sign(sec, []byte("my first secure tweet"+string(pub)))
-	signature3 := ed25519.Sign(sec2, []byte("lorem <strong>ipsum</strong>i skip\n lines"+string(pub2)))
-	println("--------")
-	data := Data{
-		PageTitle: "Horkruxes",
-		Messages: []Message{
-			{Name: "ewen", AuthorPubKey: pub, Content: "hey guys, hello world", Signature: signature},
-			{Name: "chloe.sa", AuthorPubKey: pub, Content: "my first secure tweet", Signature: signature2},
-			{Name: "seraph", AuthorPubKey: []byte("2eb1ek2ed9g"), Content: `lorem https://ewen.quimerch.com/ <strong>ipsum</strong>i skip\n lines`},
-			{Name: "marius", AuthorPubKey: pub2, Content: "lorem <strong>ipsum</strong>i skip\n lines", Signature: signature3},
+	data := mock()
+
+	// Server and middlewares
+	engine := html.New("./templates", ".html")
+	app := fiber.New(fiber.Config{
+		Views: engine,
+	})
+	app.Use(cors.New())
+
+	app.Use(redirect.New(redirect.Config{
+		Rules: map[string]string{
+			"/messages": "/",
 		},
-		KeyGen: KeyGen{},
+		StatusCode: 301,
+	}))
+
+	app.Use(logger.New())
+
+	// Database setup
+	db := initDatabase()
+	sqldb, _ := db.DB()
+	defer sqldb.Close()
+
+	service := model.Service{
+		DB: initDatabase(),
 	}
-	// fmt.Printf("%+v", data.Messages)
 
-	// serv
-	mainTmpl := template.Must(template.ParseFiles("templates/root.html", "templates/main/_base.html", "templates/main/main.html", "templates/main/pods.html", "templates/main/keys.html"))
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Add("Content-Type", "text/html; charset=utf-8")
+	// DB operations routes
+	service.SetupRoutes(app)
 
-		
+	app.Static("/static", "./static")
+
+	// Healthcheck
+	app.Get("/ping", func(c *fiber.Ctx) error {
+		return c.SendString("pong")
+	})
+
+	app.Get("/", func(c *fiber.Ctx) error {
 		for i, message := range data.Messages {
-			data.Messages[i].SignedCorrect = message.verifyOwnerShip()
-			fmt.Println(data.Messages[i].SignedCorrect)
-			data.Messages[i].AuthorRep = base64.StdEncoding.EncodeToString(message.AuthorPubKey)
-			data.Messages[i].Color = colorFromString(string(message.AuthorPubKey))
-			data.Messages[i].SignatureRep = base64.StdEncoding.EncodeToString(message.Signature)
+			data.Messages[i].Correct = message.VerifyOwnerShip()
+			fmt.Println(data.Messages[i].Correct)
+			data.Messages[i].AuthorBase64 = base64.StdEncoding.EncodeToString(message.AuthorPubKey)
+			data.Messages[i].Color = model.ColorFromString(string(message.AuthorPubKey))
+			data.Messages[i].SignatureBase64 = base64.StdEncoding.EncodeToString(message.Signature)
 		}
-		mainTmpl.Execute(w, data)
+
+		return c.Render("main/root", structs.Map(data))
 	})
 
-	// keygen
-	keyGenTmpl := template.Must(template.ParseFiles("templates/root.html", "templates/keys/keys.html"))
-	http.HandleFunc("/keys", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println("----------")
-		w.Header().Add("Content-Type", "text/html; charset=utf-8")
+	app.Get("/keys", func(c *fiber.Ctx) error {
+		outputData := model.GenKeys()
+		return c.Render("keys/root", structs.Map(outputData))
+	})
 
-		outputData := genKeys()
-		// Form data
-		form := SignMessage{
-			AuthorSecKey: r.FormValue("secret-key"),
-			AuthorPubKey: r.FormValue("public-key"),
-			Content:      r.FormValue("message"),
-			Signature:    r.FormValue("signature"),
-		}
+	app.Post("/keys", func(c *fiber.Ctx) error {
+		outputData := model.GenKeys()
 
-		fmt.Printf("FORM %+v\n", form)
-
-		// GET Page
-		if r.Method != http.MethodPost {
-			keyGenTmpl.Execute(w, outputData)
-			return
-		}
+		// Get form data and reinject into output data
+		outputData.Sig = c.FormValue("signature")
+		outputData.Sec = c.FormValue("secret-key")
+		outputData.Pub = c.FormValue("public-key")
+		outputData.Content = c.FormValue("message")
 		outputData.Verif = true
-		outputData.Sig = form.Signature
-		outputData.Sec = form.AuthorSecKey
-		outputData.Pub = form.AuthorPubKey
-		outputData.Content = form.Content
-		if form.Signature == "" {
-			// Form GENERATE
-			outputData.Sig = signMessage(form.AuthorSecKey, form.AuthorPubKey, form.Content)
-			// Display "Valid"
-			outputData.Valid = verifyFromString(form.AuthorPubKey, outputData.Sig, form.Content)
-			form.AuthorSecKey = ""
+
+		if outputData.Sig == "" {
+			// Answers to the signature GENERATION form
+			outputData.Sig = model.SignMessage(outputData.Sec, outputData.Pub, outputData.Content)
+			outputData.Valid = model.VerifyFromString(outputData.Pub, outputData.Sig, outputData.Content)
+			outputData.Sec = ""
 		} else {
-			// Form VERIFY
-			outputData.Valid = verifyFromString(form.AuthorPubKey, form.Signature, form.Content)
-			fmt.Println("sig valid", outputData.Valid)
-			form.Signature = ""
+			// Answers to the signature VERIFICATION form
+			outputData.Valid = model.VerifyFromString(outputData.Pub, outputData.Sig, outputData.Content)
+			outputData.Sig = ""
 		}
-		keyGenTmpl.Execute(w, outputData)
+
+		return c.Render("keys/root", structs.Map(outputData))
 	})
 
-	fs := http.FileServer(http.Dir("./static"))
-	http.Handle("/static/", http.StripPrefix("/static/", fs))
+	// 404
+	app.Use("404", func(c *fiber.Ctx) error {
+		return c.Status(fiber.StatusNotFound).SendString("Sorry can't find that!")
+	})
 
-	http.ListenAndServe(":80", nil)
-}
+	app.Listen(":80")
 
-func colorFromString(s string) string {
-	// java String#hashCode
-	str := strings.ToLower(s)
-	hash := 0
-	for i := 0; i < len(str); i++ {
-		num, _ := strconv.Atoi(string(str[i]))
-		hash = num + ((hash << 5) - hash)
-	}
-	base := int(math.Abs(float64(hash)))
-
-	colors := []string{
-		"pink",
-		"#9b88ee",
-		"GainsBoRo",
-		"yellowGreen",
-		"skyBlue",
-		"salmon",
-		"sandyBrown",
-		"paleGreen",
-		"paleTurquoise",
-		"red",
-	}
-
-	return "fill:" + strings.ToLower(colors[trueMod(base, len(colors))])
-}
-
-func trueMod(n int, m int) int {
-	return ((n % m) + m) % m
 }

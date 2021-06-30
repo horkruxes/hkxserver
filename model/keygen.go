@@ -1,4 +1,4 @@
-package main
+package model
 
 import (
 	"crypto/ed25519"
@@ -17,7 +17,7 @@ type KeyGen struct {
 	Valid   bool
 }
 
-func (message Message) verifyOwnerShip() bool {
+func (message Message) VerifyOwnerShip() bool {
 	defer func() {
 		if r := recover(); r != nil {
 			fmt.Println("Recovered:", r)
@@ -26,7 +26,7 @@ func (message Message) verifyOwnerShip() bool {
 	return ed25519.Verify(message.AuthorPubKey, []byte(message.Content+string(message.AuthorPubKey)), message.Signature)
 }
 
-func verifyFromString(pub, sig, msg string) bool {
+func VerifyFromString(pub, sig, msg string) bool {
 	if pub == "" || sig == "" || msg == "" {
 		return false
 	}
@@ -47,18 +47,18 @@ func verifyFromString(pub, sig, msg string) bool {
 		Signature:    sigByte,
 	}
 
-	return message.verifyOwnerShip()
+	return message.VerifyOwnerShip()
 }
 
-func genKeys() KeyGen {
+func GenKeys() KeyGen {
 	pub, sec, _ := ed25519.GenerateKey(nil)
 	pubString := base64.StdEncoding.EncodeToString(pub)
 	secString := base64.StdEncoding.EncodeToString(sec)
 	return KeyGen{NewPub: pubString, NewSec: secString}
 }
 
-// signMessage signs messages from base64 and return a base64 signature
-func signMessage(secString, pubString, message string) string {
+// SignMessage signs messages from base64 and return a base64 signature
+func SignMessage(secString, pubString, message string) string {
 	defer func() {
 		if r := recover(); r != nil {
 			fmt.Println("Recovered:", r)
