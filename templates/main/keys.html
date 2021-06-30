@@ -1,6 +1,23 @@
 {{define "keys"}}
 <div class="panel">
   <p>My keys</p>
-  <a href="/keys">Generate a key pair</a>
+  <ul>
+    <li><a href="/keys">Verify a signature</a></li>
+    <li><a href="/keys#danger-zone">Generate a key pair</a></li>
+    <li><a href="/keys#danger-zone">Get the signature for a message </a></li>
+  </ul>
+  
+  
+  
+  <h3>Get a signature</h3>
+  <form method="POST">
+    <label>Secret Key:</label><br />
+    <input type="text" name="secret-key" value="{{ .Sec }}" /><br />
+    <label>Public Key:</label><br />
+    <input type="text" name="public-key" value="{{ .Pub }}" /><br />
+    <label>Message:</label><br />
+    <textarea name="message">{{ .Content }}</textarea><br />
+    <input type="submit" value="generate" />
+  </form>
 </div>
 {{end}}

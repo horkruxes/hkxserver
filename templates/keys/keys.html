@@ -1,7 +1,7 @@
 {{define "page"}}
 
-<div id="danger-zone">
-  <h2 class="safe">SAFE ZONE</h2>
+<div id="keys-zone">
+  <h2 id="safe-zone" class="safe">SAFE ZONE</h2>
   <h3>What is this zone ?</h3>
   <p>
     Here you can <strong>verify a signature</strong>, based on the content, the
@@ -29,17 +29,12 @@
 
   <hr />
   <hr />
-  <h2 class="danger">DANGER ZONE</h2>
+  <h2 class="danger" id="danger-zone">DANGER ZONE</h2>
   <h3>What is this zone ?</h3>
   <p>
     Here you can <strong>find a new key pair</strong>, generated randomly each
     time you visit this page
   </p>
-  <p>
-    Once you've got a keypair, plaese stick to it so people can identify your
-    identity
-  </p>
-  <p>If you need a new identity, just take new keys</p>
   <p>
     In this page, you can also <strong>generate a signature</strong> from your
     key pair and a message
@@ -66,6 +61,8 @@
 
   <hr />
   <h3>Generated Key Pair</h3>
+  <p>Once you've got a keypair, please stick to it so people can identify your
+    messages. If you need a new identity, just take new keys</p>
   <h4>Secret/Private key</h4>
   <p>{{ .NewSec }}</p>
   <h4>Public key</h4>

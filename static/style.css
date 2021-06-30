@@ -84,18 +84,18 @@ input#signatures-switch:checked ~ #triptych .signature {
 }
 
 /* KEYS */
-#danger-zone {
+#keys-zone {
   max-width: 800px;
   margin: auto;
 }
-#danger-zone > h2.danger {
+#keys-zone > h2.danger {
   color: red;
 }
-#danger-zone > h2.safe {
+#keys-zone > h2.safe {
   color: green;
 }
-#danger-zone input[type="text"],
-#danger-zone textarea {
+#keys-zone input[type="text"],
+#keys-zone textarea {
   margin: auto;
   width: 100%;
 }
