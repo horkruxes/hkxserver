@@ -79,9 +79,9 @@ func main() {
 	http.HandleFunc("/keys", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("----------")
 		w.Header().Add("Content-Type", "text/html; charset=utf-8")
+
 		outputData := genKeys()
-		
-		// POST Form
+		// Form data
 		form := SignMessage{
 			AuthorSecKey: r.FormValue("secret-key"),
 			AuthorPubKey: r.FormValue("public-key"),
@@ -89,7 +89,6 @@ func main() {
 			Signature:    r.FormValue("signature"),
 		}
 
-		outputData.Content = form.Content
 		fmt.Printf("FORM %+v\n", form)
 
 		// GET Page
@@ -97,19 +96,24 @@ func main() {
 			keyGenTmpl.Execute(w, outputData)
 			return
 		}
-
-		// Form "generate"
+		outputData.Verif = true
+		outputData.Sig = form.Signature
+		outputData.Sec = form.AuthorSecKey
+		outputData.Pub = form.AuthorPubKey
+		outputData.Content = form.Content
 		if form.Signature == "" {
+			// Form GENERATE
 			outputData.Sig = signMessage(form.AuthorSecKey, form.AuthorPubKey, form.Content)
+			// Display "Valid"
+			outputData.Valid = verifyFromString(form.AuthorPubKey, outputData.Sig, form.Content)
 			form.AuthorSecKey = ""
-			keyGenTmpl.Execute(w, outputData)
 		} else {
-			// Form "verify"
+			// Form VERIFY
 			outputData.Valid = verifyFromString(form.AuthorPubKey, form.Signature, form.Content)
 			fmt.Println("sig valid", outputData.Valid)
 			form.Signature = ""
-			keyGenTmpl.Execute(w, outputData)
 		}
+		keyGenTmpl.Execute(w, outputData)
 	})
 
 	fs := http.FileServer(http.Dir("./static"))

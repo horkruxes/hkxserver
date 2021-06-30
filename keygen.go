@@ -8,9 +8,12 @@ import (
 
 type KeyGen struct {
 	Pub     string
+	NewPub  string
 	Sec     string
+	NewSec  string
 	Sig     string
 	Content string
+	Verif   bool
 	Valid   bool
 }
 
@@ -51,7 +54,7 @@ func genKeys() KeyGen {
 	pub, sec, _ := ed25519.GenerateKey(nil)
 	pubString := base64.StdEncoding.EncodeToString(pub)
 	secString := base64.StdEncoding.EncodeToString(sec)
-	return KeyGen{Pub: pubString, Sec: secString}
+	return KeyGen{NewPub: pubString, NewSec: secString}
 }
 
 // signMessage signs messages from base64 and return a base64 signature

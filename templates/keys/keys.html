@@ -12,14 +12,20 @@
   <h3>Verify a signature</h3>
   <form method="POST">
     <label>Signature:</label><br />
-    <input type="text" name="signature" /><br />
+    <input type="text" name="signature" value="{{ .Sig }}" /><br />
     <label>Public Key:</label><br />
-    <input type="text" name="public-key" /><br />
+    <input type="text" name="public-key" value="{{ .Pub }}" /><br />
     <label>Message:</label><br />
     <textarea name="message">{{ .Content }}</textarea><br />
     <input type="submit" value="verify" />
   </form>
-  <p>{{ .Valid }}</p>
+  {{ if .Verif }}
+    {{ if .Valid }}
+      <p>Valid ✅</p>
+    {{ else }}
+      <p>Wrong ❌</p>
+    {{ end }}
+  {{ end }}
 
   <hr />
   <hr />
@@ -61,17 +67,17 @@
   <hr />
   <h3>Generated Key Pair</h3>
   <h4>Secret/Private key</h4>
-  <p>{{ .Sec }}</p>
+  <p>{{ .NewSec }}</p>
   <h4>Public key</h4>
-  <p>{{ .Pub }}</p>
+  <p>{{ .NewPub }}</p>
 
   <hr />
   <h3>Get a signature</h3>
   <form method="POST">
     <label>Secret Key:</label><br />
-    <input type="text" name="secret-key" /><br />
+    <input type="text" name="secret-key" value="{{ .Sec }}" /><br />
     <label>Public Key:</label><br />
-    <input type="text" name="public-key" /><br />
+    <input type="text" name="public-key" value="{{ .Pub }}" /><br />
     <label>Message:</label><br />
     <textarea name="message">{{ .Content }}</textarea><br />
     <input type="submit" value="generate" />
