@@ -16,7 +16,7 @@
     <label>Public Key:</label><br />
     <input type="text" name="public-key" /><br />
     <label>Message:</label><br />
-    <textarea name="message" value="{{printf "%s" .Content }}"></textarea><br />
+    <textarea name="message">{{ .Content }}</textarea><br />
     <input type="submit" value="verify" />
   </form>
   <p>{{ .Valid }}</p>
@@ -73,7 +73,7 @@
     <label>Public Key:</label><br />
     <input type="text" name="public-key" /><br />
     <label>Message:</label><br />
-    <textarea name="message"></textarea><br />
+    <textarea name="message">{{ .Content }}</textarea><br />
     <input type="submit" value="generate" />
   </form>
   <p>Signature: {{ .Sig }}</p>
