@@ -11,12 +11,12 @@
   <hr />
   <h3>Verify a signature</h3>
   <form method="POST">
-    <label>Signature:</label><br />
-    <input type="text" name="signature" value="{{ .Sig }}" /><br />
     <label>Public Key:</label><br />
     <input type="text" name="public-key" value="{{ .Pub }}" /><br />
     <label>Message:</label><br />
     <textarea name="message">{{ .Content }}</textarea><br />
+    <label>Signature:</label><br />
+    <input type="text" name="signature" value="{{ .Sig }}" /><br />
     <input type="submit" value="verify" />
   </form>
   {{ if .Verif }}

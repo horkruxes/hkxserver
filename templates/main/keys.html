@@ -9,15 +9,17 @@
   
   
   
-  <h3>Get a signature</h3>
+  <h3>Post a message</h3>
   <form method="POST">
-    <label>Secret Key:</label><br />
-    <input type="text" name="secret-key" value="{{ .Sec }}" /><br />
     <label>Public Key:</label><br />
     <input type="text" name="public-key" value="{{ .Pub }}" /><br />
     <label>Message:</label><br />
     <textarea name="message">{{ .Content }}</textarea><br />
-    <input type="submit" value="generate" />
+    <label>Signature:</label><br />
+    <input type="text" name="secret-key" placeholder="Insert the signature for this message" /><br />
+    <small id="passwordHelpBlock" class="form-text text-muted">How do I get one ?</small>
+    <br>
+    <input type="submit" value="Send message" />
   </form>
 </div>
 {{end}}

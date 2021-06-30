@@ -40,6 +40,9 @@ summary {
   font-size: 0.8em;
   margin-top: 0;
 }
+small {
+  font-size: 0.6em;
+}
 a#title {
   font-size: 1em;
   color: black;
@@ -74,6 +77,9 @@ h5 {
 .panel-main {
   flex: 2;
 }
+input {
+  margin: 1em 0;
+}
 
 /* MESSAGES */
 input#signatures-switch {
@@ -94,8 +100,8 @@ input#signatures-switch:checked ~ #triptych .signature {
 #keys-zone > h2.safe {
   color: green;
 }
-#keys-zone input[type="text"],
-#keys-zone textarea {
+input[type="text"],
+textarea {
   margin: auto;
   width: 100%;
 }
