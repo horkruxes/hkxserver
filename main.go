@@ -19,7 +19,7 @@ type SignMessage struct {
 }
 
 func main() {
-	
+
 	// Server and middlewares
 	engine := html.New("./templates", ".html")
 	app := fiber.New(fiber.Config{
@@ -43,6 +43,7 @@ func main() {
 
 	service := service.Service{
 		DB: initDatabase(),
+		ServerConfig: loadServerConfig(),
 	}
 
 	// Static routes
