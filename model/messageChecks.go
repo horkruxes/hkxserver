@@ -28,7 +28,6 @@ func CleanMessagesOutFromDB(messages []Message, url ...string) []Message {
 	for i, message := range messages {
 		messages[i].Correct = message.VerifyOwnerShip()
 		messages[i].AuthorBase64 = base64.StdEncoding.EncodeToString(message.AuthorPubKey)
-		messages[i].Color = ColorFromString(string(message.AuthorPubKey))
 		messages[i].SignatureBase64 = base64.StdEncoding.EncodeToString(message.Signature)
 		// url is set on server side and not re-set on client side
 		if len(url) > 0 {
