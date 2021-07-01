@@ -2,35 +2,49 @@ package views
 
 import (
 	"encoding/base64"
-	"fmt"
 
 	"github.com/ewenquim/horkruxes-client/model"
+	"github.com/ewenquim/horkruxes-client/service"
 	"github.com/fatih/structs"
 	"github.com/gofiber/fiber/v2"
-	"gorm.io/gorm"
 )
 
-func GetMessages(db *gorm.DB) model.PageData {
+type PageData struct {
+	Server   ServerData
+	Messages []model.Message
+}
+
+type ServerData struct {
+	Name string
+	IP   string
+}
+
+// Get Local and online messages, checks validity and return view
+func GetMessagesAndMainPageInfo(s service.Service) PageData {
+
+	// Get local messages
+	messages := model.GetMessagesFromDB(s.DB)
+
+	// Get other pods messages
 	// call := []string{}
-
-	messages := model.GetMessagesFromDB(db)
-
 	// for i, ip := range call {
-
 	// 	messages = append(messages, )
 	// }
 
-	// s.DB.Where("correct = ?", true).Find(&messages)
-	fmt.Println(messages)
-	data := model.PageData{Messages: messages}
-	for i, message := range data.Messages {
-		data.Messages[i].Correct = message.VerifyOwnerShip()
-		fmt.Println(data.Messages[i].Correct)
-		data.Messages[i].AuthorBase64 = base64.StdEncoding.EncodeToString(message.AuthorPubKey)
-		data.Messages[i].Color = model.ColorFromString(string(message.AuthorPubKey))
-		data.Messages[i].SignatureBase64 = base64.StdEncoding.EncodeToString(message.Signature)
+	// Check data validity
+	for i, message := range messages {
+		messages[i].Correct = message.VerifyOwnerShip()
+		// fmt.Println(messages[i].Correct)
+		messages[i].AuthorBase64 = base64.StdEncoding.EncodeToString(message.AuthorPubKey)
+		messages[i].Color = model.ColorFromString(string(message.AuthorPubKey))
+		messages[i].SignatureBase64 = base64.StdEncoding.EncodeToString(message.Signature)
 	}
-	return data
+
+	// Inject view
+	return PageData{
+		Messages: messages,
+		Server:   ServerData{Name: s.ServerConfig.Name, IP: s.ServerConfig.URL},
+	}
 }
 
 func GetKeys(c *fiber.Ctx) error {

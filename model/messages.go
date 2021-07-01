@@ -21,24 +21,19 @@ type Message struct {
 	// Date          time.Time
 }
 
-type PageData struct {
-	PageTitle string
-	Messages  []Message
-}
-
 // GetMessagesFromDB get data from db and checks some things
 func GetMessagesFromDB(db *gorm.DB) []Message {
 	var messages []Message
 	// db.Where("correct = ?", true).Find(&messages)
 	db.Order("created_at desc").Find(&messages)
 	fmt.Println(messages)
-	data := PageData{Messages: messages}
-	for i, message := range data.Messages {
-		data.Messages[i].Correct = message.VerifyOwnerShip()
-		fmt.Println(data.Messages[i].Correct)
-		data.Messages[i].AuthorBase64 = base64.StdEncoding.EncodeToString(message.AuthorPubKey)
-		data.Messages[i].Color = ColorFromString(string(message.AuthorPubKey))
-		data.Messages[i].SignatureBase64 = base64.StdEncoding.EncodeToString(message.Signature)
+
+	for i, message := range messages {
+		messages[i].Correct = message.VerifyOwnerShip()
+		fmt.Println(messages[i].Correct)
+		messages[i].AuthorBase64 = base64.StdEncoding.EncodeToString(message.AuthorPubKey)
+		messages[i].Color = ColorFromString(string(message.AuthorPubKey))
+		messages[i].SignatureBase64 = base64.StdEncoding.EncodeToString(message.Signature)
 	}
 	return messages
 }
