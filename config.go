@@ -17,6 +17,7 @@ func loadServerConfig() service.ServerConfig {
 		serverConfig.Name = config.Get("name").(string)
 		serverConfig.URL = config.Get("url").(string)
 		serverConfig.Private = config.Get("private").(bool)
+		serverConfig.Port = config.Get("port").(int64)
 		return serverConfig
 	}
 	panic("Can't load server configurration file (config.tml)")
@@ -45,5 +46,8 @@ name = "horkruxes" # default: "horkruxes"
 # Is this server private ? 
 # If private, only keys added in the /keys folder will be able to post
 private = false # default: false
+
+# Port to listen to
+port = 80 # default: 80
 `
 }

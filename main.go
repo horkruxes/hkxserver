@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/ewenquim/horkruxes-client/api"
 	"github.com/ewenquim/horkruxes-client/service"
 	"github.com/ewenquim/horkruxes-client/views"
@@ -42,7 +44,7 @@ func main() {
 	defer sqldb.Close()
 
 	service := service.Service{
-		DB: initDatabase(),
+		DB:           initDatabase(),
 		ServerConfig: loadServerConfig(),
 	}
 
@@ -60,6 +62,5 @@ func main() {
 		return c.Status(fiber.StatusNotFound).SendString("Sorry can't find that!")
 	})
 
-	app.Listen(":80")
-
+	app.Listen(fmt.Sprintf(":%v", service.ServerConfig.Port))
 }
