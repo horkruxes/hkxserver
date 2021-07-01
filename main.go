@@ -3,9 +3,9 @@ package main
 import (
 	"fmt"
 
-	"github.com/ewenquim/horkruxes-client/api"
-	"github.com/ewenquim/horkruxes-client/service"
-	"github.com/ewenquim/horkruxes-client/views"
+	"github.com/ewenquim/horkruxes/api"
+	"github.com/ewenquim/horkruxes/service"
+	"github.com/ewenquim/horkruxes/views"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"

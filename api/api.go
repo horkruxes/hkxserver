@@ -1,7 +1,7 @@
 package api
 
 import (
-	"github.com/ewenquim/horkruxes-client/service"
+	"github.com/ewenquim/horkruxes/service"
 	"github.com/gofiber/fiber/v2"
 )
 

@@ -1,4 +1,4 @@
-module github.com/ewenquim/horkruxes-client
+module github.com/ewenquim/horkruxes
 
 go 1.16
 

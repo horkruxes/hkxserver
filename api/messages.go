@@ -3,7 +3,7 @@ package api
 import (
 	"encoding/base64"
 
-	"github.com/ewenquim/horkruxes-client/model"
+	"github.com/ewenquim/horkruxes/model"
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
 )

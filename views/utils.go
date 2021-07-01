@@ -3,7 +3,7 @@ package views
 import (
 	"strings"
 
-	"github.com/ewenquim/horkruxes-client/model"
+	"github.com/ewenquim/horkruxes/model"
 )
 
 func Base64ToSafeURL(s string) string {

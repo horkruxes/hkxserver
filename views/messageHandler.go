@@ -1,8 +1,8 @@
 package views
 
 import (
-	"github.com/ewenquim/horkruxes-client/model"
-	"github.com/ewenquim/horkruxes-client/service"
+	"github.com/ewenquim/horkruxes/model"
+	"github.com/ewenquim/horkruxes/service"
 	"github.com/fatih/structs"
 	"github.com/gofiber/fiber/v2"
 )

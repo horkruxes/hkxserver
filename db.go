@@ -6,13 +6,11 @@ import (
 	"os"
 	"time"
 
-	"github.com/ewenquim/horkruxes-client/model"
+	"github.com/ewenquim/horkruxes/model"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
-
-
 
 func initDatabase() *gorm.DB {
 	var err error

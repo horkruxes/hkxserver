@@ -21,9 +21,6 @@ func VerifyFromString(pub, sig, msg string) bool {
 	if pub == "" || sig == "" || msg == "" {
 		return false
 	}
-	fmt.Println("pub", pub)
-	fmt.Println("sig", sig)
-	fmt.Println("msg", msg)
 	pubByte, err := base64.StdEncoding.DecodeString(pub)
 	if err != nil {
 		return false

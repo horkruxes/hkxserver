@@ -4,7 +4,7 @@ import (
 	"io/ioutil"
 	"log"
 
-	"github.com/ewenquim/horkruxes-client/service"
+	"github.com/ewenquim/horkruxes/service"
 	toml "github.com/pelletier/go-toml"
 )
 
