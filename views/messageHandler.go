@@ -56,7 +56,6 @@ func GetAuthorMessagesAndMainPageInfo(s service.Service, pubKey string) PageData
 	// }
 
 	// Inject view
-	println("author", messages[0].AuthorURLSafe)
 	return PageData{
 		Messages: CleanMessagesClientSide(messages),
 		Server:   ServerData{Name: s.ServerConfig.Name, IP: s.ServerConfig.URL},

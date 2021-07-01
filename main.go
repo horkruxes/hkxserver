@@ -21,6 +21,15 @@ type SignMessage struct {
 }
 
 func main() {
+	// Database setup
+	db := initDatabase()
+	sqldb, _ := db.DB()
+	defer sqldb.Close()
+
+	service := service.Service{
+		DB:           initDatabase(),
+		ServerConfig: loadServerConfig(),
+	}
 
 	// Server and middlewares
 	engine := html.New("./templates", ".html")
@@ -38,28 +47,21 @@ func main() {
 
 	app.Use(logger.New())
 
-	// Database setup
-	db := initDatabase()
-	sqldb, _ := db.DB()
-	defer sqldb.Close()
-
-	service := service.Service{
-		DB:           initDatabase(),
-		ServerConfig: loadServerConfig(),
-	}
-
 	// Static routes
 	app.Static("/static", "./static")
+	fmt.Println("Static server started")
 
 	// Backend - DB operations routes (potentially online)
 	api.SetupApiRoutes(service, app)
+	fmt.Println("API started")
 
 	// Frontend - Local views and template rendering
 	views.SetupLocalRoutes(service, app)
+	fmt.Println("Frontend started set up")
 
 	// 404
-	app.Use("404", func(c *fiber.Ctx) error {
-		return c.Status(fiber.StatusNotFound).SendString("Sorry can't find that!")
+	app.Use(func(c *fiber.Ctx) error {
+		return c.Status(fiber.StatusNotFound).SendString("Sorry, can't find that! Check your URL")
 	})
 
 	app.Listen(fmt.Sprintf(":%v", service.ServerConfig.Port))
