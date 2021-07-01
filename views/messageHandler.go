@@ -1,8 +1,6 @@
 package views
 
 import (
-	"encoding/base64"
-
 	"github.com/ewenquim/horkruxes-client/model"
 	"github.com/ewenquim/horkruxes-client/service"
 	"github.com/fatih/structs"
@@ -31,18 +29,28 @@ func GetMessagesAndMainPageInfo(s service.Service) PageData {
 	// 	messages = append(messages, )
 	// }
 
-	// Check data validity
-	for i, message := range messages {
-		messages[i].Correct = message.VerifyOwnerShip()
-		// fmt.Println(messages[i].Correct)
-		messages[i].AuthorBase64 = base64.StdEncoding.EncodeToString(message.AuthorPubKey)
-		messages[i].Color = model.ColorFromString(string(message.AuthorPubKey))
-		messages[i].SignatureBase64 = base64.StdEncoding.EncodeToString(message.Signature)
+	// Inject view
+	return PageData{
+		Messages: model.CleanMessagesOutFromDB(messages),
+		Server:   ServerData{Name: s.ServerConfig.Name, IP: s.ServerConfig.URL},
 	}
+}
+
+// Get Local and online messages, checks validity and return view
+func GetAuthorMessagesAndMainPageInfo(s service.Service, pubKey string) PageData {
+
+	// Get local messages
+	messages := model.GetMessagesFromAuthor(s.DB, pubKey)
+
+	// Get other pods messages
+	// call := []string{}
+	// for i, ip := range call {
+	// 	messages = append(messages, )
+	// }
 
 	// Inject view
 	return PageData{
-		Messages: messages,
+		Messages: model.CleanMessagesOutFromDB(messages),
 		Server:   ServerData{Name: s.ServerConfig.Name, IP: s.ServerConfig.URL},
 	}
 }

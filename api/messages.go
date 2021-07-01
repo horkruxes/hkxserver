@@ -24,6 +24,14 @@ func GetMessageJSON(db *gorm.DB) func(*fiber.Ctx) error {
 	}
 }
 
+func GetMessagesFromAuthorJSON(db *gorm.DB) func(*fiber.Ctx) error {
+	return func(c *fiber.Ctx) error {
+		id := c.Params("pubKey")
+		message := model.GetMessagesFromAuthor(db, id)
+		return c.JSON(message)
+	}
+}
+
 func NewMessage(db *gorm.DB) func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
 		message := &model.Message{}

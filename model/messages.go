@@ -26,16 +26,15 @@ func GetMessagesFromDB(db *gorm.DB) []Message {
 	var messages []Message
 	// db.Where("correct = ?", true).Find(&messages)
 	db.Order("created_at desc").Find(&messages)
-	fmt.Println(messages)
+	return CleanMessagesOutFromDB(messages)
+}
 
-	for i, message := range messages {
-		messages[i].Correct = message.VerifyOwnerShip()
-		fmt.Println(messages[i].Correct)
-		messages[i].AuthorBase64 = base64.StdEncoding.EncodeToString(message.AuthorPubKey)
-		messages[i].Color = ColorFromString(string(message.AuthorPubKey))
-		messages[i].SignatureBase64 = base64.StdEncoding.EncodeToString(message.Signature)
-	}
-	return messages
+func GetMessagesFromAuthor(db *gorm.DB, pubKeyBase64 string) []Message {
+	var messages []Message
+	// db.Where("correct = ?", true).Find(&messages)
+	db.Where("author_base64 = ?", pubKeyBase64).Order("created_at desc").Find(&messages)
+
+	return CleanMessagesOutFromDB(messages)
 }
 
 func GetMessageFromDB(db *gorm.DB, id string) Message {
@@ -62,4 +61,15 @@ func (message Message) VerifyOwnerShip() bool {
 		return false
 	}
 	return ed25519.Verify(message.AuthorPubKey, []byte(message.Content+string(message.AuthorPubKey)), message.Signature)
+}
+
+// CleanMessagesOutFromDB get data from DB and do some checks and verifications
+func CleanMessagesOutFromDB(messages []Message) []Message {
+	for i, message := range messages {
+		messages[i].Correct = message.VerifyOwnerShip()
+		messages[i].AuthorBase64 = base64.StdEncoding.EncodeToString(message.AuthorPubKey)
+		messages[i].Color = ColorFromString(string(message.AuthorPubKey))
+		messages[i].SignatureBase64 = base64.StdEncoding.EncodeToString(message.Signature)
+	}
+	return messages
 }

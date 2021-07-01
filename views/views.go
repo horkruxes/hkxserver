@@ -1,7 +1,10 @@
 package views
 
 import (
+	"fmt"
+
 	"github.com/ewenquim/horkruxes-client/service"
+	"github.com/ewenquim/horkruxes-client/utils"
 	"github.com/fatih/structs"
 	"github.com/gofiber/fiber/v2"
 )
@@ -10,6 +13,8 @@ func SetupLocalRoutes(s service.Service, app *fiber.App) {
 	app.Get("/ping", pong)
 	app.Get("/", GetMain(s))
 	app.Get("/keys", GetKeys)
+	// app.Get("/api/message/author/:pubKey", GetMessagesFromAuthorJSON(s.DB))
+	app.Get("/pubkey/:pubKey", GetAuthor(s))
 	app.Post("/keys", PostKeys)
 }
 
@@ -22,6 +27,17 @@ func GetMain(s service.Service) func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
 		localData := GetMessagesAndMainPageInfo(s)
 		return c.Render("main/root", structs.Map(localData))
+	}
+}
 
+func GetAuthor(s service.Service) func(*fiber.Ctx) error {
+	fmt.Println("TEST\n\n\n")
+	return func(c *fiber.Ctx) error {
+		id := c.Params("pubKey")
+		id = utils.SafeURLToBase64(id)
+		fmt.Println("PUBKEY\n\n\n")
+
+		localData := GetAuthorMessagesAndMainPageInfo(s, id)
+		return c.Render("main/root", structs.Map(localData))
 	}
 }
