@@ -21,7 +21,7 @@ func pong(c *fiber.Ctx) error {
 
 func GetMain(db *gorm.DB) func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
-		localData := GetLocalMessages(db)
+		localData := GetMessages(db)
 		return c.Render("main/root", structs.Map(localData))
 
 	}

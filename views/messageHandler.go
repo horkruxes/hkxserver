@@ -10,7 +10,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func GetLocalMessages(db *gorm.DB) model.PageData {
+func GetMessages(db *gorm.DB) model.PageData {
 	// call := []string{}
 
 	messages := model.GetMessagesFromDB(db)
