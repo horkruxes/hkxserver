@@ -14,12 +14,14 @@ type Message struct {
 	Content         string `json:"content"`
 	AuthorPubKey    []byte `json:"authorPubKey"`
 	AuthorBase64    string `json:"authorBase64"`
-	AuthorURLSafe   string `json:"authorURLSafe"`
 	Signature       []byte `json:"signature"`
 	SignatureBase64 string `json:"signatureBase64"`
 	Correct         bool
 	Color           string
-	// Date          time.Time
+	// Only for display, computed from known values
+	AuthorURLSafe string `json:"authorURLSafe" gorm:"-"`
+	DisplayedDate string `gorm:"-"`
+	Pod           string `gorm:"-"`
 }
 
 // GetMessagesFromDB get data from db and checks some things

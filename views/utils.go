@@ -25,6 +25,7 @@ func CleanMessagesClientSide(messages []model.Message) []model.Message {
 	messages = model.CleanMessagesOutFromDB(messages)
 	for i, message := range messages {
 		messages[i].AuthorURLSafe = Base64ToSafeURL(message.AuthorBase64)
+		messages[i].DisplayedDate = message.CreatedAt.Format("2 Jan 2006 15:04")
 	}
 	return messages
 }

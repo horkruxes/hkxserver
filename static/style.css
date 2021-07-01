@@ -48,19 +48,6 @@ strong {
   color: black;
 }
 
-h5 {
-  margin: 0.5em;
-}
-
-.pubKeys,
-.signature {
-  color: #aaa;
-  font-style: italic;
-}
-.signature {
-  font-size: 0.83em;
-}
-
 /* MAIN */
 #triptych {
   display: flex;
@@ -82,6 +69,20 @@ label {
 }
 
 /* MESSAGES */
+h5 {
+  margin: 0.5em;
+}
+
+.pubKeys,
+.signature,
+.message-additional-info {
+  color: #aaa;
+  font-style: italic;
+}
+.signature {
+  font-size: 0.83em;
+}
+
 input#signatures-switch {
   display: none;
 }
@@ -93,6 +94,13 @@ input#signatures-switch:checked ~ #triptych .signature {
 }
 .form-item {
   margin: 0.5em 0;
+}
+.message h6 {
+  margin: 0 0 0.5em 0;
+  font-weight: normal;
+}
+.message a {
+  text-decoration: unset;
 }
 
 /* KEYS */

@@ -22,6 +22,9 @@ func GetMessagesAndMainPageInfo(s service.Service) PageData {
 
 	// Get local messages
 	messages := model.GetMessagesFromDB(s.DB)
+	for i := range messages {
+		messages[i].Pod = s.ServerConfig.URL
+	}
 
 	// Get other pods messages
 	// call := []string{}
