@@ -14,6 +14,7 @@ type ServerConfig struct {
 	Name    string // Custom name
 	URL     string // Custom name
 	Private bool   // If set true, a public key must have been uploaded on the server
+	Port    int64  // Port to listen
 }
 
 type ClientConfig struct {

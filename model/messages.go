@@ -14,6 +14,7 @@ type Message struct {
 	Content         string `json:"content"`
 	AuthorPubKey    []byte `json:"authorPubKey"`
 	AuthorBase64    string `json:"authorBase64"`
+	AuthorURLSafe   string `json:"authorURLSafe"`
 	Signature       []byte `json:"signature"`
 	SignatureBase64 string `json:"signatureBase64"`
 	Correct         bool

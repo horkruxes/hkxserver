@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/ewenquim/horkruxes-client/service"
-	"github.com/ewenquim/horkruxes-client/utils"
 	"github.com/fatih/structs"
 	"github.com/gofiber/fiber/v2"
 )
@@ -34,7 +33,7 @@ func GetAuthor(s service.Service) func(*fiber.Ctx) error {
 	fmt.Println("TEST\n\n\n")
 	return func(c *fiber.Ctx) error {
 		id := c.Params("pubKey")
-		id = utils.SafeURLToBase64(id)
+		id = SafeURLToBase64(id)
 		fmt.Println("PUBKEY\n\n\n")
 
 		localData := GetAuthorMessagesAndMainPageInfo(s, id)

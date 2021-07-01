@@ -31,7 +31,7 @@ func GetMessagesAndMainPageInfo(s service.Service) PageData {
 
 	// Inject view
 	return PageData{
-		Messages: model.CleanMessagesOutFromDB(messages),
+		Messages: CleanMessagesClientSide(messages),
 		Server:   ServerData{Name: s.ServerConfig.Name, IP: s.ServerConfig.URL},
 	}
 }
@@ -49,8 +49,9 @@ func GetAuthorMessagesAndMainPageInfo(s service.Service, pubKey string) PageData
 	// }
 
 	// Inject view
+	println("author", messages[0].AuthorURLSafe)
 	return PageData{
-		Messages: model.CleanMessagesOutFromDB(messages),
+		Messages: CleanMessagesClientSide(messages),
 		Server:   ServerData{Name: s.ServerConfig.Name, IP: s.ServerConfig.URL},
 	}
 }

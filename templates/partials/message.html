@@ -1,0 +1,32 @@
+{{ define "message" }}
+<h5 class="message-title">
+    <svg width="1em" height="1em">
+      <rect width="1em" height="1em" style="{{.Color}}" />
+    </svg>
+    <a href="/pubkey/{{.AuthorURLSafe}}">
+        <strong>{{.DisplayedName}}</strong>
+        <span class="pubKeys">
+        {{ .AuthorBase64 }}
+        {{ if not .Correct }}
+        <span title="DO NOT TRUST THIS CONTENT! The message content could have been changed in the database by a pod admin or a hacker" style="color: red">wrong signature <span style="text-decoration: underline dotted;">(more)</span></span>
+        {{ end }}
+        </span>
+        <span class="post-date">
+        {{ .CreatedAt }}
+        </span>
+    </a>
+
+  </h5>
+  
+  <p class="signature">
+    {{ if .Correct }}  
+      ✓
+    {{ end }}
+    {{ .SignatureBase64 }}
+  </p>
+
+  <p>{{.Content}}</p>
+  
+  <hr />
+
+{{end}}
