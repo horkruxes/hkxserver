@@ -2,8 +2,11 @@
 <div class="panel pods">
   <h2>{{ .PageInfo.Title }}</h2>
   <p>{{ .PageInfo.SubTitle }}</p>
-  <h3>{{ .Server.Name }} - {{ .Server.IP }}</h3>
-  <p>Select pods</p>
+  <h3>{{ .Server.Name }}</h3>
+  <h4>{{ .Server.IP }}</h4>
+  <p>{{ .Server.Info }}</p>
+  <h3>Select pods</h3>
+  <h3>Options</h3>
   <label for="signatures-switch" class="signatures-switch">
     Show/Hide signatures
   </label>

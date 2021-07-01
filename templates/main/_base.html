@@ -1,5 +1,10 @@
 {{define "page" }}
-<input type="checkbox" id="signatures-switch" checked />
+<input
+  type="checkbox"
+  id="signatures-switch"
+  class="signatures-switch"
+  checked
+/>
 <div id="triptych">
   {{template "pods" . }} {{template "content" . }} {{template "keys" }}
 </div>

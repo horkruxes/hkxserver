@@ -35,12 +35,8 @@ func CleanMessagesClientSide(messages []model.Message) []model.Message {
 }
 
 func ColorFromBytes(b []byte) string {
-
-	// java String#hashCode
 	red := int(binary.BigEndian.Uint32(b[:])) % 255
 	green := int(binary.BigEndian.Uint32(b[10:])) % 255
 	blue := int(binary.BigEndian.Uint32(b[5:])) % 255
-	fmt.Println("hi")
-
 	return fmt.Sprintf("#%X%X%X", red, green, blue)
 }

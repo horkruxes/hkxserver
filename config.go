@@ -16,11 +16,12 @@ func loadServerConfig() service.ServerConfig {
 	if err == nil {
 		serverConfig.Name = config.Get("name").(string)
 		serverConfig.URL = config.Get("url").(string)
+		serverConfig.Info = config.Get("info").(string)
 		serverConfig.Private = config.Get("private").(bool)
 		serverConfig.Port = config.Get("port").(int64)
 		return serverConfig
 	}
-	panic("Can't load server configurration file (config.tml)")
+	panic("Can't load server configuration file (config.toml not found)")
 }
 
 // Creates a default config fil if it doesn't exist
@@ -37,11 +38,21 @@ func defaultConfig() string {
 
 	return `### HORKRUXES CONFIGURATION ###
 
+# Testing
+# Set to false if you want deploy an horkrux instance,
+# or true if you want just to run the client or test anything
+testing = true # default: true
+
 # URL of the server
 url = "localhost" # for local use: "localhost" or "127.0.0.1"
 
 # Custom name to display
 name = "horkruxes" # default: "horkruxes"
+
+# Give information to your users
+info = """An Horkrux server administrated by xxx.
+Create your own server to defeat censorship!
+"""
 
 # Is this server private ? 
 # If private, only keys added in the /keys folder will be able to post

@@ -84,7 +84,7 @@ h5 {
   font-size: 0.83em;
 }
 
-input#signatures-switch {
+input.signatures-switch {
   display: none;
 }
 input#signatures-switch:checked ~ #triptych .signature {

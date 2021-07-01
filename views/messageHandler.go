@@ -16,6 +16,7 @@ type PageData struct {
 type ServerData struct {
 	Name string
 	IP   string
+	Info string
 }
 
 type PageInfo struct {
@@ -38,7 +39,7 @@ func GetMessagesAndMainPageInfo(s service.Service) PageData {
 	// Inject view
 	return PageData{
 		Messages: CleanMessagesClientSide(messages),
-		Server:   ServerData{Name: s.ServerConfig.Name, IP: s.ServerConfig.URL},
+		Server:   ServerData{Name: s.ServerConfig.Name, IP: s.ServerConfig.URL, Info: s.ServerConfig.Info},
 		PageInfo: PageInfo{Title: "All Messages"},
 	}
 }
@@ -58,7 +59,7 @@ func GetAuthorMessagesAndMainPageInfo(s service.Service, pubKey string) PageData
 	// Inject view
 	return PageData{
 		Messages: CleanMessagesClientSide(messages),
-		Server:   ServerData{Name: s.ServerConfig.Name, IP: s.ServerConfig.URL},
+		Server:   ServerData{Name: s.ServerConfig.Name, IP: s.ServerConfig.URL, Info: s.ServerConfig.Info},
 		PageInfo: PageInfo{Title: "Author", SubTitle: pubKey},
 	}
 }

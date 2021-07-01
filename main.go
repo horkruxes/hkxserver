@@ -48,7 +48,7 @@ func main() {
 	app.Use(logger.New())
 
 	// Static routes
-	app.Static("/static", "./static")
+	app.Static("", "./static")
 	fmt.Println("Static server started")
 
 	// Backend - DB operations routes (potentially online)
