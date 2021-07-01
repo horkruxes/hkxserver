@@ -17,15 +17,6 @@ type KeyGen struct {
 	Valid   bool
 }
 
-func (message Message) VerifyOwnerShip() bool {
-	defer func() {
-		if r := recover(); r != nil {
-			fmt.Println("Recovered:", r)
-		}
-	}()
-	return ed25519.Verify(message.AuthorPubKey, []byte(message.Content+string(message.AuthorPubKey)), message.Signature)
-}
-
 func VerifyFromString(pub, sig, msg string) bool {
 	if pub == "" || sig == "" || msg == "" {
 		return false
