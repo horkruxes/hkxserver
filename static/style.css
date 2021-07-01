@@ -52,6 +52,7 @@ strong {
 #triptych {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
 }
 
 .panel {
