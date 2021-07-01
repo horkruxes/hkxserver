@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"fmt"
 
+	"github.com/ewenquim/horkruxes/service"
 	"gorm.io/gorm"
 )
 
@@ -25,31 +26,31 @@ type Message struct {
 }
 
 // GetMessagesFromDB get data from db and checks some things
-func GetMessagesFromDB(db *gorm.DB) []Message {
+func GetMessagesFromDB(s service.Service) []Message {
 	var messages []Message
-	// db.Where("correct = ?", true).Find(&messages)
-	db.Order("created_at desc").Find(&messages)
-	return CleanMessagesOutFromDB(messages)
+	// s.DB.Where("correct = ?", true).Find(&messages)
+	s.DB.Order("created_at desc").Find(&messages)
+	return CleanMessagesOutFromDB(messages, s.ServerConfig.URL)
 }
 
-func GetMessagesFromAuthor(db *gorm.DB, pubKeyBase64 string) []Message {
+func GetMessagesFromAuthor(s service.Service, pubKeyBase64 string) []Message {
 	var messages []Message
-	// db.Where("correct = ?", true).Find(&messages)
-	db.Where("author_base64 = ?", pubKeyBase64).Order("created_at desc").Find(&messages)
+	// s.DB.Where("correct = ?", true).Find(&messages)
+	s.DB.Where("author_base64 = ?", pubKeyBase64).Order("created_at desc").Find(&messages)
 
-	return CleanMessagesOutFromDB(messages)
+	return CleanMessagesOutFromDB(messages, s.ServerConfig.URL)
 }
 
-func GetMessageFromDB(db *gorm.DB, id string) Message {
+func GetMessageFromDB(s service.Service, id string) Message {
 	var message Message
-	db.Find(&message, id)
+	s.DB.Find(&message, id)
 	return message
 }
 
-func NewMessage(db *gorm.DB, message *Message) error {
+func NewMessage(s service.Service, message *Message) error {
 	if message.VerifyOwnerShip() {
 		message.Correct = true
-		return db.Create(&message).Error
+		return s.DB.Create(&message).Error
 	}
 	return nil
 }
@@ -67,12 +68,16 @@ func (message Message) VerifyOwnerShip() bool {
 }
 
 // CleanMessagesOutFromDB get data from DB and do some checks and verifications
-func CleanMessagesOutFromDB(messages []Message) []Message {
+func CleanMessagesOutFromDB(messages []Message, url ...string) []Message {
 	for i, message := range messages {
 		messages[i].Correct = message.VerifyOwnerShip()
 		messages[i].AuthorBase64 = base64.StdEncoding.EncodeToString(message.AuthorPubKey)
 		messages[i].Color = ColorFromString(string(message.AuthorPubKey))
 		messages[i].SignatureBase64 = base64.StdEncoding.EncodeToString(message.Signature)
+		// url is set on server side and not re-set on client side
+		if len(url) > 0 {
+			messages[i].Pod = url[0]
+		}
 	}
 	return messages
 }

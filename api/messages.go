@@ -4,35 +4,35 @@ import (
 	"encoding/base64"
 
 	"github.com/ewenquim/horkruxes/model"
+	"github.com/ewenquim/horkruxes/service"
 	"github.com/gofiber/fiber/v2"
-	"gorm.io/gorm"
 )
 
-func GetMessagesJSON(db *gorm.DB) func(*fiber.Ctx) error {
+func GetMessagesJSON(s service.Service) func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
-		data := model.GetMessagesFromDB(db)
+		data := model.GetMessagesFromDB(s)
 		c.Status(201).JSON(fiber.Map{"response": data})
 		return nil
 	}
 }
 
-func GetMessageJSON(db *gorm.DB) func(*fiber.Ctx) error {
+func GetMessageJSON(s service.Service) func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
 		id := c.Params("id")
-		message := model.GetMessageFromDB(db, id)
+		message := model.GetMessageFromDB(s, id)
 		return c.JSON(message)
 	}
 }
 
-func GetMessagesFromAuthorJSON(db *gorm.DB) func(*fiber.Ctx) error {
+func GetMessagesFromAuthorJSON(s service.Service) func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
 		id := c.Params("pubKey")
-		message := model.GetMessagesFromAuthor(db, id)
+		message := model.GetMessagesFromAuthor(s, id)
 		return c.JSON(message)
 	}
 }
 
-func NewMessage(db *gorm.DB) func(*fiber.Ctx) error {
+func NewMessage(s service.Service) func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
 		message := &model.Message{}
 		var err error
@@ -51,7 +51,7 @@ func NewMessage(db *gorm.DB) func(*fiber.Ctx) error {
 
 		if message.VerifyOwnerShip() {
 			message.Correct = true
-			model.NewMessage(db, message)
+			model.NewMessage(s, message)
 			return c.Redirect("/")
 		}
 		return c.Status(503).SendString("error unvalid public key/signature")

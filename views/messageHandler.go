@@ -21,10 +21,7 @@ type ServerData struct {
 func GetMessagesAndMainPageInfo(s service.Service) PageData {
 
 	// Get local messages
-	messages := model.GetMessagesFromDB(s.DB)
-	for i := range messages {
-		messages[i].Pod = s.ServerConfig.URL
-	}
+	messages := model.GetMessagesFromDB(s)
 
 	// Get other pods messages
 	// call := []string{}
@@ -43,7 +40,7 @@ func GetMessagesAndMainPageInfo(s service.Service) PageData {
 func GetAuthorMessagesAndMainPageInfo(s service.Service, pubKey string) PageData {
 
 	// Get local messages
-	messages := model.GetMessagesFromAuthor(s.DB, pubKey)
+	messages := model.GetMessagesFromAuthor(s, pubKey)
 
 	// Get other pods messages
 	// call := []string{}

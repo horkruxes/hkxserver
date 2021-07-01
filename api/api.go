@@ -6,8 +6,8 @@ import (
 )
 
 func SetupApiRoutes(s service.Service, app *fiber.App) {
-	app.Get("/api/message", GetMessagesJSON(s.DB))
-	app.Get("/api/message/:id", GetMessageJSON(s.DB))
-	app.Get("/api/message/author/:pubKey", GetMessagesFromAuthorJSON(s.DB))
-	app.Post("/api/message", NewMessage(s.DB))
+	app.Get("/api/message", GetMessagesJSON(s))
+	app.Get("/api/message/:id", GetMessageJSON(s))
+	app.Get("/api/message/author/:pubKey", GetMessagesFromAuthorJSON(s))
+	app.Post("/api/message", NewMessage(s))
 }

@@ -29,8 +29,7 @@ func GetMain(s service.Service) func(*fiber.Ctx) error {
 
 func GetAuthor(s service.Service) func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
-		id := c.Params("pubKey")
-		id = SafeURLToBase64(id)
+		id :=  SafeURLToBase64(c.Params("pubKey"))
 		localData := GetAuthorMessagesAndMainPageInfo(s, id)
 		return c.Render("main/root", structs.Map(localData))
 	}
