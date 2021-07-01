@@ -1,7 +1,11 @@
 {{define "pods"}}
-<div class="panel">
-  <p>{{ .Server.Name }} - {{ .Server.IP }}</p>
+<div class="panel pods">
+  <h2>{{ .PageInfo.Title }}</h2>
+  <p>{{ .PageInfo.SubTitle }}</p>
+  <h3>{{ .Server.Name }} - {{ .Server.IP }}</h3>
   <p>Select pods</p>
-  <label for="signatures-switch" class="signatures-switch"> Show/Hide signatures </label>
+  <label for="signatures-switch" class="signatures-switch">
+    Show/Hide signatures
+  </label>
 </div>
 {{end}}

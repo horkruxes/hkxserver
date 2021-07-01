@@ -10,11 +10,17 @@ import (
 type PageData struct {
 	Server   ServerData
 	Messages []model.Message
+	PageInfo PageInfo
 }
 
 type ServerData struct {
 	Name string
 	IP   string
+}
+
+type PageInfo struct {
+	Title    string
+	SubTitle string
 }
 
 // Get Local and online messages, checks validity and return view
@@ -33,6 +39,7 @@ func GetMessagesAndMainPageInfo(s service.Service) PageData {
 	return PageData{
 		Messages: CleanMessagesClientSide(messages),
 		Server:   ServerData{Name: s.ServerConfig.Name, IP: s.ServerConfig.URL},
+		PageInfo: PageInfo{Title: "All Messages"},
 	}
 }
 
@@ -53,6 +60,7 @@ func GetAuthorMessagesAndMainPageInfo(s service.Service, pubKey string) PageData
 	return PageData{
 		Messages: CleanMessagesClientSide(messages),
 		Server:   ServerData{Name: s.ServerConfig.Name, IP: s.ServerConfig.URL},
+		PageInfo: PageInfo{Title: "Author", SubTitle: pubKey},
 	}
 }
 

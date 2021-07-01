@@ -8,10 +8,11 @@ import (
 
 func SetupLocalRoutes(s service.Service, app *fiber.App) {
 	app.Get("/ping", pong)
+	// Main view with "Filters"
 	app.Get("/", GetMain(s))
-	app.Get("/keys", GetKeys)
-	// app.Get("/api/message/author/:pubKey", GetMessagesFromAuthorJSON(s.DB))
 	app.Get("/pubkey/:pubKey", GetAuthor(s))
+	// Keys
+	app.Get("/keys", GetKeys)
 	app.Post("/keys", PostKeys)
 }
 
@@ -29,7 +30,7 @@ func GetMain(s service.Service) func(*fiber.Ctx) error {
 
 func GetAuthor(s service.Service) func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
-		id :=  SafeURLToBase64(c.Params("pubKey"))
+		id := SafeURLToBase64(c.Params("pubKey"))
 		localData := GetAuthorMessagesAndMainPageInfo(s, id)
 		return c.Render("main/root", structs.Map(localData))
 	}
