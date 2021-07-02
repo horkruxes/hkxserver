@@ -58,7 +58,7 @@ func main() {
 
 	// Frontend - Local views and template rendering
 	views.SetupLocalRoutes(service, app)
-	fmt.Println("Frontend started set up")
+	fmt.Println("Frontend started")
 
 	// 404
 	app.Use(func(c *fiber.Ctx) error {

@@ -14,6 +14,8 @@ func SetupLocalRoutes(s service.Service, app *fiber.App) {
 	// Keys
 	app.Get("/keys", GetKeys)
 	app.Post("/keys", PostKeys)
+	// FAQ
+	app.Get("/faq", GetFaq)
 }
 
 // Healthcheck

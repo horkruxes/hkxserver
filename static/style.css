@@ -48,6 +48,10 @@ strong {
   color: black;
 }
 
+textarea {
+  height: 5em;
+}
+
 /* MAIN */
 #triptych {
   display: flex;
@@ -137,4 +141,10 @@ textarea {
   min-width: 0;
   overflow: hidden;
   overflow-wrap: break-word;
+}
+
+/* FAQ */
+#faq-page {
+  max-width: 800px;
+  margin: auto;
 }

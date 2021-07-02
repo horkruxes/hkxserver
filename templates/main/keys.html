@@ -1,12 +1,5 @@
 {{define "keys"}}
 <div class="panel">
-  <h3>My keys</h3>
-  <ul>
-    <li><a href="/keys">Verify a signature</a></li>
-    <li><a href="/keys#danger-zone">Generate a key pair</a></li>
-    <li><a href="/keys#danger-zone">Get the signature for a message </a></li>
-  </ul>
-
   <h3>Post a message</h3>
   <form method="POST" action="/api/message">
     <div class="form-item">
@@ -20,6 +13,7 @@
     <div class="form-item">
       <label>Message:</label><br />
       <textarea
+        rows="7"
         name="message"
         placeholder="Write anything without being censored!"
       >
@@ -42,12 +36,35 @@
         name="signature"
         placeholder="The signature is different for every message"
       /><br />
-      <small id="passwordHelpBlock" class="form-text text-muted"
-        >How do I get one ? Learn more</small
-      >
+      <small id="passwordHelpBlock" class="form-text text-muted">
+        How do I get one ? <a href="/faq">Learn more</a>
+      </small>
     </div>
 
     <input type="submit" value="Send message" />
   </form>
+
+  <h3>My keys</h3>
+  <ul>
+    <li><a href="/keys">Verify a signature</a></li>
+    <li><a href="/keys#danger-zone">Generate a key pair</a></li>
+    <li><a href="/keys#danger-zone">Get the signature for a message </a></li>
+  </ul>
+
+  <h3>FAQ</h3>
+  <ul>
+    <li><a href="/faq">What is the goal of this website</a></li>
+    <li><a href="/faq">How do I post a message?</a></li>
+    <li><a href="/faq">What is a pod?</a></li>
+    <li>
+      <a href="/faq"
+        >This site is absolutely not practical. Why did you make these
+        choices?</a
+      >
+    </li>
+    <li><a href="/faq">What does "wrong signature" means?</a></li>
+    <li><a href="/faq">What can happen if someone hack the website?</a></li>
+    <li><a href="/faq">I lost my secret key</a></li>
+  </ul>
 </div>
 {{end}}

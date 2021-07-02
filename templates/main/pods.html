@@ -6,6 +6,23 @@
   <h4>{{ .Server.IP }}</h4>
   <p>{{ .Server.Info }}</p>
   <h3>Select pods</h3>
+
+  <ul>
+    <li>
+      <input
+        type="checkbox"
+        name="local"
+        id=""
+        onclick="return false;"
+        checked
+      />
+      {{ .Server.IP }}
+    </li>
+
+    <li><input type="checkbox" name="" id="" /> hk.quimerch.com</li>
+  </ul>
+
+  <p>Not available right now</p>
   <h3>Options</h3>
   <label for="signatures-switch" class="signatures-switch">
     Show/Hide signatures

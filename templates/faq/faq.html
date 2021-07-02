@@ -1,0 +1,73 @@
+{{define "faq-page"}}
+
+<div id="faq-page">
+  <h2 id="what">What is the goal of this website?</h2>
+  <p>
+    The goal is to provide a micro-blogging space like Twitter but decentralized
+    and where users have some sovereignty over their power to speak, unlike big
+    social network where you can get banned or censored. Also, it allows anyone
+    to speak anonymously without revealing themselves. Here, jounalists and
+    whistleblowers can speak freely.
+  </p>
+
+  <h2>How do I post a message?</h2>
+  <p>
+    This website doesn't have any authentication. You have to handle yourself
+    the authentication by creating keys that only YOU will manage.
+  </p>
+  <p>First step: create a key pair</p>
+  <p>Second step: write a message and sign it</p>
+  <p>Third step: send the message and the signature</p>
+
+  <h2>What is a pod?</h2>
+  <p>
+    Here, you are visiting a pod, but there are many more existing. You have to
+    choose a good pod, managed by someone you trust. You can post to any pod you
+    want, at anytime. TODO A pod can be secret, known, public, private...
+  </p>
+
+  <h2>What does "being registered on a pod" means?</h2>
+  <p>
+    Anyone can post on a pod, but when the public key isn't known from the pod,
+    there are limitations (only a message/pod each minute to prevent spam, but
+    you can choose to post on another pod if you are in a hurry). Being
+    registered on a pod is a contract between you and the pod admin (not between
+    you and a big company that seeks only profit!). The pod admin will
+    "whitelist" your public key. You can post whenever you want, and the pod
+    admin trust that you will not flood the pod.
+  </p>
+
+  <h2>
+    This site is absolutely not practical. Why did you make these choices?
+  </h2>
+  <p>
+    The way the website is structured, I (the creator) will have absolutely NO
+    CONTROL on your data. This might be not practical, but it is secured.
+    Moreover, this way only serious people will post things, no spam nor useless
+    messages.
+  </p>
+
+  <h2>What does "wrong signature" means?</h2>
+  <p>
+    If there is the mark "wrong signature", it means that a hacker on the pod
+    admin have modified the database. Don't trust this message. You can hide
+    them if you want.
+  </p>
+
+  <h2>What can happen if someone hack the website?</h2>
+  <p>
+    Your password isn't stored in the server because... You know... There isn't
+    a password. You'll loose nothing. The only thing that can happen is your
+    messages to be altered (but thanks to the signature, other users will be
+    warned that it has been modified) or deleted. If you want to prevent this to
+    happen, it's better to use a pod that is administrated by someone you know
+    and trust.
+  </p>
+
+  <h2>I lost my secret key, how can I get it back?</h2>
+  <p>
+    You can't. You must use another key, and try to explain to your followers
+    that the new public key it you.
+  </p>
+</div>
+{{end}}

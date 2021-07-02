@@ -16,7 +16,7 @@
     </div>
     <div class="form-item">
       <label>Message:</label><br />
-      <textarea name="message">{{ .Content }}</textarea>
+      <textarea rows="7" name="message">{{ .Content }}</textarea>
     </div>
     <div class="form-item">
       <label>Signature:</label><br />
@@ -24,13 +24,11 @@
     </div>
     <input type="submit" value="verify" />
   </form>
-  {{ if .Verif }}
-    {{ if .Valid }}
-      <p>Valid ✅</p>
-    {{ else }}
-      <p>Wrong ❌</p>
-    {{ end }}
-  {{ end }}
+  {{ if .Verif }} {{ if .Valid }}
+  <p>Valid ✅</p>
+  {{ else }}
+  <p>Wrong ❌</p>
+  {{ end }} {{ end }}
 
   <hr />
   <hr />
@@ -86,7 +84,7 @@
     </div>
     <div class="form-item">
       <label>Message:</label><br />
-      <textarea name="message">{{ .Content }}</textarea>
+      <textarea rows="7" name="message">{{ .Content }}</textarea>
     </div>
     <input type="submit" value="generate" />
   </form>

@@ -95,3 +95,7 @@ func PostKeys(c *fiber.Ctx) error {
 
 	return c.Render("keys/root", structs.Map(outputData))
 }
+
+func GetFaq(c *fiber.Ctx) error {
+	return c.Render("faq/root", nil)
+}
