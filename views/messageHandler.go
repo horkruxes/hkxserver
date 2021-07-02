@@ -1,6 +1,8 @@
 package views
 
 import (
+	"strings"
+
 	"github.com/ewenquim/horkruxes/model"
 	"github.com/ewenquim/horkruxes/service"
 	"github.com/fatih/structs"
@@ -74,10 +76,10 @@ func PostKeys(c *fiber.Ctx) error {
 	outputData := model.GenKeys()
 
 	// Get form data and reinject into output data
-	outputData.Sig = c.FormValue("signature")
-	outputData.Sec = c.FormValue("secret-key")
-	outputData.Pub = c.FormValue("public-key")
-	outputData.Content = c.FormValue("message")
+	outputData.Sig = strings.TrimSpace(c.FormValue("signature"))
+	outputData.Sec = strings.TrimSpace(c.FormValue("secret-key"))
+	outputData.Pub = strings.TrimSpace(c.FormValue("public-key"))
+	outputData.Content = strings.TrimSpace(c.FormValue("message"))
 	outputData.Verif = true
 
 	if outputData.Sig == "" {

@@ -111,6 +111,9 @@ input#signatures-switch:checked ~ #triptych .signature {
 .message a {
   text-decoration: unset;
 }
+.message .content strong {
+  color: #444;
+}
 
 /* KEYS */
 #keys-zone {

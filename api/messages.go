@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/base64"
+	"strings"
 
 	"github.com/ewenquim/horkruxes/exceptions"
 	"github.com/ewenquim/horkruxes/model"
@@ -37,18 +38,19 @@ func NewMessage(s service.Service) func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
 		message := &model.Message{}
 		var err error
-		message.SignatureBase64 = c.FormValue("signature")
+
+		message.SignatureBase64 = strings.TrimSpace(c.FormValue("signature"))
 		message.Signature, err = base64.StdEncoding.DecodeString(message.SignatureBase64)
 		if err != nil {
 			return c.Status(409).SendString("error wrong signature")
 		}
-		message.AuthorBase64 = c.FormValue("public-key")
+		message.AuthorBase64 = strings.TrimSpace(c.FormValue("public-key"))
 		message.AuthorPubKey, err = base64.StdEncoding.DecodeString(message.AuthorBase64)
 		if err != nil {
 			return c.Status(409).SendString("error wrong public key")
 		}
-		message.Content = c.FormValue("message")
-		message.DisplayedName = c.FormValue("name")
+		message.Content = strings.TrimSpace(c.FormValue("message"))
+		message.DisplayedName = strings.TrimSpace(c.FormValue("name"))
 
 		if !message.VerifyConditions() {
 			return c.Status(409).SendString(exceptions.ErrorRecordTooLongFound.Error())
