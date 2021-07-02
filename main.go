@@ -33,6 +33,7 @@ func main() {
 
 	// Server and middlewares
 	engine := html.New("./templates", ".html")
+	engine.AddFunc("md", views.MarkDowner)
 	app := fiber.New(fiber.Config{
 		Views: engine,
 	})

@@ -92,6 +92,14 @@ input#signatures-switch:checked ~ #triptych .signature {
 }
 .message-title {
   font-weight: normal;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.little-colored-box {
+  width: 1em;
+  height: 1em;
+  margin-right: 0.5em;
 }
 .form-item {
   margin: 0.5em 0;

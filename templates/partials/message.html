@@ -1,19 +1,17 @@
 {{ define "message" }}
 <div class="message">
   <h5 class="message-title">
-    <svg width="1em" height="1em">
-      <rect width="1em" height="1em" style="fill:{{.Color}}" />
-    </svg>
-    <a href="/pubkey/{{.AuthorURLSafe}}">
-      <strong>{{.DisplayedName}}</strong>
-      <span class="pubKeys">
-        {{ .AuthorBase64 }}
-        {{ if not .Correct }}
-        <span title="DO NOT TRUST THIS CONTENT! The message content could have been changed in the database by a pod admin or a hacker" style="color: red">wrong signature <span style="text-decoration: underline dotted;">(more)</span></span>
-        {{ end }}
-      </span>
-      
-    </a>
+      <div class="little-colored-box" style="background-color:{{.Color}};"></div>
+      <a href="/pubkey/{{.AuthorURLSafe}}">
+        <strong>{{.DisplayedName}}</strong>
+        <span class="pubKeys">
+          {{.Color}}
+          {{ .AuthorBase64 }}
+          {{ if not .Correct }}
+          <span title="DO NOT TRUST THIS CONTENT! The message content could have been changed in the database by a pod admin or a hacker" style="color: red">wrong signature <span style="text-decoration: underline dotted;">(more)</span></span>
+          {{ end }}
+        </span>
+      </a>
   </h5>
 
   <h6 class="message-additional-info">
@@ -33,7 +31,7 @@
     {{ .SignatureBase64 }}
   </p>
 
-  <p>{{.Content}}</p>
+  <p>{{.Content | md}}</p>
   
   <hr />
 </div>
