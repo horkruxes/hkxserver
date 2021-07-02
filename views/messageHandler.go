@@ -97,5 +97,5 @@ func PostKeys(c *fiber.Ctx) error {
 }
 
 func GetFaq(c *fiber.Ctx) error {
-	return c.Render("faq/root", nil)
+	return c.Render("faq/root", fiber.Map{})
 }
