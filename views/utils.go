@@ -4,6 +4,7 @@ import (
 	"encoding/binary"
 	"fmt"
 	"html/template"
+	"sort"
 	"strings"
 
 	"github.com/ewenquim/horkruxes/model"
@@ -32,6 +33,10 @@ func CleanMessagesClientSide(messages []model.Message) []model.Message {
 		messages[i].DisplayedDate = message.CreatedAt.Format("2 Jan 2006 15:04")
 		messages[i].Color = ColorFromBytes(message.AuthorPubKey)
 	}
+	// Sort slice by date
+	sort.Slice(messages, func(i, j int) bool {
+		return messages[i].CreatedAt.After(messages[j].CreatedAt)
+	})
 	return messages
 }
 

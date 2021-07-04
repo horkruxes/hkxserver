@@ -33,10 +33,9 @@ func GetMessagesAndMainPageInfo(s service.Service) PageData {
 	messages := model.GetMessagesFromDB(s)
 
 	// Get other pods messages
-	// call := []string{}
-	// for i, ip := range call {
-	// 	messages = append(messages, )
-	// }
+	call := []string{"horkruxes.amethysts.studio", "hk.quimerch.com"}
+	remoteMessages := getMessagesFrom("/api/message", call...)
+	messages = append(messages, remoteMessages...)
 
 	// Inject view
 	return PageData{
@@ -53,10 +52,9 @@ func GetAuthorMessagesAndMainPageInfo(s service.Service, pubKey string) PageData
 	messages := model.GetMessagesFromAuthor(s, pubKey)
 
 	// Get other pods messages
-	// call := []string{}
-	// for i, ip := range call {
-	// 	messages = append(messages, )
-	// }
+	call := []string{"horkruxes.amethysts.studio", "hk.quimerch.com"}
+	remoteMessages := getMessagesFrom("/api/message/author/"+pubKey, call...)
+	messages = append(messages, remoteMessages...)
 
 	// Inject view
 	return PageData{

@@ -2,25 +2,28 @@
 <div class="panel pods">
   <h2>{{ .PageInfo.Title }}</h2>
   <p>{{ .PageInfo.SubTitle }}</p>
-  <h3>{{ .Server.Name }}</h3>
-  <h4>{{ .Server.IP }}</h4>
+  <h3 class="pod-name">{{ .Server.Name }}</h3>
+  <h4 class="pod-ip">on {{ .Server.IP }}</h4>
   <p>{{ .Server.Info }}</p>
   <h3>Select pods</h3>
 
-  <ul>
-    <li>
-      <input
-        type="checkbox"
-        name="local"
-        id=""
-        onclick="return false;"
-        checked
-      />
-      {{ .Server.IP }}
-    </li>
-
-    <li><input type="checkbox" name="" id="" /> hk.quimerch.com</li>
-  </ul>
+  <a href="">refresh</a>
+  <div>
+    <input type="checkbox" name="local" id="" onclick="return false;" checked />
+    {{ .Server.IP }}
+  </div>
+  <div><input type="checkbox" name="" id="" /> public pods</div>
+  <div>
+    <input type="checkbox" name="" id="" /> private pods (enter adresses below)
+    <textarea
+      name=""
+      id=""
+      cols="20"
+      rows="10"
+      placeholder="secret-hk.example.com;
+my-horkrux.example.com"
+    ></textarea>
+  </div>
 
   <p>Not available right now</p>
   <h3>Options</h3>

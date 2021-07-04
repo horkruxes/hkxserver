@@ -1,10 +1,11 @@
 html,
 body {
+  overflow-wrap: break-word;
   overflow-x: hidden;
 }
 
 body {
-  margin: 40px auto;
+  margin: 0 auto;
   /* line-height: 1.6; */
   color: #444;
   padding: 0 10px;
@@ -147,6 +148,12 @@ textarea {
 .pods {
   overflow: hidden;
   overflow-wrap: break-word;
+}
+.pod-name {
+  margin-bottom: 0;
+}
+.pod-ip {
+  margin-top: 0;
 }
 
 /* FAQ */
