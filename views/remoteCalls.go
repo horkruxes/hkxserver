@@ -9,15 +9,12 @@ import (
 	"github.com/ewenquim/horkruxes/model"
 )
 
-type Resp struct {
-	Response []model.Message `json:"response"`
-}
-
 func getMessagesFrom(path string, urls ...string) []model.Message {
 	var messages []model.Message
 	for _, url := range urls {
 		adress := "https://" + url + path
 
+		fmt.Println("rq to", adress)
 		resp, err := http.Get(adress)
 		if err != nil {
 			fmt.Println("err", err)
@@ -33,13 +30,13 @@ func getMessagesFrom(path string, urls ...string) []model.Message {
 			continue
 		}
 
-		msg := &Resp{}
+		msg := &[]model.Message{}
 		err = json.Unmarshal(body, msg)
 		if err != nil {
 			fmt.Println("err", err)
 			continue
 		}
-		messages = append(messages, (*msg).Response...)
+		messages = append(messages, *msg...)
 	}
 	return messages
 }

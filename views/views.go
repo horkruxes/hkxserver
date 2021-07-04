@@ -10,7 +10,7 @@ func SetupLocalRoutes(s service.Service, app *fiber.App) {
 	app.Get("/ping", pong)
 	// Main view with "Filters"
 	app.Get("/", GetMain(s))
-	app.Get("/pubkey/:pubKey", GetAuthor(s))
+	app.Get("/user/:pubKey", GetAuthor(s))
 	// Keys
 	app.Get("/keys", GetKeys)
 	app.Post("/keys", PostKeys)

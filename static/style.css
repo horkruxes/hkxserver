@@ -110,6 +110,7 @@ input#signatures-switch:checked ~ #triptych .signature {
 }
 .little-colored-box {
   width: 1em;
+  min-width: 5px;
   height: 1em;
   margin-right: 0.5em;
 }

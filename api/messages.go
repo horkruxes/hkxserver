@@ -7,14 +7,14 @@ import (
 	"github.com/ewenquim/horkruxes/exceptions"
 	"github.com/ewenquim/horkruxes/model"
 	"github.com/ewenquim/horkruxes/service"
+	"github.com/ewenquim/horkruxes/views"
 	"github.com/gofiber/fiber/v2"
 )
 
 func GetMessagesJSON(s service.Service) func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
 		data := model.GetMessagesFromDB(s)
-		c.Status(201).JSON(fiber.Map{"response": data})
-		return nil
+		return c.Status(201).JSON(data)
 	}
 }
 
@@ -29,7 +29,8 @@ func GetMessageJSON(s service.Service) func(*fiber.Ctx) error {
 func GetMessagesFromAuthorJSON(s service.Service) func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
 		id := c.Params("pubKey")
-		message := model.GetMessagesFromAuthor(s, id)
+		pubKey := views.SafeURLToBase64(id)
+		message := model.GetMessagesFromAuthor(s, pubKey)
 		return c.JSON(message)
 	}
 }
@@ -55,11 +56,12 @@ func NewMessage(s service.Service) func(*fiber.Ctx) error {
 		if !message.VerifyConditions() {
 			return c.Status(409).SendString(exceptions.ErrorRecordTooLongFound.Error())
 		}
-		if message.VerifyOwnerShip() {
-			message.Correct = true
-			model.NewMessage(s, message)
-			return c.Redirect("/")
+		if !message.VerifyOwnerShip() {
+			return c.Status(409).SendString("error unvalid public key/signature")
+
 		}
-		return c.Status(409).SendString("error unvalid public key/signature")
+		message.Correct = true
+		model.NewMessage(s, message)
+		return c.Redirect("/")
 	}
 }
