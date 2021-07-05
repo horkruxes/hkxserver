@@ -29,7 +29,7 @@ type Message struct {
 func GetCommentsTo(s service.Service, messageID string) []Message {
 	var messages []Message
 	s.DB.Where("message_id = ?", messageID).Order("created_at desc").Find(&messages)
-	return messages
+	return CleanMessagesOutFromDB(messages, s.ServerConfig.URL)
 }
 
 // GetMessagesFromDB get data from db and checks some things
@@ -51,7 +51,7 @@ func GetMessagesFromAuthor(s service.Service, pubKeyBase64 string) []Message {
 func GetMessageFromDB(s service.Service, id string) (Message, error) {
 	var message Message
 	err := s.DB.First(&message, "id = ?", id).Error
-	return message, err
+	return CleanSingleMessageOutFromDB(message, s.ServerConfig.URL), err
 }
 
 func NewMessage(s service.Service, message *Message) error {

@@ -29,10 +29,19 @@ func SafeURLToBase64(s string) string {
 func CleanMessagesClientSide(messages []model.Message) []model.Message {
 	messages = model.CleanMessagesOutFromDB(messages)
 	for i, message := range messages {
-		messages[i].AuthorURLSafe = Base64ToSafeURL(message.AuthorBase64)
-		messages[i].DisplayedDate = message.CreatedAt.Format("2 Jan 2006 15:04")
-		messages[i].Color = ColorFromBytes(message.AuthorPubKey)
+		messages[i] = CleanSingleMessageClientSide(message)
 	}
+	return messages
+}
+
+func CleanSingleMessageClientSide(message model.Message) model.Message {
+	message.AuthorURLSafe = Base64ToSafeURL(message.AuthorBase64)
+	message.DisplayedDate = message.CreatedAt.Format("2 Jan 2006 15:04")
+	message.Color = ColorFromBytes(message.AuthorPubKey)
+	return message
+}
+
+func SortByDate(messages []model.Message) []model.Message {
 	// Sort slice by date
 	sort.Slice(messages, func(i, j int) bool {
 		return messages[i].CreatedAt.After(messages[j].CreatedAt)

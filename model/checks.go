@@ -26,13 +26,18 @@ func (message Message) VerifyOwnerShip() bool {
 // CleanMessagesOutFromDB get data from DB and do some checks and verifications
 func CleanMessagesOutFromDB(messages []Message, url ...string) []Message {
 	for i, message := range messages {
-		messages[i].Correct = message.VerifyOwnerShip()
-		messages[i].AuthorBase64 = base64.StdEncoding.EncodeToString(message.AuthorPubKey)
-		messages[i].SignatureBase64 = base64.StdEncoding.EncodeToString(message.Signature)
-		// url is set on server side and not re-set on client side
-		if len(url) > 0 {
-			messages[i].Pod = url[0]
-		}
+		messages[i] = CleanSingleMessageOutFromDB(message, url...)
 	}
 	return messages
+}
+
+func CleanSingleMessageOutFromDB(message Message, url ...string) Message {
+	message.Correct = message.VerifyOwnerShip()
+	message.AuthorBase64 = base64.StdEncoding.EncodeToString(message.AuthorPubKey)
+	message.SignatureBase64 = base64.StdEncoding.EncodeToString(message.Signature)
+	// url is set on server side and not re-set on client side
+	if len(url) > 0 {
+		message.Pod = url[0]
+	}
+	return message
 }

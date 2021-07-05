@@ -21,8 +21,10 @@
     <span class="post-date"> {{ .DisplayedDate }} </span>
     on
     <span class="post-date"> {{ .Pod }} </span>
-    -
-    <a href="/comments/{{.ID}}" class="comments-link">comments</a>
+    {{ if not .MessageID }}
+      -
+      <a href="/comments/{{.ID}}" class="comments-link">comments</a>
+    {{ end }}
   </h6>
 
   <p class="signature">{{ if .Correct }} ✓ {{ end }} {{ .SignatureBase64 }}</p>
