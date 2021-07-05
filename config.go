@@ -13,15 +13,16 @@ func loadServerConfig() service.ServerConfig {
 	config, err := toml.LoadFile("config.toml")
 
 	serverConfig := service.ServerConfig{}
-	if err == nil {
-		serverConfig.Name = config.Get("name").(string)
-		serverConfig.URL = config.Get("url").(string)
-		serverConfig.Info = config.Get("info").(string)
-		serverConfig.Private = config.Get("private").(bool)
-		serverConfig.Port = config.Get("port").(int64)
-		return serverConfig
+	if err != nil {
+		panic("Can't load server configuration file (config.toml not found)")
 	}
-	panic("Can't load server configuration file (config.toml not found)")
+	serverConfig.Name = config.Get("name").(string)
+	serverConfig.URL = config.Get("url").(string)
+	serverConfig.Info = config.Get("info").(string)
+	serverConfig.Private = config.Get("private").(bool)
+	serverConfig.Port = config.Get("port").(int64)
+	serverConfig.PublicPods = []string{"horkruxes.amethysts.studio", "hk.quimerch.com"}
+	return serverConfig
 }
 
 // Creates a default config fil if it doesn't exist
