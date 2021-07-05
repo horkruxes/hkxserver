@@ -1,13 +1,16 @@
 package model
 
 import (
+	"time"
+
 	"github.com/ewenquim/horkruxes/exceptions"
 	"github.com/ewenquim/horkruxes/service"
-	"gorm.io/gorm"
+	"github.com/google/uuid"
 )
 
 type Message struct {
-	gorm.Model
+	ID              string `gorm:"primary_key"`
+	CreatedAt       time.Time
 	DisplayedName   string `json:"displayedName"` // Name Chosen by author, no restriction but < 50 char
 	Content         string `json:"content"`
 	AuthorPubKey    []byte `json:"authorPubKey"`
@@ -48,9 +51,11 @@ func NewMessage(s service.Service, message *Message) error {
 	if !message.VerifyConditions() {
 		return exceptions.ErrorRecordTooLongFound
 	}
-	if message.VerifyOwnerShip() {
-		message.Correct = true
-		return s.DB.Create(&message).Error
+	if !message.VerifyOwnerShip() {
+		return exceptions.WrongSignature
 	}
-	return nil
+	message.Correct = true
+	message.ID = uuid.NewString()
+	message.CreatedAt = time.Now()
+	return s.DB.Create(&message).Error
 }

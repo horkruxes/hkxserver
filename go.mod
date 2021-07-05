@@ -8,6 +8,7 @@ require (
 	github.com/gofiber/fiber/v2 v2.13.0
 	github.com/gofiber/redirect/v2 v2.1.6
 	github.com/gofiber/template v1.6.12
+	github.com/google/uuid v1.2.0
 	github.com/klauspost/compress v1.13.1 // indirect
 	github.com/mattn/go-sqlite3 v1.14.7 // indirect
 	github.com/pelletier/go-toml v1.9.3
