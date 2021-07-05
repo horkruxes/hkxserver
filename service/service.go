@@ -19,7 +19,7 @@ type ServerConfig struct {
 }
 
 type ClientConfig struct {
-	pods []Pod
+	Pods []Pod // List of pods
 }
 
 type Pod struct {

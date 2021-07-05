@@ -53,7 +53,7 @@ func GetAuthorMessagesAndMainPageInfo(s service.Service, pubKey string) PageData
 
 	// Get other pods messages
 	call := []string{"horkruxes.amethysts.studio", "hk.quimerch.com"}
-	remoteMessages := getMessagesFrom("/api/message/author/"+pubKey, call...)
+	remoteMessages := getMessagesFrom("/api/message/user/"+pubKey, call...)
 	messages = append(messages, remoteMessages...)
 
 	// Inject view

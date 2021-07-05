@@ -1,7 +1,6 @@
 html,
 body {
   overflow-wrap: break-word;
-  overflow-x: hidden;
 }
 
 body {
@@ -54,10 +53,6 @@ strong {
   color: black;
 }
 
-textarea {
-  height: 5em;
-}
-
 /* MAIN */
 #triptych {
   display: flex;
@@ -67,8 +62,8 @@ textarea {
 
 .panel {
   flex: 1;
-  margin: 2em 0;
-  padding: 0 1em;
+  margin: 2em 1em;
+  /* padding: 0 1em; */
   min-width: 20em;
 }
 
@@ -142,7 +137,7 @@ input#signatures-switch:checked ~ #triptych .signature {
 input[type="text"],
 textarea {
   margin: auto;
-  width: 100%;
+  width: 95%;
 }
 
 /* PODS */
