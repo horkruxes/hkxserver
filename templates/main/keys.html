@@ -1,6 +1,10 @@
 {{define "keys"}}
 <div class="panel">
+  {{ if .PageInfo.PostToMessageID }}
+  <h3>Comment</h3>
+  {{ else }}
   <h3>Post a message</h3>
+  {{ end }}
   <form method="POST" action="/api/message">
     <div class="form-item">
       <label>Name:</label><br />
@@ -40,6 +44,22 @@
         How do I get one ? <a href="/faq">Learn more</a>
       </small>
     </div>
+    <input
+      type="radio"
+      id="this-pod"
+      name="post-dest"
+      value="Post on this pod"
+      checked
+    />
+    <label for="html">Send on {{ .Server.IP }}</label><br />
+    <input
+      type="radio"
+      id="other-pod"
+      name="post-dest"
+      value="Post on another pod"
+    />
+    <label for="css">Send on </label><br />
+    <input type="text" name="pod-to-post-to" id="pod-to-post-to" />
 
     <input type="submit" value="Send message" />
   </form>

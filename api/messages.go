@@ -21,7 +21,10 @@ func GetMessagesJSON(s service.Service) func(*fiber.Ctx) error {
 func GetMessageJSON(s service.Service) func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
 		id := c.Params("id")
-		message := model.GetMessageFromDB(s, id)
+		message, err := model.GetMessageFromDB(s, id)
+		if err != nil {
+			return err
+		}
 		return c.JSON(message)
 	}
 }
@@ -39,6 +42,8 @@ func NewMessage(s service.Service) func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
 		message := &model.Message{}
 		var err error
+
+		c.FormValue("answer")
 
 		message.SignatureBase64 = strings.TrimSpace(c.FormValue("signature"))
 		message.Signature, err = base64.StdEncoding.DecodeString(message.SignatureBase64)

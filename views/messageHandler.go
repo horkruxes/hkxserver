@@ -1,6 +1,7 @@
 package views
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/ewenquim/horkruxes/model"
@@ -22,8 +23,9 @@ type ServerData struct {
 }
 
 type PageInfo struct {
-	Title    string
-	SubTitle string
+	Title           string
+	SubTitle        string
+	PostToMessageID string
 }
 
 // Get Local and online messages, checks validity and return view
@@ -33,8 +35,7 @@ func GetMessagesAndMainPageInfo(s service.Service) PageData {
 	messages := model.GetMessagesFromDB(s)
 
 	// Get other pods messages
-	call := []string{"horkruxes.amethysts.studio", "hk.quimerch.com"}
-	remoteMessages := getMessagesFrom("/api/message", call...)
+	remoteMessages := getMessagesFrom("/api/message", s.ServerConfig.PublicPods...)
 	messages = append(messages, remoteMessages...)
 
 	// Inject view
@@ -52,8 +53,7 @@ func GetAuthorMessagesAndMainPageInfo(s service.Service, pubKey string) PageData
 	messages := model.GetMessagesFromAuthor(s, pubKey)
 
 	// Get other pods messages
-	call := []string{"horkruxes.amethysts.studio", "hk.quimerch.com"}
-	remoteMessages := getMessagesFrom("/api/message/user/"+pubKey, call...)
+	remoteMessages := getMessagesFrom("/api/message/user/"+pubKey, s.ServerConfig.PublicPods...)
 	messages = append(messages, remoteMessages...)
 
 	// Inject view
@@ -61,6 +61,31 @@ func GetAuthorMessagesAndMainPageInfo(s service.Service, pubKey string) PageData
 		Messages: CleanMessagesClientSide(messages),
 		Server:   ServerData{Name: s.ServerConfig.Name, IP: s.ServerConfig.URL, Info: s.ServerConfig.Info},
 		PageInfo: PageInfo{Title: "Author", SubTitle: pubKey},
+	}
+}
+
+// Get Local and online messages, checks validity and return view
+func GetCommentsAndMainPageInfo(s service.Service, messageID string) PageData {
+
+	messages := []model.Message{}
+	op, err := model.GetMessageFromDB(s, messageID)
+	if err != nil {
+		fmt.Println("err:", err)
+	}
+	messages = append(messages, op)
+
+	// Get local messages
+	messages = append(messages, model.GetCommentsTo(s, messageID)...)
+
+	// Get other pods messages
+	remoteMessages := getMessagesFrom("/api/message/comments/"+messageID, s.ServerConfig.PublicPods...)
+	messages = append(messages, remoteMessages...)
+
+	// Inject view
+	return PageData{
+		Messages: CleanMessagesClientSide(messages),
+		Server:   ServerData{Name: s.ServerConfig.Name, IP: s.ServerConfig.URL, Info: s.ServerConfig.Info},
+		PageInfo: PageInfo{Title: "Comments", SubTitle: messageID, PostToMessageID: messageID},
 	}
 }
 

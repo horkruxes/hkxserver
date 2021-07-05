@@ -117,7 +117,7 @@ input#signatures-switch:checked ~ #triptych .signature {
   font-weight: normal;
 }
 .message a {
-  text-decoration: unset;
+  text-decoration: dotted;
 }
 .message .content strong {
   color: #444;

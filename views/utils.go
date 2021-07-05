@@ -41,6 +41,9 @@ func CleanMessagesClientSide(messages []model.Message) []model.Message {
 }
 
 func ColorFromBytes(b []byte) string {
+	if len(b) < 11 {
+		return "red"
+	}
 	red := int(binary.BigEndian.Uint32(b[:]))%223 + 16
 	green := int(binary.BigEndian.Uint32(b[10:]))%223 + 16
 	blue := int(binary.BigEndian.Uint32(b[5:]))%223 + 16

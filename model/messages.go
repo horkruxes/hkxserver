@@ -19,10 +19,17 @@ type Message struct {
 	SignatureBase64 string `json:"signatureBase64"`
 	Correct         bool
 	Color           string
+	MessageID       string // Used if the message is a comment to a publication
 	// Only for display, computed from known values
 	AuthorURLSafe string `json:"authorURLSafe" gorm:"-"`
 	DisplayedDate string `gorm:"-"`
 	Pod           string `gorm:"-"`
+}
+
+func GetCommentsTo(s service.Service, messageID string) []Message {
+	var messages []Message
+	s.DB.Where("message_id = ?", messageID).Order("created_at desc").Find(&messages)
+	return messages
 }
 
 // GetMessagesFromDB get data from db and checks some things
@@ -41,10 +48,10 @@ func GetMessagesFromAuthor(s service.Service, pubKeyBase64 string) []Message {
 	return CleanMessagesOutFromDB(messages, s.ServerConfig.URL)
 }
 
-func GetMessageFromDB(s service.Service, id string) Message {
+func GetMessageFromDB(s service.Service, id string) (Message, error) {
 	var message Message
-	s.DB.Find(&message, id)
-	return message
+	err := s.DB.First(&message, "id = ?", id).Error
+	return message, err
 }
 
 func NewMessage(s service.Service, message *Message) error {

@@ -11,6 +11,7 @@ func SetupLocalRoutes(s service.Service, app *fiber.App) {
 	// Main view with "Filters"
 	app.Get("/", GetMain(s))
 	app.Get("/user/:pubKey", GetAuthor(s))
+	app.Get("/comments/:uuid", GetComments(s))
 	// Keys
 	app.Get("/keys", GetKeys)
 	app.Post("/keys", PostKeys)
@@ -34,6 +35,14 @@ func GetAuthor(s service.Service) func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
 		id := SafeURLToBase64(c.Params("pubKey"))
 		localData := GetAuthorMessagesAndMainPageInfo(s, id)
+		return c.Render("main/root", structs.Map(localData))
+	}
+}
+
+func GetComments(s service.Service) func(*fiber.Ctx) error {
+	return func(c *fiber.Ctx) error {
+		id := c.Params("uuid")
+		localData := GetCommentsAndMainPageInfo(s, id)
 		return c.Render("main/root", structs.Map(localData))
 	}
 }
