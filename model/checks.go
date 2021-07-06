@@ -7,7 +7,7 @@ import (
 
 // VerifyConditions returns true if everything is ok
 func (message Message) VerifyConditions() bool {
-	return len(message.Content) < 5000 && len(message.DisplayedName) < 50
+	return len(message.Content) > 140 && len(message.Content) < 5000 && len(message.DisplayedName) < 50
 }
 
 func (message Message) VerifyOwnerShip() bool {

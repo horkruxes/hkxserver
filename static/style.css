@@ -119,8 +119,8 @@ input#signatures-switch:checked ~ #triptych .signature {
 .message a {
   text-decoration: dotted;
 }
-.message .content strong {
-  color: #444;
+.message .content {
+  color: #444 !important;
 }
 
 /* KEYS */
@@ -153,6 +153,11 @@ textarea {
 }
 .pod-ip {
   margin-top: 0;
+}
+.pods h3 > a {
+  color: #444;
+  font-size: 0.8em;
+  font-style: italic;
 }
 
 /* FAQ */

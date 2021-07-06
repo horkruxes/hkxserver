@@ -70,19 +70,27 @@ func GetCommentsAndMainPageInfo(s service.Service, messageID string) PageData {
 
 	messages := []model.Message{}
 
-	// Get local messages
+	// Get local comments
 	messages = append(messages, model.GetCommentsTo(s, messageID)...)
 
-	// Get other pods messages
+	// Get other pods comments
 	remoteMessages := getMessagesFrom(s, "/api/comments/"+messageID)
 	messages = append(messages, remoteMessages...)
 
 	messages = model.SortByDate(messages)
 
+	// Try to get local OP
 	op, err := model.GetMessageFromDB(s, messageID)
 	if err != nil {
 		fmt.Println("err:", err)
+		// Asks other pods to get comment
+		remoteOPs := getSingleMessageFromEachPod(s, "/api/message/"+messageID)
+		fmt.Println(remoteOPs)
+		if len(remoteOPs) > 0 {
+			op = remoteOPs[0]
+		}
 	}
+
 	op = model.CleanSingleMessageClientSide(op)
 	messages = append([]model.Message{op}, messages...)
 	messages = model.CleanMessagesClientSide(messages)
