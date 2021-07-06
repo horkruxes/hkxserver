@@ -47,13 +47,14 @@ func GetMessagesAndMainPageInfo(s service.Service) PageData {
 }
 
 // Get Local and online messages, checks validity and return view
+// Pubkey is in base64 form
 func GetAuthorMessagesAndMainPageInfo(s service.Service, pubKey string) PageData {
 
 	// Get local messages
 	messages := model.GetMessagesFromAuthor(s, pubKey)
 
 	// Get other pods messages
-	remoteMessages := getMessagesFrom(s, "/api/user/"+pubKey)
+	remoteMessages := getMessagesFrom(s, "/api/user/"+service.Base64ToSafeURL(pubKey))
 	messages = append(messages, remoteMessages...)
 
 	messages = model.SortByDate(messages)
