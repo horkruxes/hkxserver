@@ -59,7 +59,7 @@ func NewMessage(s service.Service, message Message) error {
 		return exceptions.ErrorRecordTooLongFound
 	}
 	if !message.VerifyOwnerShip() {
-		return exceptions.WrongSignature
+		return exceptions.ErrorWrongSignature
 	}
 	message.Correct = true
 	message.ID = uuid.NewString()

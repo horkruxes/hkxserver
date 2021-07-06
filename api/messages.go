@@ -70,6 +70,7 @@ func NewMessage(s service.Service) func(*fiber.Ctx) error {
 		// Translate into Message struct and verify conditions
 		message, err := PayloadToValidMessage(payload)
 		if err != nil {
+			fmt.Println("err:", err)
 			return c.Status(409).SendString(err.Error())
 		}
 
@@ -87,12 +88,12 @@ func PayloadToValidMessage(payload NewMessagePayload) (model.Message, error) {
 	message.SignatureBase64 = strings.TrimSpace(payload.Signature)
 	message.Signature, err = base64.StdEncoding.DecodeString(message.SignatureBase64)
 	if err != nil {
-		return message, exceptions.WrongSignature
+		return message, exceptions.ErrorWrongSignature
 	}
 	message.AuthorBase64 = strings.TrimSpace(payload.PublicKey)
 	message.AuthorPubKey, err = base64.StdEncoding.DecodeString(message.AuthorBase64)
 	if err != nil {
-		return message, exceptions.WrongSignature
+		return message, exceptions.ErrorWrongSignature
 	}
 	message.Content = strings.TrimSpace(payload.Content)
 	message.DisplayedName = strings.TrimSpace(payload.Name)
@@ -102,7 +103,7 @@ func PayloadToValidMessage(payload NewMessagePayload) (model.Message, error) {
 		return message, exceptions.ErrorRecordTooLongFound
 	}
 	if !message.VerifyOwnerShip() {
-		return message, exceptions.WrongSignature
+		return message, exceptions.ErrorWrongSignature
 
 	}
 	message.Correct = true

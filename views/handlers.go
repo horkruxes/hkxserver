@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"strings"
 
@@ -91,9 +92,21 @@ func NewMessage(s service.Service) func(*fiber.Ctx) error {
 			fmt.Println("new msg", message)
 			model.NewMessage(s, message)
 		} else {
-			_, err := http.Post(payload.Pod+"/api/message", "application/json", bytes.NewBuffer(reader))
+			resp, err := http.Post("https://"+payload.Pod+"/api/message", "application/json", bytes.NewBuffer(reader))
 			if err != nil {
 				fmt.Println("err:", err)
+			}
+			if resp.StatusCode == 409 {
+
+				defer resp.Body.Close()
+
+				body, err := ioutil.ReadAll(resp.Body)
+				if err != nil {
+					fmt.Println("err:", err)
+				}
+				fmt.Println(string(body))
+
+				c.SendString("error sending the message " + string(body))
 			}
 		}
 

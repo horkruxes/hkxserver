@@ -33,9 +33,7 @@ func main() {
 
 	// Server and middlewares
 	engine := html.New("./templates", ".html")
-	if s.ServerConfig.Markdown {
-		engine.AddFunc("md", service.MarkDowner)
-	}
+	engine.AddFunc("md", service.MarkDowner)
 	app := fiber.New(fiber.Config{
 		Views: engine,
 	})
