@@ -46,7 +46,9 @@ func main() {
 		StatusCode: 301,
 	}))
 
-	app.Use(logger.New())
+	if s.ServerConfig.Debug {
+		app.Use(logger.New())
+	}
 
 	// Static routes
 	app.Static("", "./static")
