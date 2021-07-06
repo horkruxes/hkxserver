@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/base64"
+	"fmt"
 	"strings"
 
 	"github.com/ewenquim/horkruxes/exceptions"
@@ -56,6 +57,7 @@ func GetMessagesFromAuthorJSON(s service.Service) func(*fiber.Ctx) error {
 
 func NewMessage(s service.Service) func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
+		fmt.Println("Received POST request to create new message")
 		// Get message
 		payload := NewMessagePayload{}
 
@@ -63,6 +65,7 @@ func NewMessage(s service.Service) func(*fiber.Ctx) error {
 		if err := c.BodyParser(&payload); err != nil {
 			return c.Status(500).SendString(err.Error())
 		}
+		fmt.Println("content:", payload)
 
 		// Translate into Message struct and verify conditions
 		message, err := PayloadToValidMessage(payload)
