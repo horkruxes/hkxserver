@@ -36,7 +36,7 @@ func GetCommentsTo(s service.Service, messageID string) []Message {
 func GetMessagesFromDB(s service.Service) []Message {
 	var messages []Message
 	// s.DB.Where("correct = ?", true).Find(&messages)
-	s.DB.Order("created_at desc").Find(&messages)
+	s.DB.Where("message_id IS NULL OR message_id=''").Order("created_at desc").Find(&messages)
 	return CleanMessagesOutFromDB(messages, s.ServerConfig.URL)
 }
 
@@ -54,7 +54,7 @@ func GetMessageFromDB(s service.Service, id string) (Message, error) {
 	return CleanSingleMessageOutFromDB(message, s.ServerConfig.URL), err
 }
 
-func NewMessage(s service.Service, message *Message) error {
+func NewMessage(s service.Service, message Message) error {
 	if !message.VerifyConditions() {
 		return exceptions.ErrorRecordTooLongFound
 	}

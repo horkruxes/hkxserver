@@ -26,14 +26,14 @@ func main() {
 	sqldb, _ := db.DB()
 	defer sqldb.Close()
 
-	service := service.Service{
+	s := service.Service{
 		DB:           initDatabase(),
 		ServerConfig: loadServerConfig(),
 	}
 
 	// Server and middlewares
 	engine := html.New("./templates", ".html")
-	engine.AddFunc("md", views.MarkDowner)
+	engine.AddFunc("md", service.MarkDowner)
 	app := fiber.New(fiber.Config{
 		Views: engine,
 	})
@@ -53,11 +53,11 @@ func main() {
 	fmt.Println("Static server started")
 
 	// Backend - DB operations routes (potentially online)
-	api.SetupApiRoutes(service, app)
+	api.SetupApiRoutes(s, app)
 	fmt.Println("API started")
 
 	// Frontend - Local views and template rendering
-	views.SetupLocalRoutes(service, app)
+	views.SetupLocalRoutes(s, app)
 	fmt.Println("Frontend started")
 
 	// 404
@@ -65,5 +65,5 @@ func main() {
 		return c.Status(fiber.StatusNotFound).SendString("Sorry, can't find that! Check your URL")
 	})
 
-	app.Listen(fmt.Sprintf(":%v", service.ServerConfig.Port))
+	app.Listen(fmt.Sprintf(":%v", s.ServerConfig.Port))
 }

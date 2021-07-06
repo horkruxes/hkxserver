@@ -1,9 +1,15 @@
 package views
 
 import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"net/http"
 	"strings"
 
+	"github.com/ewenquim/horkruxes/api"
 	"github.com/ewenquim/horkruxes/model"
+	"github.com/ewenquim/horkruxes/service"
 	"github.com/fatih/structs"
 	"github.com/gofiber/fiber/v2"
 )
@@ -40,4 +46,53 @@ func PostKeys(c *fiber.Ctx) error {
 
 func GetFaq(c *fiber.Ctx) error {
 	return c.Render("faq/root", fiber.Map{})
+}
+
+func GetMain(s service.Service) func(*fiber.Ctx) error {
+	return func(c *fiber.Ctx) error {
+		localData := GetMessagesAndMainPageInfo(s)
+		return c.Render("main/root", structs.Map(localData))
+	}
+}
+
+func GetAuthor(s service.Service) func(*fiber.Ctx) error {
+	return func(c *fiber.Ctx) error {
+		id := service.SafeURLToBase64(c.Params("pubKey"))
+		localData := GetAuthorMessagesAndMainPageInfo(s, id)
+		return c.Render("main/root", structs.Map(localData))
+	}
+}
+
+func GetComments(s service.Service) func(*fiber.Ctx) error {
+	return func(c *fiber.Ctx) error {
+		id := c.Params("uuid")
+		localData := GetCommentsAndMainPageInfo(s, id)
+		return c.Render("main/root", structs.Map(localData))
+	}
+}
+
+func NewMessage(s service.Service) func(*fiber.Ctx) error {
+	return func(c *fiber.Ctx) error {
+
+		payload := FromFormToPayload(c)
+
+		reader, err := json.Marshal(payload)
+		if err != nil {
+			fmt.Println("err:", err)
+		}
+
+		// Check if can do the db operations right now or if it should transfer the payload to another API
+		if payload.Pod == "" {
+			message, err := api.PayloadToValidMessage(payload)
+			if err != nil {
+				return c.Status(409).SendString(err.Error())
+			}
+			fmt.Println("new msg", message)
+			model.NewMessage(s, message)
+		} else {
+			http.Post(payload.Pod+"/api/message", "application/json", bytes.NewBuffer(reader))
+		}
+
+		return c.Redirect("/")
+	}
 }

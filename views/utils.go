@@ -1,69 +1,21 @@
 package views
 
 import (
-	"encoding/binary"
-	"fmt"
-	"html/template"
-	"sort"
 	"strings"
 
-	"github.com/ewenquim/horkruxes/model"
-	"github.com/russross/blackfriday"
+	"github.com/ewenquim/horkruxes/api"
+	"github.com/gofiber/fiber/v2"
 )
 
-func Base64ToSafeURL(s string) string {
-	s = strings.ReplaceAll(s, "+", ".")
-	s = strings.ReplaceAll(s, "/", "-")
-	s = strings.ReplaceAll(s, "=", "_")
-	return s
-}
+func FromFormToPayload(c *fiber.Ctx) api.NewMessagePayload {
+	message := api.NewMessagePayload{}
 
-func SafeURLToBase64(s string) string {
-	s = strings.ReplaceAll(s, ".", "+")
-	s = strings.ReplaceAll(s, "-", "/")
-	s = strings.ReplaceAll(s, "_", "=")
-	return s
-}
+	message.Signature = strings.TrimSpace(c.FormValue("signature"))
+	message.PublicKey = strings.TrimSpace(c.FormValue("public-key"))
+	message.Content = strings.TrimSpace(c.FormValue("message"))
+	message.Name = strings.TrimSpace(c.FormValue("name"))
+	message.MessageID = strings.TrimSpace(c.FormValue("answer-to"))
+	message.Pod = strings.TrimSpace(c.FormValue("pod-to-post-to"))
 
-// CleanMessagesOutFromDB get data from DB and do some checks and verifications
-func CleanMessagesClientSide(messages []model.Message) []model.Message {
-	messages = model.CleanMessagesOutFromDB(messages)
-	for i, message := range messages {
-		messages[i] = CleanSingleMessageClientSide(message)
-	}
-	return messages
-}
-
-func CleanSingleMessageClientSide(message model.Message) model.Message {
-	message.AuthorURLSafe = Base64ToSafeURL(message.AuthorBase64)
-	message.DisplayedDate = message.CreatedAt.Format("2 Jan 2006 15:04")
-	message.Color = ColorFromBytes(message.AuthorPubKey)
 	return message
-}
-
-func SortByDate(messages []model.Message) []model.Message {
-	// Sort slice by date
-	sort.Slice(messages, func(i, j int) bool {
-		return messages[i].CreatedAt.After(messages[j].CreatedAt)
-	})
-	return messages
-}
-
-func ColorFromBytes(b []byte) string {
-	if len(b) < 11 {
-		return "red"
-	}
-	red := int(binary.BigEndian.Uint32(b[:]))%223 + 16
-	green := int(binary.BigEndian.Uint32(b[10:]))%223 + 16
-	blue := int(binary.BigEndian.Uint32(b[5:]))%223 + 16
-	return fmt.Sprintf("#%X%X%X", red, green, blue)
-	// hue := int(binary.BigEndian.Uint32(b)) % 360
-	// light := ((hue+int(binary.BigEndian.Uint32(b[10:])))%3 + 1) * 25
-	// fmt.Printf("hsl(%v, 100%%, %v%%)", hue, light)
-	// return fmt.Sprintf("hsl(%v, 100%%, %v%%)", hue, light)
-}
-
-func MarkDowner(args ...interface{}) template.HTML {
-	s := blackfriday.MarkdownCommon([]byte(fmt.Sprintf("%s", args...)))
-	return template.HTML(s)
 }

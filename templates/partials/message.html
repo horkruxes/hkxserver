@@ -21,8 +21,10 @@
     <span class="post-date"> {{ .DisplayedDate }} </span>
     on
     <span class="post-date"> {{ .Pod }} </span>
-    {{ if not .MessageID }}
-      -
+    -
+    {{ if .MessageID }}
+      answer to <a href="/comments/{{.MessageID}}" class="comments-link">this post</a>
+    {{ else }}
       <a href="/comments/{{.ID}}" class="comments-link">comments</a>
     {{ end }}
   </h6>

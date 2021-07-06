@@ -139,6 +139,9 @@ textarea {
   margin: auto;
   width: 95%;
 }
+#answer-to {
+  display: none;
+}
 
 /* PODS */
 .pods {

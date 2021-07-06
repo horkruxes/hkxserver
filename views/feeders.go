@@ -35,11 +35,11 @@ func GetMessagesAndMainPageInfo(s service.Service) PageData {
 	remoteMessages := getMessagesFrom("/api/message", s.ServerConfig.PublicPods...)
 	messages = append(messages, remoteMessages...)
 
-	messages = SortByDate(messages)
+	messages = model.SortByDate(messages)
 
 	// Inject view
 	return PageData{
-		Messages: CleanMessagesClientSide(messages),
+		Messages: model.CleanMessagesClientSide(messages),
 		Server:   ServerData{Name: s.ServerConfig.Name, IP: s.ServerConfig.URL, Info: s.ServerConfig.Info},
 		PageInfo: PageInfo{Title: "All Messages"},
 	}
@@ -55,11 +55,11 @@ func GetAuthorMessagesAndMainPageInfo(s service.Service, pubKey string) PageData
 	remoteMessages := getMessagesFrom("/api/message/user/"+pubKey, s.ServerConfig.PublicPods...)
 	messages = append(messages, remoteMessages...)
 
-	messages = SortByDate(messages)
+	messages = model.SortByDate(messages)
 
 	// Inject view
 	return PageData{
-		Messages: CleanMessagesClientSide(messages),
+		Messages: model.CleanMessagesClientSide(messages),
 		Server:   ServerData{Name: s.ServerConfig.Name, IP: s.ServerConfig.URL, Info: s.ServerConfig.Info},
 		PageInfo: PageInfo{Title: "Author", SubTitle: pubKey},
 	}
@@ -77,14 +77,15 @@ func GetCommentsAndMainPageInfo(s service.Service, messageID string) PageData {
 	remoteMessages := getMessagesFrom("/api/message/comments/"+messageID, s.ServerConfig.PublicPods...)
 	messages = append(messages, remoteMessages...)
 
-	messages = SortByDate(messages)
+	messages = model.SortByDate(messages)
 
 	op, err := model.GetMessageFromDB(s, messageID)
 	if err != nil {
 		fmt.Println("err:", err)
 	}
-	messages = append(messages, CleanSingleMessageClientSide(op))
-	messages = CleanMessagesClientSide(messages)
+	op = model.CleanSingleMessageClientSide(op)
+	messages = append([]model.Message{op}, messages...)
+	messages = model.CleanMessagesClientSide(messages)
 
 	// Inject view
 	return PageData{

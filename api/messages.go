@@ -7,9 +7,17 @@ import (
 	"github.com/ewenquim/horkruxes/exceptions"
 	"github.com/ewenquim/horkruxes/model"
 	"github.com/ewenquim/horkruxes/service"
-	"github.com/ewenquim/horkruxes/views"
 	"github.com/gofiber/fiber/v2"
 )
+
+type NewMessagePayload struct {
+	Signature string
+	PublicKey string `json:"public-key"`
+	Content   string
+	Name      string
+	Pod       string
+	MessageID string `json:"messageID,omitempty"`
+}
 
 func GetMessagesJSON(s service.Service) func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
@@ -32,7 +40,7 @@ func GetMessageJSON(s service.Service) func(*fiber.Ctx) error {
 func GetMessagesFromAuthorJSON(s service.Service) func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
 		id := c.Params("pubKey")
-		pubKey := views.SafeURLToBase64(id)
+		pubKey := service.SafeURLToBase64(id)
 		message := model.GetMessagesFromAuthor(s, pubKey)
 		return c.JSON(message)
 	}
@@ -40,33 +48,52 @@ func GetMessagesFromAuthorJSON(s service.Service) func(*fiber.Ctx) error {
 
 func NewMessage(s service.Service) func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
-		message := &model.Message{}
-		var err error
+		// Get message
+		payload := NewMessagePayload{}
 
-		c.FormValue("answer")
+		// Read Body
+		if err := c.BodyParser(&payload); err != nil {
+			return c.Status(500).SendString(err.Error())
+		}
 
-		message.SignatureBase64 = strings.TrimSpace(c.FormValue("signature"))
-		message.Signature, err = base64.StdEncoding.DecodeString(message.SignatureBase64)
+		// Translate into Message struct and verify conditions
+		message, err := PayloadToValidMessage(payload)
 		if err != nil {
-			return c.Status(409).SendString("error wrong signature")
+			return c.Status(409).SendString(err.Error())
 		}
-		message.AuthorBase64 = strings.TrimSpace(c.FormValue("public-key"))
-		message.AuthorPubKey, err = base64.StdEncoding.DecodeString(message.AuthorBase64)
-		if err != nil {
-			return c.Status(409).SendString("error wrong public key")
-		}
-		message.Content = strings.TrimSpace(c.FormValue("message"))
-		message.DisplayedName = strings.TrimSpace(c.FormValue("name"))
 
-		if !message.VerifyConditions() {
-			return c.Status(409).SendString(exceptions.ErrorRecordTooLongFound.Error())
-		}
-		if !message.VerifyOwnerShip() {
-			return c.Status(409).SendString("error unvalid public key/signature")
-
-		}
-		message.Correct = true
+		// Register
 		model.NewMessage(s, message)
 		return c.Redirect("/")
 	}
+}
+
+func PayloadToValidMessage(payload NewMessagePayload) (model.Message, error) {
+	message := model.Message{}
+
+	var err error
+
+	message.SignatureBase64 = strings.TrimSpace(payload.Signature)
+	message.Signature, err = base64.StdEncoding.DecodeString(message.SignatureBase64)
+	if err != nil {
+		return message, exceptions.WrongSignature
+	}
+	message.AuthorBase64 = strings.TrimSpace(payload.PublicKey)
+	message.AuthorPubKey, err = base64.StdEncoding.DecodeString(message.AuthorBase64)
+	if err != nil {
+		return message, exceptions.WrongSignature
+	}
+	message.Content = strings.TrimSpace(payload.Content)
+	message.DisplayedName = strings.TrimSpace(payload.Name)
+	message.MessageID = strings.TrimSpace(payload.MessageID)
+
+	if !message.VerifyConditions() {
+		return message, exceptions.ErrorRecordTooLongFound
+	}
+	if !message.VerifyOwnerShip() {
+		return message, exceptions.WrongSignature
+
+	}
+	message.Correct = true
+	return message, nil
 }

@@ -5,7 +5,7 @@
   {{ else }}
   <h3>Post a message</h3>
   {{ end }}
-  <form method="POST" action="/api/message">
+  <form method="POST" action="/new">
     <div class="form-item">
       <label>Name:</label><br />
       <input
@@ -44,22 +44,22 @@
         How do I get one ? <a href="/faq">Learn more</a>
       </small>
     </div>
+    <div class="form-item">
+      <label>Send to specific pod</label><br />
+      <input
+        type="text"
+        name="pod-to-post-to"
+        id="pod-to-post-to"
+        placeholder="Leave empty to send to {{ .Server.IP }}"
+      />
+    </div>
+
     <input
-      type="radio"
-      id="this-pod"
-      name="post-dest"
-      value="Post on this pod"
-      checked
+      type="text"
+      name="answer-to"
+      id="answer-to"
+      value="{{ .PageInfo.PostToMessageID }}"
     />
-    <label for="html">Send on {{ .Server.IP }}</label><br />
-    <input
-      type="radio"
-      id="other-pod"
-      name="post-dest"
-      value="Post on another pod"
-    />
-    <label for="css">Send on </label><br />
-    <input type="text" name="pod-to-post-to" id="pod-to-post-to" />
 
     <input type="submit" value="Send message" />
   </form>
