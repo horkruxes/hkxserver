@@ -21,6 +21,7 @@ func loadServerConfig() service.ServerConfig {
 	serverConfig.Info = config.Get("info").(string)
 	serverConfig.Private = config.Get("private").(bool)
 	serverConfig.Port = config.Get("port").(int64)
+	serverConfig.Markdown = config.Get("markdown").(bool)
 	serverConfig.PublicPods = []string{"horkruxes.amethysts.studio", "hk.quimerch.com"}
 	return serverConfig
 }
@@ -61,5 +62,8 @@ private = false # default: false
 
 # Port to listen to
 port = 80 # default: 80
+
+# Is markdown syntax allowed on this pod ?
+markdown = false # default: false
 `
 }

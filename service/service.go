@@ -16,6 +16,7 @@ type ServerConfig struct {
 	Private    bool     // If set true, a public key must have been uploaded on the server
 	Port       int64    // Port to listen
 	Info       string   // Free text to explain what is this pod
+	Markdown   bool     // Is markdown allowed on this pod ?
 	PublicPods []string // Public pods
 }
 
