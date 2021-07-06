@@ -20,6 +20,7 @@ type ServerData struct {
 }
 
 type PageInfo struct {
+	MainPage        bool
 	Title           string
 	SubTitle        string
 	PostToMessageID string
@@ -41,7 +42,7 @@ func GetMessagesAndMainPageInfo(s service.Service) PageData {
 	return PageData{
 		Messages: model.CleanMessagesClientSide(messages),
 		Server:   ServerData{Name: s.ServerConfig.Name, IP: s.ServerConfig.URL, Info: s.ServerConfig.Info},
-		PageInfo: PageInfo{Title: "All Messages"},
+		PageInfo: PageInfo{MainPage: true, Title: "All Messages"},
 	}
 }
 

@@ -1,37 +1,44 @@
 {{define "pods"}}
 <div class="panel pods">
-  <h2>{{ .PageInfo.Title }}</h2>
+  <h1>{{ .PageInfo.Title }}</h1>
   <p>{{ .PageInfo.SubTitle }}</p>
-  <h3 class="pod-name">{{ .Server.Name }}</h3>
-  <h4 class="pod-ip">on {{ .Server.IP }}</h4>
+  <h2 class="pod-name">{{ .Server.Name }}</h2>
+  <h3 class="pod-ip">on <a href="/" id="title">{{ .Server.IP }}</a></h3>
   <p>{{ .Server.Info }}</p>
 
   <h3>Select pods <a href="">refresh</a></h3>
-  <p>Not all options available right now, you can't choose your pods</p>
+  <p>WIP</p>
   <div>
-    <input type="checkbox" name="local" id="" onclick="return false;" checked />
+    <input
+      type="checkbox"
+      name="local-pod"
+      id="local-pod"
+      onclick="return false;"
+      checked
+    />
     {{ .Server.IP }}
   </div>
   <div>
-    <input type="checkbox" name="" id="" onclick="return false;" checked />
+    <input
+      type="checkbox"
+      name="public"
+      id="public-pods"
+      onclick="return false;"
+      checked
+    />
     public pods (list <a href="/api/server-info">here</a>)
   </div>
   <div>
-    <input type="checkbox" name="" id="" onclick="return false;" /> private pods
+    <input type="checkbox" name="private" id="private-pods" /> private pods
     (enter adresses below)
     <textarea
-      name=""
-      id=""
+      name="private-pods-list"
+      id="private-pods-list"
       cols="15"
       rows="10"
       placeholder="secret-hk.example.com;
 my-horkrux.example.com"
     ></textarea>
   </div>
-
-  <h3>Options</h3>
-  <label for="signatures-switch" class="signatures-switch">
-    Show/Hide signatures
-  </label>
 </div>
 {{end}}
