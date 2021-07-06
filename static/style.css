@@ -84,6 +84,10 @@ h5 {
   margin: 0.5em;
 }
 
+.message {
+  padding: 4px;
+}
+
 .pubKeys,
 .signature,
 .message-additional-info {
@@ -111,6 +115,7 @@ input#signatures-switch:checked ~ #triptych .signature {
   min-width: 5px;
   height: 1em;
   margin-right: 0.5em;
+  border-radius: 3px;
 }
 .form-item {
   margin: 0.5em 0;
@@ -124,6 +129,11 @@ input#signatures-switch:checked ~ #triptych .signature {
 }
 .message .content {
   color: #444 !important;
+}
+
+#top-message {
+  background-color: lightyellow;
+  border-radius: 4px;
 }
 
 /* KEYS */

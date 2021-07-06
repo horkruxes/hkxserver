@@ -8,9 +8,10 @@ import (
 )
 
 type PageData struct {
-	Server   ServerData
-	Messages []model.Message
-	PageInfo PageInfo
+	Server     ServerData
+	TopMessage model.Message
+	Messages   []model.Message
+	PageInfo   PageInfo
 }
 
 type ServerData struct {
@@ -80,6 +81,7 @@ func GetCommentsAndMainPageInfo(s service.Service, messageID string) PageData {
 	messages = append(messages, remoteMessages...)
 
 	messages = model.SortByDate(messages)
+	messages = model.CleanMessagesClientSide(messages)
 
 	// Try to get local OP
 	op, err := model.GetMessageFromDB(s, messageID)
@@ -92,15 +94,13 @@ func GetCommentsAndMainPageInfo(s service.Service, messageID string) PageData {
 			op = remoteOPs[0]
 		}
 	}
-
 	op = model.CleanSingleMessageClientSide(op)
-	messages = append([]model.Message{op}, messages...)
-	messages = model.CleanMessagesClientSide(messages)
 
 	// Inject view
 	return PageData{
-		Messages: messages,
-		Server:   ServerData{Name: s.ServerConfig.Name, IP: s.ServerConfig.URL, Info: s.ServerConfig.Info},
-		PageInfo: PageInfo{Title: "Comments", SubTitle: messageID, PostToMessageID: messageID},
+		TopMessage: op,
+		Messages:   messages,
+		Server:     ServerData{Name: s.ServerConfig.Name, IP: s.ServerConfig.URL, Info: s.ServerConfig.Info},
+		PageInfo:   PageInfo{Title: "Comments", SubTitle: messageID, PostToMessageID: messageID},
 	}
 }

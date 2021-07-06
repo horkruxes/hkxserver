@@ -5,6 +5,13 @@
   {{ end }}
 
   <div id="messages-list">
+
+    {{ if .TopMessage.Content }}
+      <div class="top-message" id="top-message">
+        {{template "message" .TopMessage }}
+      </div>
+    {{ end }}
+
     {{range .Messages}}
       {{template "message" . }}
     {{end}}
