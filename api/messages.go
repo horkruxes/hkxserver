@@ -26,6 +26,14 @@ func GetMessagesJSON(s service.Service) func(*fiber.Ctx) error {
 	}
 }
 
+func GetCommentsJSON(s service.Service) func(*fiber.Ctx) error {
+	return func(c *fiber.Ctx) error {
+		id := c.Params("id")
+		data := model.GetCommentsTo(s, id)
+		return c.Status(201).JSON(data)
+	}
+}
+
 func GetMessageJSON(s service.Service) func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
 		id := c.Params("id")
