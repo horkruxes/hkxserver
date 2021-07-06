@@ -7,13 +7,18 @@
   <p>{{ .Server.Info }}</p>
 
   <h3>Select pods <a href="">refresh</a></h3>
+  <p>Not all options available right now, you can't choose your pods</p>
   <div>
     <input type="checkbox" name="local" id="" onclick="return false;" checked />
     {{ .Server.IP }}
   </div>
-  <div><input type="checkbox" name="" id="" /> public pods (list here)</div>
   <div>
-    <input type="checkbox" name="" id="" /> private pods (enter adresses below)
+    <input type="checkbox" name="" id="" onclick="return false;" checked />
+    public pods (list <a href="/api/server-info">here</a>)
+  </div>
+  <div>
+    <input type="checkbox" name="" id="" onclick="return false;" /> private pods
+    (enter adresses below)
     <textarea
       name=""
       id=""
@@ -24,7 +29,6 @@ my-horkrux.example.com"
     ></textarea>
   </div>
 
-  <p>Not available right now</p>
   <h3>Options</h3>
   <label for="signatures-switch" class="signatures-switch">
     Show/Hide signatures
