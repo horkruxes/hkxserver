@@ -52,7 +52,7 @@ func GetAuthorMessagesAndMainPageInfo(s service.Service, pubKey string) PageData
 	messages := model.GetMessagesFromAuthor(s, pubKey)
 
 	// Get other pods messages
-	remoteMessages := getMessagesFrom(s, "/api/message/user/"+pubKey)
+	remoteMessages := getMessagesFrom(s, "/api/user/"+pubKey)
 	messages = append(messages, remoteMessages...)
 
 	messages = model.SortByDate(messages)
@@ -74,7 +74,7 @@ func GetCommentsAndMainPageInfo(s service.Service, messageID string) PageData {
 	messages = append(messages, model.GetCommentsTo(s, messageID)...)
 
 	// Get other pods messages
-	remoteMessages := getMessagesFrom(s, "/api/message/comments/"+messageID)
+	remoteMessages := getMessagesFrom(s, "/api/comments/"+messageID)
 	messages = append(messages, remoteMessages...)
 
 	messages = model.SortByDate(messages)
