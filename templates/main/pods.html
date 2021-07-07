@@ -14,11 +14,11 @@
         onclick="return false;"
         checked
       />
-      {{ .Server.IP }}
+      <label for="local-pod">{{ .Server.IP }}</label>
     </div>
     <div>
-      <input type="checkbox" name="private" id="private-pods" /> private pods
-      (enter adresses below)
+      <input type="checkbox" name="private" id="private-pods" />
+      <label for="private-pods">private pods (enter adresses below)</label>
       <textarea
         name="private-pods-list"
         id="private-pods-list"
@@ -36,7 +36,7 @@ my-horkrux.example.com"
         onclick="return false;"
         checked
       />
-      friends of {{ .Server.IP }}
+      <label for="public-pods">friends of {{ .Server.IP }}</label>
     </div>
     <ul>
       {{range $element := .Server.Friends}}

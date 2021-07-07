@@ -85,7 +85,7 @@ h5 {
 .pubKeys,
 .signature,
 .message-additional-info {
-  color: #aaa;
+  color: #757575;
   font-style: italic;
 }
 .signature {
