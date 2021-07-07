@@ -15,9 +15,10 @@ type PageData struct {
 }
 
 type ServerData struct {
-	Name string
-	IP   string
-	Info string
+	Name    string
+	IP      string
+	Info    string
+	Friends []string
 }
 
 type PageInfo struct {
@@ -42,7 +43,7 @@ func GetMessagesAndMainPageInfo(s service.Service) PageData {
 	// Inject view
 	return PageData{
 		Messages: model.CleanMessagesClientSide(messages),
-		Server:   ServerData{Name: s.ServerConfig.Name, IP: s.ServerConfig.URL, Info: s.ServerConfig.Info},
+		Server:   ServerData{Name: s.ServerConfig.Name, IP: s.ServerConfig.URL, Info: s.ServerConfig.Info, Friends: s.ServerConfig.TrustedPods},
 		PageInfo: PageInfo{MainPage: true, Title: "All Messages"},
 	}
 }
@@ -63,7 +64,7 @@ func GetAuthorMessagesAndMainPageInfo(s service.Service, pubKey string) PageData
 	// Inject view
 	return PageData{
 		Messages: model.CleanMessagesClientSide(messages),
-		Server:   ServerData{Name: s.ServerConfig.Name, IP: s.ServerConfig.URL, Info: s.ServerConfig.Info},
+		Server:   ServerData{Name: s.ServerConfig.Name, IP: s.ServerConfig.URL, Info: s.ServerConfig.Info, Friends: s.ServerConfig.TrustedPods},
 		PageInfo: PageInfo{Title: "Author", SubTitle: pubKey},
 	}
 }
@@ -100,7 +101,7 @@ func GetCommentsAndMainPageInfo(s service.Service, messageID string) PageData {
 	return PageData{
 		TopMessage: op,
 		Messages:   messages,
-		Server:     ServerData{Name: s.ServerConfig.Name, IP: s.ServerConfig.URL, Info: s.ServerConfig.Info},
+		Server:     ServerData{Name: s.ServerConfig.Name, IP: s.ServerConfig.URL, Info: s.ServerConfig.Info, Friends: s.ServerConfig.TrustedPods},
 		PageInfo:   PageInfo{Title: "Comments", SubTitle: messageID, PostToMessageID: messageID},
 	}
 }

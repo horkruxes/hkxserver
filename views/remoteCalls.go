@@ -12,7 +12,7 @@ import (
 
 func getMessagesFrom(s service.Service, path string) []model.Message {
 	var messages []model.Message
-	for _, url := range s.ServerConfig.PublicPods {
+	for _, url := range s.ServerConfig.TrustedPods {
 		if url != s.ServerConfig.URL {
 			adress := "https://" + url + path
 
@@ -46,7 +46,7 @@ func getMessagesFrom(s service.Service, path string) []model.Message {
 
 func getSingleMessageFromEachPod(s service.Service, path string) []model.Message {
 	var messages []model.Message
-	for _, url := range s.ServerConfig.PublicPods {
+	for _, url := range s.ServerConfig.TrustedPods {
 		if url != s.ServerConfig.URL {
 			adress := "https://" + url + path
 

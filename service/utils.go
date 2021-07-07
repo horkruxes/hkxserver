@@ -38,6 +38,6 @@ func ColorFromBytes(b []byte) string {
 }
 
 func MarkDowner(args ...interface{}) template.HTML {
-	s := blackfriday.MarkdownCommon([]byte(fmt.Sprintf("%s", args...)))
+	s := blackfriday.MarkdownBasic([]byte(fmt.Sprintf("%s", args...)))
 	return template.HTML(s)
 }

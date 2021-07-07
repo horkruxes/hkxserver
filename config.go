@@ -23,7 +23,7 @@ func loadServerConfig() service.ServerConfig {
 	serverConfig.Port = config.Get("port").(int64)
 	serverConfig.Markdown = config.Get("markdown").(bool)
 	serverConfig.Debug = config.Get("testing").(bool)
-	serverConfig.PublicPods = []string{"horkruxes.amethysts.studio", "hk.quimerch.com"}
+	serverConfig.TrustedPods = []string{"horkruxes.amethysts.studio", "hk.quimerch.com"}
 	return serverConfig
 }
 

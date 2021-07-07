@@ -1,44 +1,51 @@
 {{define "pods"}}
 <div class="panel pods">
-  <h1>{{ .PageInfo.Title }}</h1>
-  <p>{{ .PageInfo.SubTitle }}</p>
-  <h2 class="pod-name">{{ .Server.Name }}</h2>
-  <h3 class="pod-ip">on <a href="/" id="title">{{ .Server.IP }}</a></h3>
+  <h1 class="pod-name"><a href="/" id="title">{{ .Server.Name }}</a></h1>
   <p>{{ .Server.Info }}</p>
 
-  <h3>Select pods <a href="">refresh</a></h3>
-  <p>WIP</p>
-  <div>
-    <input
-      type="checkbox"
-      name="local-pod"
-      id="local-pod"
-      onclick="return false;"
-      checked
-    />
-    {{ .Server.IP }}
-  </div>
-  <div>
-    <input
-      type="checkbox"
-      name="public"
-      id="public-pods"
-      onclick="return false;"
-      checked
-    />
-    public pods (list <a href="/api/server-info">here</a>)
-  </div>
-  <div>
-    <input type="checkbox" name="private" id="private-pods" /> private pods
-    (enter adresses below)
-    <textarea
-      name="private-pods-list"
-      id="private-pods-list"
-      cols="15"
-      rows="10"
-      placeholder="secret-hk.example.com;
+  <details>
+    <summary>Sources</summary>
+    <br />
+    <div>
+      <input
+        type="checkbox"
+        name="local-pod"
+        id="local-pod"
+        onclick="return false;"
+        checked
+      />
+      {{ .Server.IP }}
+    </div>
+    <div>
+      <input type="checkbox" name="private" id="private-pods" /> private pods
+      (enter adresses below)
+      <textarea
+        name="private-pods-list"
+        id="private-pods-list"
+        cols="15"
+        rows="10"
+        placeholder="secret-hk.example.com;
 my-horkrux.example.com"
-    ></textarea>
-  </div>
+      ></textarea>
+    </div>
+    <div>
+      <input
+        type="checkbox"
+        name="public"
+        id="public-pods"
+        onclick="return false;"
+        checked
+      />
+      friends of {{ .Server.IP }}
+    </div>
+    <ul>
+      {{range $element := .Server.Friends}}
+      <li>{{$element}}</li>
+      {{end}}
+    </ul>
+  </details>
+
+  <h3>{{ .PageInfo.Title }}</h3>
+  <p>{{ .PageInfo.SubTitle }}</p>
 </div>
 {{end}}

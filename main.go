@@ -9,7 +9,6 @@ import (
 	"github.com/ewenquim/horkruxes/views"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
-	"github.com/gofiber/fiber/v2/middleware/csrf"
 	"github.com/gofiber/fiber/v2/middleware/favicon"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -60,7 +59,7 @@ func main() {
 
 	app.Use(helmet.New())
 	app.Use(cors.New())
-	app.Use(csrf.New())
+	// app.Use(csrf.New()) // Useless and blocks post requests...
 
 	app.Use(favicon.New())
 

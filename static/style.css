@@ -10,11 +10,6 @@ body {
   padding: 0 10px;
   font-family: "Arial";
 }
-/* h1,
-h2,
-h3 {
-  line-height: 1.2;
-} */
 h1,
 h2,
 h3,
@@ -36,10 +31,9 @@ hr {
   height: 2px;
 }
 
-p,
+.message p,
 ul,
 label,
-a,
 summary {
   margin-top: 0;
 }
@@ -127,7 +121,13 @@ input#signatures-switch:checked ~ #triptych .signature {
 .message a {
   text-decoration: dotted;
 }
-.message .content {
+.message > .content h1,
+.message > .content h2,
+.message > .content h3,
+.message > .content h4,
+.message > .content h5,
+.message > .content h6,
+.message > .content strong {
   color: #444 !important;
 }
 
@@ -178,6 +178,10 @@ textarea#private-pods-list {
 }
 input#private-pods:checked ~ textarea#private-pods-list {
   display: unset;
+}
+
+summary:hover {
+  cursor: pointer;
 }
 
 /* FAQ */
