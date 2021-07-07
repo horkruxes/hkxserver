@@ -90,10 +90,16 @@ github.com/go-xmlfmt/xmlfmt v0.0.0-20191208150333-d5b6f63a941b/go.mod h1:aUCEOzz
 github.com/gobwas/glob v0.2.3/go.mod h1:d3Ez4x06l9bZtSvzIay5+Yzi0fmZzPgnTbPcKjJAkT8=
 github.com/gofiber/fiber/v2 v2.13.0 h1:jJBCPwq+hlsfHRDVsmfu6pbgW85Y8jL9dE+VmTzfE6I=
 github.com/gofiber/fiber/v2 v2.13.0/go.mod h1:oZTLWqYnqpMMuF922SjGbsYZsdpE1MCfh416HNdweIM=
+github.com/gofiber/fiber/v2 v2.14.0 h1:oAUxouH4RWBE9r/3aZbucFefjdMmDF8rUsAIbyWkctY=
+github.com/gofiber/fiber/v2 v2.14.0/go.mod h1:oZTLWqYnqpMMuF922SjGbsYZsdpE1MCfh416HNdweIM=
+github.com/gofiber/helmet/v2 v2.1.7 h1:D9UhKjASJ0V/9wpciUMe9e1mh407XWsc/btdFSIbnG0=
+github.com/gofiber/helmet/v2 v2.1.7/go.mod h1:ZI5amrsoR4H0Ak4mMqJ/1+g6mwhOlcGRxHkx+vF4YYU=
 github.com/gofiber/redirect/v2 v2.1.6 h1:Hog8/kTyFxU0mT9ML5sBNvQDqTDEY1Gk1/TQxvFbeoA=
 github.com/gofiber/redirect/v2 v2.1.6/go.mod h1:lDKhnN7aiaSvI8/t5AuF0XWfcFM84Tj+wFR+ExA+kR8=
 github.com/gofiber/template v1.6.12 h1:xFFp3cXNR8fiiNk7fLvQ17JAzt+M0E4ume4TACcpGy4=
 github.com/gofiber/template v1.6.12/go.mod h1:Ewlj7ZHAno12VPabFZa1dWKkD5ilaBEnN2pXb0QoqBs=
+github.com/gofiber/template v1.6.13 h1:tNWnI622142HHhGz6D3wLplp1mQ/1SGLv6DMgU8A2QU=
+github.com/gofiber/template v1.6.13/go.mod h1:Hkta2o7mfKhOdITvq4vLISqO/wDVwNDefcfwOGog544=
 github.com/gofrs/flock v0.7.1/go.mod h1:F1TvTiK9OcQqauNUHlbJvyl9Qa1QvF/gOUDKA14jxHU=
 github.com/gogo/protobuf v1.1.1/go.mod h1:r8qH/GZQm5c6nD/R0oafs1akxWv10x8SbQlK7atdtwQ=
 github.com/gogo/protobuf v1.2.1/go.mod h1:hp+jE20tsWTFYpLwKvXlhS1hjn+gTNwPg2I6zVXpSg4=

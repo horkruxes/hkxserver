@@ -2,14 +2,18 @@ package main
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/ewenquim/horkruxes/api"
 	"github.com/ewenquim/horkruxes/service"
 	"github.com/ewenquim/horkruxes/views"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v2/middleware/csrf"
+	"github.com/gofiber/fiber/v2/middleware/favicon"
+	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/middleware/logger"
-	"github.com/gofiber/redirect/v2"
+	"github.com/gofiber/helmet/v2"
 	"github.com/gofiber/template/html"
 )
 
@@ -34,17 +38,31 @@ func main() {
 	// Server and middlewares
 	engine := html.New("./templates", ".html")
 	engine.AddFunc("md", service.MarkDowner)
+
 	app := fiber.New(fiber.Config{
 		Views: engine,
 	})
-	app.Use(cors.New())
 
-	app.Use(redirect.New(redirect.Config{
-		Rules: map[string]string{
-			"/messages": "/",
+	// Limit posts to 5/5 minutes
+	app.Use(limiter.New(limiter.Config{
+		Next: func(c *fiber.Ctx) bool {
+			return (c.Method() == "GET" || c.Path() != "/api/message")
 		},
-		StatusCode: 301,
+		Max:        5,
+		Expiration: 5 * time.Minute,
+		KeyGenerator: func(c *fiber.Ctx) string {
+			return "everyone" // does not depend on c.IP()
+		},
+		LimitReached: func(c *fiber.Ctx) error {
+			return c.SendStatus(fiber.StatusTooManyRequests)
+		},
 	}))
+
+	app.Use(helmet.New())
+	app.Use(cors.New())
+	app.Use(csrf.New())
+
+	app.Use(favicon.New())
 
 	if s.ServerConfig.Debug {
 		app.Use(logger.New())
