@@ -121,6 +121,14 @@ input#signatures-switch:checked ~ #triptych .signature {
 .message a {
   text-decoration: dotted;
 }
+input#main-switch:checked ~ #triptych .message > .content {
+  max-height: 6.5em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+input#comments-switch:checked ~ #triptych .message .message-context-link {
+  display: none;
+}
 .message > .content h1,
 .message > .content h2,
 .message > .content h3,

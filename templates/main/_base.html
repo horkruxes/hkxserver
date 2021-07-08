@@ -5,6 +5,22 @@
   class="signatures-switch"
   checked
 />
+<input
+  type="checkbox"
+  id="main-switch"
+  class="signatures-switch"
+  {{ if not .PageInfo.CommentsPage }}
+    checked
+  {{ end }}
+/>
+<input
+  type="checkbox"
+  id="comments-switch"
+  class="signatures-switch"
+  {{ if .PageInfo.CommentsPage }}
+    checked
+  {{ end }}
+/>
 <div id="triptych">
   {{template "pods" . }} {{template "content" . }} {{template "keys" . }}
 </div>

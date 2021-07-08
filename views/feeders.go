@@ -7,8 +7,15 @@ import (
 	"github.com/ewenquim/horkruxes/service"
 )
 
+type ClientData struct {
+	PublicPods  bool
+	PrivatePods bool
+	PodsString  string
+}
+
 type PageData struct {
 	Server     ServerData
+	Client     ClientData // Filters to feed back loop
 	TopMessage model.Message
 	Messages   []model.Message
 	PageInfo   PageInfo
@@ -23,6 +30,7 @@ type ServerData struct {
 
 type PageInfo struct {
 	MainPage        bool
+	CommentsPage    bool
 	Title           string
 	SubTitle        string
 	PostToMessageID string
@@ -44,6 +52,7 @@ func GetMessagesAndMainPageInfo(s service.Service) PageData {
 	return PageData{
 		Messages: model.CleanMessagesClientSide(messages),
 		Server:   ServerData{Name: s.ServerConfig.Name, IP: s.ServerConfig.URL, Info: s.ServerConfig.Info, Friends: s.ServerConfig.TrustedPods},
+		// Client:   ClientData{PublicPods: s.ClientConfig.PublicPods, PrivatePods: s.ClientConfig.SpecificPods, PodsString: s.ClientConfig.SpecificPodsListString},
 		PageInfo: PageInfo{MainPage: true, Title: "All Messages"},
 	}
 }
@@ -102,6 +111,6 @@ func GetCommentsAndMainPageInfo(s service.Service, messageID string) PageData {
 		TopMessage: op,
 		Messages:   messages,
 		Server:     ServerData{Name: s.ServerConfig.Name, IP: s.ServerConfig.URL, Info: s.ServerConfig.Info, Friends: s.ServerConfig.TrustedPods},
-		PageInfo:   PageInfo{Title: "Comments", SubTitle: messageID, PostToMessageID: messageID},
+		PageInfo:   PageInfo{Title: "Comments", SubTitle: messageID, PostToMessageID: messageID, CommentsPage: true},
 	}
 }

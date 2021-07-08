@@ -21,12 +21,14 @@
     <span class="post-date"> {{ .DisplayedDate }} </span>
     on
     <span class="post-date"> {{ .Pod }} </span>
-    -
-    {{ if .MessageID }}
-      answer to <a href="/comments/{{.MessageID}}" class="comments-link">this post</a>
-    {{ else }}
-      <a href="/comments/{{.ID}}" class="comments-link">comments</a>
-    {{ end }}
+    <span class="message-context-link">
+      -
+      {{ if .MessageID }}
+        answer to <a href="/comments/{{.MessageID}}" class="comments-link">this post</a>
+      {{ else }}
+        <a href="/comments/{{.ID}}" class="comments-link">full post & comments</a>
+      {{ end }}
+    </span>
   </h6>
 
   <p class="signature">{{ if .Correct }} ✓ {{ end }} {{ .SignatureBase64 }}</p>
