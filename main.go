@@ -42,13 +42,13 @@ func main() {
 		Views: engine,
 	})
 
-	// Limit posts to 5/5 minutes
+	// Limit API posts to 5/day (still can use local post without limitations)
 	app.Use(limiter.New(limiter.Config{
 		Next: func(c *fiber.Ctx) bool {
 			return (c.Method() == "GET" || c.Path() != "/api/message")
 		},
 		Max:        5,
-		Expiration: 5 * time.Minute,
+		Expiration: 24 * time.Hour,
 		KeyGenerator: func(c *fiber.Ctx) string {
 			return "everyone" // does not depend on c.IP()
 		},

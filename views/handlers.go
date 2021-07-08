@@ -85,12 +85,15 @@ func NewMessage(s service.Service) func(*fiber.Ctx) error {
 		fmt.Println("try to post to:", payload.Pod)
 		// Check if can do the db operations right now or if it should transfer the payload to another API
 		if payload.Pod == "" {
-			message, err := api.PayloadToValidMessage(payload)
+			message, statusCode, err := api.PayloadToValidMessage(payload)
 			if err != nil {
-				return c.Status(409).SendString(err.Error())
+				return c.Status(statusCode).SendString(err.Error())
 			}
 			fmt.Println("new msg", message)
-			model.NewMessage(s, message)
+			err = model.NewMessage(s, message)
+			if err != nil {
+				return c.Status(statusCode).SendString(err.Error())
+			}
 		} else {
 			resp, err := http.Post("https://"+payload.Pod+"/api/message", "application/json", bytes.NewBuffer(reader))
 			if err != nil {

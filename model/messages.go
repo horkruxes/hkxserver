@@ -3,7 +3,6 @@ package model
 import (
 	"time"
 
-	"github.com/ewenquim/horkruxes/exceptions"
 	"github.com/ewenquim/horkruxes/service"
 	"github.com/google/uuid"
 )
@@ -55,11 +54,8 @@ func GetMessageFromDB(s service.Service, id string) (Message, error) {
 }
 
 func NewMessage(s service.Service, message Message) error {
-	if !message.VerifyConditions() {
-		return exceptions.ErrorRecordTooLongFound
-	}
-	if !message.VerifyOwnerShip() {
-		return exceptions.ErrorWrongSignature
+	if _, err := message.VerifyConditions(); err != nil {
+		return err
 	}
 	message.Correct = true
 	message.ID = uuid.NewString()

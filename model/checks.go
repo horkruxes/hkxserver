@@ -3,11 +3,21 @@ package model
 import (
 	"crypto/ed25519"
 	"fmt"
+
+	"github.com/ewenquim/horkruxes/exceptions"
+	"github.com/gofiber/fiber/v2"
 )
 
-// VerifyConditions returns true if everything is ok
-func (message Message) VerifyConditions() bool {
-	return len(message.Content) > 140 && len(message.Content) < 5000 && len(message.DisplayedName) < 50
+// VerifyConditions returns HTTP status code and an error
+func (message Message) VerifyConditions() (int, error) {
+	if len(message.Content) > 50000 || len(message.DisplayedName) > 50 {
+		return fiber.StatusBadRequest, exceptions.ErrorFieldsTooLong
+	} else if len(message.Content) < 140 {
+		return fiber.StatusBadRequest, exceptions.ErrorContentTooShort
+	} else if !message.VerifyOwnerShip() {
+		return fiber.StatusBadRequest, exceptions.ErrorWrongSignature
+	}
+	return fiber.StatusAccepted, nil
 }
 
 func (message Message) VerifyOwnerShip() bool {

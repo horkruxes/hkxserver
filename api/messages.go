@@ -68,19 +68,23 @@ func NewMessage(s service.Service) func(*fiber.Ctx) error {
 		fmt.Println("content:", payload)
 
 		// Translate into Message struct and verify conditions
-		message, err := PayloadToValidMessage(payload)
+		message, statusCode, err := PayloadToValidMessage(payload)
 		if err != nil {
 			fmt.Println("err:", err)
-			return c.Status(409).SendString(err.Error())
+			return c.Status(statusCode).SendString(err.Error())
 		}
 
 		// Register
-		model.NewMessage(s, message)
+		err = model.NewMessage(s, message)
+		if err != nil {
+			fmt.Println("err:", err)
+			return c.Status(statusCode).SendString(err.Error())
+		}
 		return c.Redirect("/")
 	}
 }
 
-func PayloadToValidMessage(payload NewMessagePayload) (model.Message, error) {
+func PayloadToValidMessage(payload NewMessagePayload) (model.Message, int, error) {
 	message := model.Message{}
 
 	var err error
@@ -88,24 +92,20 @@ func PayloadToValidMessage(payload NewMessagePayload) (model.Message, error) {
 	message.SignatureBase64 = strings.TrimSpace(payload.Signature)
 	message.Signature, err = base64.StdEncoding.DecodeString(message.SignatureBase64)
 	if err != nil {
-		return message, exceptions.ErrorWrongSignature
+		return message, fiber.StatusBadRequest, exceptions.ErrorWrongSignature
 	}
 	message.AuthorBase64 = strings.TrimSpace(payload.PublicKey)
 	message.AuthorPubKey, err = base64.StdEncoding.DecodeString(message.AuthorBase64)
 	if err != nil {
-		return message, exceptions.ErrorWrongSignature
+		return message, fiber.StatusBadRequest, exceptions.ErrorWrongSignature
 	}
 	message.Content = strings.TrimSpace(payload.Content)
 	message.DisplayedName = strings.TrimSpace(payload.Name)
 	message.MessageID = strings.TrimSpace(payload.MessageID)
 
-	if !message.VerifyConditions() {
-		return message, exceptions.ErrorRecordTooLongFound
-	}
-	if !message.VerifyOwnerShip() {
-		return message, exceptions.ErrorWrongSignature
-
+	if statusCode, err := message.VerifyConditions(); err != nil {
+		return message, statusCode, err
 	}
 	message.Correct = true
-	return message, nil
+	return message, fiber.StatusOK, nil
 }
