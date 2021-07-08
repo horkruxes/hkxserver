@@ -6,8 +6,8 @@ import (
 
 type Service struct {
 	DB           *gorm.DB
-	ServerConfig ServerConfig
-	ClientConfig ClientConfig
+	ServerConfig ServerConfig // Only loaded on start up
+	ClientConfig ClientConfig // Can be modified by clients requests
 }
 
 type ServerConfig struct {
@@ -19,6 +19,7 @@ type ServerConfig struct {
 	Markdown    bool   // Is markdown allowed on this pod ?
 	Debug       bool
 	TrustedPods []string // Public pods
+	TrustedKeys []string // Trusted keys, without heavy limitations
 }
 
 type ClientConfig struct {

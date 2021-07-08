@@ -47,6 +47,12 @@ func GetMessagesFromAuthor(s service.Service, pubKeyBase64 string) []Message {
 	return CleanMessagesOutFromDB(messages, s.ServerConfig.URL)
 }
 
+func GetMostRecentMessage(s service.Service) Message {
+	var message Message
+	s.DB.Where("message_id IS NULL OR message_id=''").Order("created_at desc").First(&message)
+	return CleanSingleMessageOutFromDB(message, s.ServerConfig.URL)
+}
+
 func GetMessageFromDB(s service.Service, id string) (Message, error) {
 	var message Message
 	err := s.DB.First(&message, "id = ?", id).Error
@@ -54,7 +60,7 @@ func GetMessageFromDB(s service.Service, id string) (Message, error) {
 }
 
 func NewMessage(s service.Service, message Message) error {
-	if _, err := message.VerifyConditions(); err != nil {
+	if _, err := message.VerifyConditions(s); err != nil {
 		return err
 	}
 	message.Correct = true

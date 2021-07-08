@@ -28,6 +28,11 @@ func loadServerConfig() service.ServerConfig {
 	for i := range sourcesInterface {
 		serverConfig.TrustedPods[i] = sourcesInterface[i].(string)
 	}
+	keysInterface := config.Get("trusted_keys").([]interface{})
+	serverConfig.TrustedKeys = make([]string, len(keysInterface))
+	for i := range keysInterface {
+		serverConfig.TrustedKeys[i] = keysInterface[i].(string)
+	}
 	return serverConfig
 }
 
@@ -74,6 +79,11 @@ markdown = false # default: false
 # Sources to listen to when trying to get messages
 # These must be trustworthy as everyone that will go to your pod on their browsers
 # will see the messages from these sources. Beware of spam and quality content.
-sources = ['horkruxes.amethysts.studio', 'hk.quimerch.com']
+sources = ['horkruxes.amethysts.studio',
+'hk.quimerch.com']
+
+# Trusted Public Keys
+# They have only a 5 minute timer between 2 posts
+trusted_keys = ['JL6zyYtrk43MZ+uV7J+y8HFS9MvkI2eZT1RbRnV4Qog=']
 `
 }

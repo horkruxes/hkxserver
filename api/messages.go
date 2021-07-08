@@ -68,7 +68,7 @@ func NewMessage(s service.Service) func(*fiber.Ctx) error {
 		fmt.Println("content:", payload)
 
 		// Translate into Message struct and verify conditions
-		message, statusCode, err := PayloadToValidMessage(payload)
+		message, statusCode, err := PayloadToValidMessage(s, payload)
 		if err != nil {
 			fmt.Println("err:", err)
 			return c.Status(statusCode).SendString(err.Error())
@@ -84,7 +84,7 @@ func NewMessage(s service.Service) func(*fiber.Ctx) error {
 	}
 }
 
-func PayloadToValidMessage(payload NewMessagePayload) (model.Message, int, error) {
+func PayloadToValidMessage(s service.Service, payload NewMessagePayload) (model.Message, int, error) {
 	message := model.Message{}
 
 	var err error
@@ -103,7 +103,7 @@ func PayloadToValidMessage(payload NewMessagePayload) (model.Message, int, error
 	message.DisplayedName = strings.TrimSpace(payload.Name)
 	message.MessageID = strings.TrimSpace(payload.MessageID)
 
-	if statusCode, err := message.VerifyConditions(); err != nil {
+	if statusCode, err := message.VerifyConditions(s); err != nil {
 		return message, statusCode, err
 	}
 	message.Correct = true
