@@ -9,13 +9,13 @@ import (
 )
 
 func loadServerConfig() service.ServerConfig {
-	getDefaultConfig()
+	createDefaultConfigIfDoesNotExist()
 	config, err := toml.LoadFile("config.toml")
+	if err != nil {
+		panic("Can't load server configuration file (config.toml not found or badly formatted)")
+	}
 
 	serverConfig := service.ServerConfig{}
-	if err != nil {
-		panic("Can't load server configuration file (config.toml not found)")
-	}
 	serverConfig.Name = config.Get("name").(string)
 	serverConfig.URL = config.Get("url").(string)
 	serverConfig.Info = config.Get("info").(string)
@@ -23,12 +23,16 @@ func loadServerConfig() service.ServerConfig {
 	serverConfig.Port = config.Get("port").(int64)
 	serverConfig.Markdown = config.Get("markdown").(bool)
 	serverConfig.Debug = config.Get("testing").(bool)
-	serverConfig.TrustedPods = []string{"horkruxes.amethysts.studio", "hk.quimerch.com"}
+	sourcesInterface := config.Get("sources").([]interface{})
+	serverConfig.TrustedPods = make([]string, len(sourcesInterface))
+	for i := range sourcesInterface {
+		serverConfig.TrustedPods[i] = sourcesInterface[i].(string)
+	}
 	return serverConfig
 }
 
 // Creates a default config fil if it doesn't exist
-func getDefaultConfig() {
+func createDefaultConfigIfDoesNotExist() {
 	_, err := ioutil.ReadFile("config.toml")
 	if err != nil {
 		log.Println("Creating default config...")
@@ -66,5 +70,10 @@ port = 80 # default: 80
 
 # Is markdown syntax allowed on this pod ?
 markdown = false # default: false
+
+# Sources to listen to when trying to get messages
+# These must be trustworthy as everyone that will go to your pod on their browsers
+# will see the messages from these sources. Beware of spam and quality content.
+sources = ['horkruxes.amethysts.studio', 'hk.quimerch.com']
 `
 }
