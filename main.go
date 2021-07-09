@@ -3,6 +3,7 @@ package main
 import (
 	"embed"
 	"fmt"
+	"io/fs"
 	"net/http"
 	"time"
 
@@ -11,7 +12,6 @@ import (
 	"github.com/ewenquim/horkruxes/views"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
-	"github.com/gofiber/fiber/v2/middleware/favicon"
 	"github.com/gofiber/fiber/v2/middleware/filesystem"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -27,6 +27,8 @@ var templatesFS embed.FS
 var staticFS embed.FS
 
 func main() {
+	fsub, _ := fs.Sub(staticFS, "static") // error ignored because it can only happen if binary is not correctly built
+
 	// Database setup
 	db := initDatabase()
 	sqldb, err := db.DB()
@@ -42,12 +44,13 @@ func main() {
 		Regexes:      service.InitializeDetectors(),
 	}
 
-	// Server and middlewares
+	// Templating engine init
 	engine := html.NewFileSystem(http.FS(templatesFS), ".html")
 	engine.Debug(s.ServerConfig.Debug)
 
 	engine.AddFunc("md", service.MarkDowner)
 
+	// Server and middlewares
 	app := fiber.New(fiber.Config{
 		Views: engine,
 	})
@@ -71,7 +74,7 @@ func main() {
 	app.Use(cors.New())
 	// app.Use(csrf.New()) // Useless and blocks post requests...
 
-	app.Use(favicon.New(favicon.Config{FileSystem: http.Dir("./static")}))
+	// app.Use(favicon.New(favicon.Config{FileSystem: http.FS(fsub)}))
 
 	if s.ServerConfig.Debug {
 		app.Use(logger.New())
@@ -87,7 +90,7 @@ func main() {
 
 	// Static routes
 	app.Use(filesystem.New(filesystem.Config{
-		Root: http.FS(staticFS),
+		Root: http.FS(fsub),
 	}))
 	// app.Static("", "./static")
 	fmt.Println("Static server started")
