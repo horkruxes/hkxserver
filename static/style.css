@@ -181,10 +181,10 @@ textarea {
   font-style: italic;
 }
 
-textarea#private-pods-list {
+textarea#pods {
   display: none;
 }
-input#private-pods:checked ~ textarea#private-pods-list {
+input#private-pods:checked ~ textarea#pods {
   display: unset;
 }
 

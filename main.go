@@ -25,6 +25,7 @@ func main() {
 	s := service.Service{
 		DB:           initDatabase(),
 		ServerConfig: loadServerConfig(),
+		Regexes:      service.InitializeDetectors(),
 	}
 
 	// Server and middlewares

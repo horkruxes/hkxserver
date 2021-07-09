@@ -6,37 +6,45 @@
   <details>
     <summary>Sources & info</summary>
     <br />
-    <div>
-      <input
-        type="checkbox"
-        name="local-pod"
-        id="local-pod"
-        onclick="return false;"
-        checked
-      />
-      <label for="local-pod">{{ .Server.IP }}</label>
-    </div>
-    <div>
-      <input type="checkbox" name="private" id="private-pods" />
-      <label for="private-pods">private pods (enter adresses below)</label>
-      <textarea
-        name="private-pods-list"
-        id="private-pods-list"
-        cols="15"
-        rows="10"
-        placeholder="secret-hk.example.com;
+    <form action="/" method="POST">
+      <div>
+        <input
+          type="checkbox"
+          name="local-pod"
+          id="local-pod"
+          onclick="return false;"
+          checked
+        />
+        <label for="local-pod">{{ .Server.IP }}</label>
+      </div>
+      <div>
+        <input type="checkbox" name="private-pods" id="private-pods" />
+        <label for="private-pods">private pods (enter adresses below)</label>
+        <textarea
+          name="pods"
+          id="pods"
+          cols="15"
+          rows="10"
+          placeholder="secret-hk.example.com;
 my-horkrux.example.com"
-      ></textarea>
-    </div>
-    <div>
-      <input type="checkbox" name="public" id="public-pods" checked />
-      <label for="public-pods">friends of {{ .Server.IP }}</label>
-    </div>
-    <ul>
-      {{range $element := .Server.Friends}}
-      <li>{{$element}}</li>
-      {{end}}
-    </ul>
+        ></textarea>
+      </div>
+      <div>
+        <input
+          type="checkbox"
+          name="friend-sources"
+          id="friend-sources"
+          checked
+        />
+        <label for="public-pods">friends of {{ .Server.IP }}</label>
+      </div>
+      <ul>
+        {{range $element := .Server.Friends}}
+        <li>{{$element}}</li>
+        {{end}}
+      </ul>
+      <input type="submit" value="Refresh Sources" />
+    </form>
     <hr />
     <p>{{ .Server.Info | md }}</p>
   </details>
