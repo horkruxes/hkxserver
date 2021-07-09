@@ -1,7 +1,9 @@
 package main
 
 import (
+	"embed"
 	"fmt"
+	"net/http"
 	"time"
 
 	"github.com/ewenquim/horkruxes/api"
@@ -10,26 +12,40 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/favicon"
+	"github.com/gofiber/fiber/v2/middleware/filesystem"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/helmet/v2"
 	"github.com/gofiber/template/html"
 )
 
+// Embed the entire directory.
+//go:embed templates/*
+var templatesFS embed.FS
+
+//go:embed static/*
+var staticFS embed.FS
+
 func main() {
 	// Database setup
 	db := initDatabase()
-	sqldb, _ := db.DB()
+	sqldb, err := db.DB()
+	if err != nil {
+		panic("the db have an issue") // should not happen with sqlite, might happen with server databases (MySQL, Pg...)
+	}
 	defer sqldb.Close()
 
+	// Service init
 	s := service.Service{
-		DB:           initDatabase(),
+		DB:           db,
 		ServerConfig: loadServerConfig(),
 		Regexes:      service.InitializeDetectors(),
 	}
 
 	// Server and middlewares
-	engine := html.New("./templates", ".html")
+	engine := html.NewFileSystem(http.FS(templatesFS), ".html")
+	engine.Debug(s.ServerConfig.Debug)
+
 	engine.AddFunc("md", service.MarkDowner)
 
 	app := fiber.New(fiber.Config{
@@ -55,15 +71,11 @@ func main() {
 	app.Use(cors.New())
 	// app.Use(csrf.New()) // Useless and blocks post requests...
 
-	app.Use(favicon.New(favicon.Config{File: "static/favicon.ico"}))
+	app.Use(favicon.New(favicon.Config{FileSystem: http.Dir("./static")}))
 
 	if s.ServerConfig.Debug {
 		app.Use(logger.New())
 	}
-
-	// Static routes
-	app.Static("", "./static")
-	fmt.Println("Static server started")
 
 	// Backend - DB operations routes (potentially online)
 	api.SetupApiRoutes(s, app)
@@ -72,6 +84,13 @@ func main() {
 	// Frontend - Local views and template rendering
 	views.SetupLocalRoutes(s, app)
 	fmt.Println("Frontend started")
+
+	// Static routes
+	app.Use(filesystem.New(filesystem.Config{
+		Root: http.FS(staticFS),
+	}))
+	// app.Static("", "./static")
+	fmt.Println("Static server started")
 
 	// 404
 	app.Use(func(c *fiber.Ctx) error {

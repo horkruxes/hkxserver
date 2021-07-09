@@ -17,7 +17,7 @@ import (
 
 func GetKeys(c *fiber.Ctx) error {
 	outputData := model.GenKeys()
-	return c.Render("keys/root", structs.Map(outputData))
+	return c.Render("templates/keys/root", structs.Map(outputData))
 }
 
 func PostKeys(c *fiber.Ctx) error {
@@ -42,18 +42,18 @@ func PostKeys(c *fiber.Ctx) error {
 		outputData.Sig = ""
 	}
 
-	return c.Render("keys/root", structs.Map(outputData))
+	return c.Render("templates/keys/root", structs.Map(outputData))
 }
 
 func GetFaq(c *fiber.Ctx) error {
-	return c.Render("faq/root", fiber.Map{})
+	return c.Render("templates/faq/root", fiber.Map{})
 }
 
 func GetMain(s service.Service) func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
 		s.ClientConfig = parseFormsToService(c, s)
 		localData := GetMessagesAndMainPageInfo(s)
-		return c.Render("main/root", structs.Map(localData))
+		return c.Render("templates/main/root", structs.Map(localData))
 	}
 }
 
@@ -63,7 +63,7 @@ func GetAuthor(s service.Service) func(*fiber.Ctx) error {
 		id := service.SafeURLToBase64(c.Params("pubKey"))
 		fmt.Println("pods list", s.ClientConfig.AllPodsList)
 		localData := GetAuthorMessagesAndMainPageInfo(s, id)
-		return c.Render("main/root", structs.Map(localData))
+		return c.Render("templates/main/root", structs.Map(localData))
 	}
 }
 
@@ -72,7 +72,7 @@ func GetComments(s service.Service) func(*fiber.Ctx) error {
 		s.ClientConfig = parseFormsToService(c, s)
 		id := c.Params("uuid")
 		localData := GetCommentsAndMainPageInfo(s, id)
-		return c.Render("main/root", structs.Map(localData))
+		return c.Render("templates/main/root", structs.Map(localData))
 	}
 }
 
