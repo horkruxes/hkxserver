@@ -16,13 +16,6 @@ import (
 	"github.com/gofiber/template/html"
 )
 
-type SignMessage struct {
-	AuthorPubKey string // base64-encoded
-	AuthorSecKey string // base64-encoded
-	Content      string
-	Signature    string
-}
-
 func main() {
 	// Database setup
 	db := initDatabase()
@@ -61,7 +54,7 @@ func main() {
 	app.Use(cors.New())
 	// app.Use(csrf.New()) // Useless and blocks post requests...
 
-	app.Use(favicon.New())
+	app.Use(favicon.New(favicon.Config{File: "static/favicon.ico"}))
 
 	if s.ServerConfig.Debug {
 		app.Use(logger.New())
