@@ -10,15 +10,31 @@ on:
 
 jobs:
   # Cross-compile
-  build:
+  xgo:
+    strategy:
+      fail-fast: false
+      matrix:
+        go_version:
+          - 1.16.x
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2.3.4
       - name: Test package
         run: go test ./...
-      - name: Build go binary
-        run: go build -o build/horkruxes
+      - name: Build with xgo
+        uses: crazy-max/ghaction-xgo@v1.6.1
+        with:
+          xgo_version: latest
+          go_version: ${{ matrix.go_version }}
+          dest: build
+          prefix: horkrux
+          targets: windows/386,windows/amd64,linux/386,linux/amd64,darwin/386,darwin/amd64
+          v: true
+          x: false
+          race: false
+          ldflags: -s -w
+          buildmode: default
 
       - name: Release
         uses: fnkr/github-action-ghr@v1
