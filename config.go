@@ -2,7 +2,6 @@ package main
 
 import (
 	"io/ioutil"
-	"log"
 
 	"github.com/ewenquim/horkruxes/service"
 	toml "github.com/pelletier/go-toml"
@@ -41,9 +40,14 @@ func loadServerConfig() service.ServerConfig {
 func createDefaultConfigIfDoesNotExist() {
 	_, err := ioutil.ReadFile("config.toml")
 	if err != nil {
-		log.Println("Creating default config...")
 		b := []byte(defaultConfig())
 		ioutil.WriteFile("config.toml", b, 0644)
+		panic(`It's the first time running Horkruxes, Thank you!
+
+The server needs to be configured with a config.toml file.
+Luckily for you, a template has been created <3
+
+Just type "vim config.toml" or "nano config.toml" to custom your server, and you'll be ready to go!`)
 	}
 }
 

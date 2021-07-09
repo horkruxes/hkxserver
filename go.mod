@@ -9,6 +9,7 @@ require (
 	github.com/gofiber/helmet/v2 v2.1.7
 	github.com/gofiber/template v1.6.13
 	github.com/google/uuid v1.2.0
+	github.com/inconshreveable/go-update v0.0.0-20160112193335-8152e7eb6ccf
 	github.com/klauspost/compress v1.13.1 // indirect
 	github.com/mattn/go-sqlite3 v1.14.7 // indirect
 	github.com/pelletier/go-toml v1.9.3
