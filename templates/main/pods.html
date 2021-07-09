@@ -6,7 +6,7 @@
   <details>
     <summary>Sources & info</summary>
     <br />
-    <form action="/" method="POST">
+    <form method="GET">
       <div>
         <input
           type="checkbox"
@@ -30,13 +30,8 @@ my-horkrux.example.com"
         ></textarea>
       </div>
       <div>
-        <input
-          type="checkbox"
-          name="friend-sources"
-          id="friend-sources"
-          checked
-        />
-        <label for="public-pods">friends of {{ .Server.IP }}</label>
+        <input type="checkbox" name="hide-friends" id="hide-friends" />
+        <label for="hide-friends">hide friends of {{ .Server.IP }}</label>
       </div>
       <ul>
         {{range $element := .Server.Friends}}

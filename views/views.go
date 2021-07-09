@@ -9,7 +9,7 @@ func SetupLocalRoutes(s service.Service, app *fiber.App) {
 	app.Get("/ping", pong)
 	// Main view with "Filters"
 	app.Get("/", GetMain(s))
-	app.Post("/", PostMain(s)) // Select pods by applying filter. Changes the url that Get will parse
+	app.Post("/", GetMain(s)) // Select pods by applying filter. Changes the url that Get will parse
 	app.Get("/user/:pubKey", GetAuthor(s))
 	app.Get("/comments/:uuid", GetComments(s))
 	app.Post("/new", NewMessage(s))

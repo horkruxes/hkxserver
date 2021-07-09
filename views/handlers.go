@@ -57,34 +57,6 @@ func GetMain(s service.Service) func(*fiber.Ctx) error {
 	}
 }
 
-func PostMain(s service.Service) func(*fiber.Ctx) error {
-	return func(c *fiber.Ctx) error {
-		// Public Pods
-		s.ClientConfig.PublicPods = c.FormValue("friend-sources") == "on"
-		var publicSelected string
-		if s.ClientConfig.PublicPods {
-			publicSelected = "on"
-		} else {
-			publicSelected = "off"
-		}
-
-		// Other pods
-		// private := c.FormValue("private-pods") == "on"
-		list := c.FormValue("pods")
-		fmt.Printf("s list: %q\n", strings.Split(s.ClientConfig.SpecificPodsListString, ";"))
-
-		// s.ClientConfig.SpecificPods = private
-		// if private {
-		s.ClientConfig.SpecificPodsListString = parsePodsListToURL(s, list)
-		s.ClientConfig.SpecificPodsList = strings.Split(s.ClientConfig.SpecificPodsListString, ";")
-		// }
-
-		s.UpdateClientPodsList()
-
-		return c.Redirect(fmt.Sprintf("/?friend-sources=%v&pods=%v", publicSelected, s.ClientConfig.SpecificPodsListString))
-	}
-}
-
 func GetAuthor(s service.Service) func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
 		s.ClientConfig = parseFormsToService(c, s)
