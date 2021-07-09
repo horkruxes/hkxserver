@@ -18,6 +18,7 @@ func loadServerConfig() service.ServerConfig {
 	serverConfig := service.ServerConfig{}
 	serverConfig.Name = config.Get("name").(string)
 	serverConfig.URL = config.Get("url").(string)
+	serverConfig.Description = config.Get("description").(string)
 	serverConfig.Info = config.Get("info").(string)
 	serverConfig.Private = config.Get("private").(bool)
 	serverConfig.Port = config.Get("port").(int64)
@@ -61,9 +62,19 @@ url = "localhost" # for local use: "localhost" or "127.0.0.1"
 # Custom name to display
 name = "horkruxes" # default: "horkruxes"
 
-# Give information to your users
-info = """An Horkrux server administrated by xxx.
-Create your own server to defeat censorship!
+# Short Information
+description = """An Horkrux server administrated by xxx.
+Create your own server to defeat censorship!"""
+
+# Give more information to your users
+info = """Any abuse of freedom (spam...) on this server will be sanctionned (IP ban).
+Please stay serious and informative.
+
+Here is the list of my pods:
+- yyy
+- zzz
+
+Contact me at aaa@bbb.com or ...
 """
 
 # Is this server private ? 

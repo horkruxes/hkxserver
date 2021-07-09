@@ -192,6 +192,10 @@ summary:hover {
   cursor: pointer;
 }
 
+details[open] > summary {
+  color: black;
+}
+
 /* FAQ */
 #faq-page {
   max-width: 800px;

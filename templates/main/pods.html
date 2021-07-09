@@ -1,7 +1,7 @@
 {{define "pods"}}
 <div class="panel pods">
   <h1 class="pod-name"><a href="/" id="title">{{ .Server.Name }}</a></h1>
-  <p>{{ .Server.Info }}</p>
+  <p>{{ .Server.Description }}</p>
 
   <details>
     <summary>Sources & info</summary>
@@ -29,13 +29,7 @@ my-horkrux.example.com"
       ></textarea>
     </div>
     <div>
-      <input
-        type="checkbox"
-        name="public"
-        id="public-pods"
-        onclick="return false;"
-        checked
-      />
+      <input type="checkbox" name="public" id="public-pods" checked />
       <label for="public-pods">friends of {{ .Server.IP }}</label>
     </div>
     <ul>
@@ -43,6 +37,8 @@ my-horkrux.example.com"
       <li>{{$element}}</li>
       {{end}}
     </ul>
+    <hr />
+    <p>{{ .Server.Info | md }}</p>
   </details>
 
   <h3>{{ .PageInfo.Title }}</h3>

@@ -53,6 +53,12 @@ func GetMostRecentMessage(s service.Service) Message {
 	return CleanSingleMessageOutFromDB(message, s.ServerConfig.URL)
 }
 
+func GetMostRecentComment(s service.Service, messageID string) Message {
+	var message Message
+	s.DB.Where("message_id IS NULL OR message_id=''").Where("message_id = ?", messageID).Order("created_at desc").First(&message)
+	return CleanSingleMessageOutFromDB(message, s.ServerConfig.URL)
+}
+
 func GetMessageFromDB(s service.Service, id string) (Message, error) {
 	var message Message
 	err := s.DB.First(&message, "id = ?", id).Error

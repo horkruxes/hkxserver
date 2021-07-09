@@ -19,10 +19,16 @@ func (message Message) VerifyConditions(s service.Service) (int, error) {
 	} else if !message.VerifyOwnerShip() {
 		return fiber.StatusBadRequest, exceptions.ErrorWrongSignature
 	} else {
-		lastPost := GetMostRecentMessage(s).CreatedAt
-		if time.Since(lastPost) < time.Hour && !message.authorTrusted(s) {
+		var lastPost time.Time
+		if message.MessageID == "" {
+			lastPost = GetMostRecentMessage(s).CreatedAt
+		} else {
+			lastPost = GetMostRecentComment(s, message.MessageID).CreatedAt
+		}
+		trusted := message.authorTrusted(s)
+		if !trusted && time.Since(lastPost) < time.Hour {
 			return fiber.StatusNotAcceptable, exceptions.ErrorTooSoonUnregistered
-		} else if time.Since(lastPost) < 5*time.Minute && message.authorTrusted(s) {
+		} else if trusted && time.Since(lastPost) < 30*time.Second {
 			return fiber.StatusNotAcceptable, exceptions.ErrorTooSoonRegistered
 		}
 	}
