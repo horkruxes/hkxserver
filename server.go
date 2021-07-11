@@ -10,6 +10,7 @@ import (
 	"github.com/ewenquim/horkruxes/service"
 	"github.com/ewenquim/horkruxes/views"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cache"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/filesystem"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
@@ -73,6 +74,7 @@ func runServer() {
 	if s.ServerConfig.Debug {
 		app.Use(logger.New())
 	}
+	app.Use(cache.New())
 
 	// Backend - DB operations routes (potentially online)
 	api.SetupApiRoutes(s, app)

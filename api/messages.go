@@ -23,7 +23,7 @@ type NewMessagePayload struct {
 func GetMessagesJSON(s service.Service) func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
 		data := model.GetMessagesFromDB(s)
-		return c.Status(201).JSON(data)
+		return c.Status(200).JSON(data)
 	}
 }
 
@@ -31,7 +31,7 @@ func GetCommentsJSON(s service.Service) func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
 		id := c.Params("id")
 		data := model.GetCommentsTo(s, id)
-		return c.Status(201).JSON(data)
+		return c.Status(200).JSON(data)
 	}
 }
 
