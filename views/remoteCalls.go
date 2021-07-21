@@ -13,7 +13,7 @@ import (
 func getMessagesFrom(s service.Service, path string) []model.Message {
 	var messages []model.Message
 	for _, pod := range s.ClientConfig.AllPodsList {
-		if pod.URL != s.ServerConfig.URL {
+		if pod.URL != s.GeneralConfig.URL {
 			adress := "https://" + pod.URL + path
 
 			fmt.Println("rq to", adress)
@@ -47,7 +47,7 @@ func getMessagesFrom(s service.Service, path string) []model.Message {
 func getSingleMessageFromEachPod(s service.Service, path string) []model.Message {
 	var messages []model.Message
 	for _, pod := range s.ClientConfig.AllPodsList {
-		if pod.URL != s.ServerConfig.URL {
+		if pod.URL != s.GeneralConfig.URL {
 			adress := "https://" + pod.URL + path
 
 			fmt.Println("rq to", adress)

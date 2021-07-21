@@ -6,31 +6,41 @@ import (
 	"gorm.io/gorm"
 )
 
+// The Service struct is used to store server information.
+// Note that it is (should be) only used as a data provider.
+// Storing state is a bad idea.
 type Service struct {
-	DB           *gorm.DB
-	ServerConfig ServerConfig // Only loaded on start up
-	ClientConfig ClientConfig // Can be modified by clients requests
-	Regexes      regexes      // It is here because it is loaded only on server startup
+	DB            *gorm.DB
+	GeneralConfig GeneralConfig // Only loaded on start up - public information
+	ServerConfig  ServerConfig  // Only loaded on start up - private configuration
+	ClientConfig  ClientConfig  // Can be modified by clients requests and is reset between 2 requests
+	Regexes       regexes       // It is here because it is loaded only on server startup
 }
 
 type regexes struct {
 	URLs *regexp.Regexp // Parse urls
 }
 
+type GeneralConfig struct {
+	Name        string   // Custom name
+	URL         string   // URL of the pod
+	Description string   // Free text to explain what is this pod
+	Info        string   // Contact information and a lot of other things
+	TrustedPods []string // Public pods trusted by the admin of this pod
+}
+
 type ServerConfig struct {
-	Name        string // Custom name
-	URL         string // Custom name
-	Private     bool   // If set true, a public key must have been uploaded on the server
-	Port        int64  // Port to listen
-	Description string // Free text to explain what is this pod
-	Info        string // Contact information and a lot of other things
-	Markdown    bool   // Is markdown allowed on this pod ?
-	Debug       bool
-	TrustedPods []string // Public pods
-	TrustedKeys []string // Trusted keys, without heavy limitations
+	Enabled         bool
+	Port            int64    // Port to listen
+	Debug           bool     // Enable/disable some parameters (limiter, logging...)
+	Private         bool     // If set true, a public key must have been uploaded on the server
+	LockedByDefault bool     // If set to true, the post route will be disabled
+	TrustedKeys     []string // Trusted keys, without heavy limitations
 }
 
 type ClientConfig struct {
+	Enabled                bool
+	Markdown               bool // Is markdown allowed on this pod ?
 	PublicPods             bool
 	SpecificPods           bool
 	SpecificPodsList       []string // List of pods requested by the user
@@ -49,7 +59,7 @@ func (s *Service) UpdateClientPodsList() {
 
 	// Add public pods from server to client
 	if s.ClientConfig.PublicPods {
-		for _, name := range s.ServerConfig.TrustedPods {
+		for _, name := range s.GeneralConfig.TrustedPods {
 			s.ClientConfig.AllPodsList = append(s.ClientConfig.AllPodsList, Pod{URL: name, Selected: true})
 		}
 	}

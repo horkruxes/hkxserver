@@ -13,20 +13,13 @@ type ClientData struct {
 	PodsString  string
 }
 
+// PageData represent information sent to the page
 type PageData struct {
-	Server     ServerData
+	Server     service.GeneralConfig
 	Client     ClientData // Filters to feed back loop
 	TopMessage model.Message
 	Messages   []model.Message
 	PageInfo   PageInfo
-}
-
-type ServerData struct {
-	Name        string
-	IP          string
-	Description string
-	Info        string
-	Friends     []string
 }
 
 type PageInfo struct {
@@ -52,7 +45,7 @@ func GetMessagesAndMainPageInfo(s service.Service) PageData {
 	// Inject view
 	return PageData{
 		Messages: model.CleanMessagesClientSide(messages),
-		Server:   filterServerConfig(s.ServerConfig),
+		Server:   s.GeneralConfig,
 		// Client:   ClientData{PublicPods: s.ClientConfig.PublicPods, PrivatePods: s.ClientConfig.SpecificPods, PodsString: s.ClientConfig.SpecificPodsListString},
 		PageInfo: PageInfo{MainPage: true, Title: "All Messages"},
 	}
@@ -74,7 +67,7 @@ func GetAuthorMessagesAndMainPageInfo(s service.Service, pubKey string) PageData
 	// Inject view
 	return PageData{
 		Messages: model.CleanMessagesClientSide(messages),
-		Server:   filterServerConfig(s.ServerConfig),
+		Server:   s.GeneralConfig,
 		PageInfo: PageInfo{Title: "Author", SubTitle: pubKey},
 	}
 }
@@ -111,17 +104,7 @@ func GetCommentsAndMainPageInfo(s service.Service, messageID string) PageData {
 	return PageData{
 		TopMessage: op,
 		Messages:   messages,
-		Server:     filterServerConfig(s.ServerConfig),
+		Server:     s.GeneralConfig,
 		PageInfo:   PageInfo{Title: "Comments", SubTitle: messageID, PostToMessageID: messageID, CommentsPage: true},
-	}
-}
-
-func filterServerConfig(s service.ServerConfig) ServerData {
-	return ServerData{
-		Name:        s.Name,
-		IP:          s.URL,
-		Info:        s.Info,
-		Description: s.Description,
-		Friends:     s.TrustedPods,
 	}
 }

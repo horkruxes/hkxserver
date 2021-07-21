@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io/fs"
 	"net/http"
-	"time"
 
 	"github.com/ewenquim/horkruxes/api"
 	"github.com/ewenquim/horkruxes/service"
@@ -22,8 +21,6 @@ import (
 func runServer() {
 	fsub, _ := fs.Sub(staticFS, "static") // error ignored because it can only happen if binary is not correctly built
 
-	serverConfig := loadServerConfig()
-
 	// Database setup
 	db := initDatabase()
 	sqldb, err := db.DB()
@@ -33,11 +30,9 @@ func runServer() {
 	defer sqldb.Close()
 
 	// Service init
-	s := service.Service{
-		DB:           db,
-		ServerConfig: serverConfig,
-		Regexes:      service.InitializeDetectors(),
-	}
+	s := loadConfig()
+	s.DB = db
+	s.Regexes = service.InitializeDetectors()
 
 	// Templating engine init
 	engine := html.NewFileSystem(http.FS(templatesFS), ".html")
@@ -47,23 +42,14 @@ func runServer() {
 
 	// Server and middlewares
 	app := fiber.New(fiber.Config{
-		Views: engine,
+		Views:   engine,
+		AppName: "Horkruxes",
 	})
 
-	// Limit API posts to 5/day (still can use local post without limitations)
-	app.Use(limiter.New(limiter.Config{
-		Next: func(c *fiber.Ctx) bool {
-			return (c.Method() == "GET" || c.Path() != "/api/message")
-		},
-		Max:        5,
-		Expiration: 24 * time.Hour,
-		KeyGenerator: func(c *fiber.Ctx) string {
-			return "everyone" // does not depend on c.IP()
-		},
-		LimitReached: func(c *fiber.Ctx) error {
-			return c.SendStatus(fiber.StatusTooManyRequests)
-		},
-	}))
+	// Limit server access to 5/min
+	if !s.ServerConfig.Debug {
+		app.Use(limiter.New())
+	}
 
 	app.Use(helmet.New())
 	app.Use(cors.New())

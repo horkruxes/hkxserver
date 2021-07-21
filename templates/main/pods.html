@@ -15,7 +15,7 @@
           onclick="return false;"
           checked
         />
-        <label for="local-pod">{{ .Server.IP }}</label>
+        <label for="local-pod">{{ .Server.URL }}</label>
       </div>
       <div>
         <input type="checkbox" name="private-pods" id="private-pods" />
@@ -31,10 +31,10 @@ my-horkrux.example.com"
       </div>
       <div>
         <input type="checkbox" name="hide-friends" id="hide-friends" />
-        <label for="hide-friends">hide friends of {{ .Server.IP }}</label>
+        <label for="hide-friends">hide friends of {{ .Server.URL }}</label>
       </div>
       <ul>
-        {{range $element := .Server.Friends}}
+        {{range $element := .Server.TrustedPods}}
         <li>{{$element}}</li>
         {{end}}
       </ul>

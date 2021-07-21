@@ -49,6 +49,11 @@ func GetFaq(c *fiber.Ctx) error {
 	return c.Render("templates/faq/root", fiber.Map{})
 }
 
+func GetMainNoFront(c *fiber.Ctx) error {
+	return c.SendString(`The pod admin chose to only use the 'data' part of Horkruxes.
+Sorry, you'll have to use another client to see the messages.`)
+}
+
 func GetMain(s service.Service) func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
 		s.ClientConfig = parseFormsToService(c, s)
