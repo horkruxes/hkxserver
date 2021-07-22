@@ -18,7 +18,7 @@ import (
 	"github.com/gofiber/template/html"
 )
 
-func runServer() {
+func setupServer() (fiber.App, int64) {
 	fsub, _ := fs.Sub(staticFS, "static") // error ignored because it can only happen if binary is not correctly built
 
 	// Database setup
@@ -79,9 +79,8 @@ func runServer() {
 
 	// 404
 	app.Use(func(c *fiber.Ctx) error {
-		return c.Status(fiber.StatusNotFound).SendString("Sorry, can't find that! Check your URL")
+		return c.Status(fiber.StatusNotFound).SendString("404 error: wrong URL")
 	})
 
-	app.Listen(fmt.Sprintf(":%v", s.ServerConfig.Port))
-
+	return *app, s.ServerConfig.Port
 }

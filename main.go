@@ -3,6 +3,7 @@ package main
 import (
 	"embed"
 	"flag"
+	"fmt"
 )
 
 // Embed the entire directory.
@@ -27,6 +28,7 @@ func main() {
 	case "update":
 		doUpdate("")
 	default:
-		runServer()
+		app, port := setupServer()
+		app.Listen(fmt.Sprintf(":%v", port))
 	}
 }
