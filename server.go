@@ -18,21 +18,19 @@ import (
 	"github.com/gofiber/template/html"
 )
 
-func setupServer() (fiber.App, int64) {
-	fsub, _ := fs.Sub(staticFS, "static") // error ignored because it can only happen if binary is not correctly built
-
+func setupService() service.Service {
 	// Database setup
-	db := initDatabase()
-	sqldb, err := db.DB()
-	if err != nil {
-		panic("the db have an issue") // should not happen with sqlite, might happen with server databases (MySQL, Pg...)
-	}
-	defer sqldb.Close()
+	db := initDatabase(dbOptions{})
 
 	// Service init
 	s := loadConfig()
 	s.DB = db
 	s.Regexes = service.InitializeDetectors()
+	return s
+}
+
+func setupServer(s service.Service) (fiber.App, int64) {
+	fsub, _ := fs.Sub(staticFS, "static") // error ignored because it can only happen if binary is not correctly built
 
 	// Templating engine init
 	engine := html.NewFileSystem(http.FS(templatesFS), ".html")

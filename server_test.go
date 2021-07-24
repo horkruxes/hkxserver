@@ -5,10 +5,26 @@ import (
 	"net/http"
 	"testing"
 
+	"github.com/ewenquim/horkruxes/service"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestIndexRoute(t *testing.T) {
+func mockService() service.Service {
+	// Database setup
+	db := initDatabase(dbOptions{test: true})
+
+	// Service init
+	s := service.Service{
+		GeneralConfig: service.GeneralConfig{Name: "Test HK", URL: "localhost"},
+		ServerConfig:  service.ServerConfig{Enabled: true, Port: 8888},
+		ClientConfig:  service.ClientConfig{Enabled: false},
+	}
+	s.DB = db
+	s.Regexes = service.InitializeDetectors()
+	return s
+}
+
+func TestRoutes(t *testing.T) {
 	// Define a structure for specifying input and output
 	// data of a single test case. This structure is then used
 	// to create a so called test map, which contains all test
@@ -25,11 +41,11 @@ func TestIndexRoute(t *testing.T) {
 		expectedBody  string
 	}{
 		{
-			description:   "index route",
-			route:         "/",
+			description:   "ping",
+			route:         "/ping",
 			expectedError: false,
 			expectedCode:  200,
-			expectedBody:  "The pod admin chose to only use the 'data' part of Horkruxes.\nSorry, you'll have to use another client to see the messages.",
+			expectedBody:  "pong",
 		},
 		{
 			description:   "non existing route",
@@ -40,8 +56,10 @@ func TestIndexRoute(t *testing.T) {
 		},
 	}
 
+	mockService := mockService()
+
 	// Setup the app as it is done in the main function
-	app, _ := setupServer()
+	app, _ := setupServer(mockService)
 
 	// Iterate through test single test cases
 	for _, test := range tests {
@@ -71,9 +89,7 @@ func TestIndexRoute(t *testing.T) {
 
 		// Read the response body
 		body, err := ioutil.ReadAll(res.Body)
-		if err != nil {
-			panic("Impossible to read body")
-		}
+		assert.Nil(t, err)
 
 		assert.Equal(t, test.expectedBody, string(body))
 	}

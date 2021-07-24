@@ -12,7 +12,16 @@ import (
 	"gorm.io/gorm/logger"
 )
 
-func initDatabase() *gorm.DB {
+type dbOptions struct {
+	test bool
+}
+
+func initDatabase(options dbOptions) *gorm.DB {
+	db_name := "db.sqlite3"
+	if options.test {
+		db_name = "db_test.sqlite3"
+		os.Remove(db_name)
+	}
 	var err error
 	newLogger := logger.New(
 		log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
@@ -25,7 +34,7 @@ func initDatabase() *gorm.DB {
 	)
 
 	// Opens Database
-	db, err := gorm.Open(sqlite.Open("db.sqlite3"), &gorm.Config{
+	db, err := gorm.Open(sqlite.Open(db_name), &gorm.Config{
 		Logger: newLogger,
 	})
 	if err != nil {

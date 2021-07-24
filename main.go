@@ -28,7 +28,8 @@ func main() {
 	case "update":
 		doUpdate("")
 	default:
-		app, port := setupServer()
+		s := setupService()
+		app, port := setupServer(s)
 		app.Listen(fmt.Sprintf(":%v", port))
 	}
 }
