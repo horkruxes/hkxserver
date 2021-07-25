@@ -16,9 +16,6 @@ func CleanMessagesOutFromDB(messages []Message, url ...string) []Message {
 }
 
 func CleanSingleMessageOutFromDB(message Message, url ...string) Message {
-	message.Correct = message.VerifyOwnerShip()
-	message.AuthorBase64 = base64.StdEncoding.EncodeToString(message.AuthorPubKey)
-	message.SignatureBase64 = base64.StdEncoding.EncodeToString(message.Signature)
 	// url is set on server side and not re-set on client side
 	if len(url) > 0 {
 		message.Pod = url[0]
@@ -38,7 +35,9 @@ func CleanMessagesClientSide(messages []Message) []Message {
 func CleanSingleMessageClientSide(message Message) Message {
 	message.AuthorURLSafe = service.Base64ToSafeURL(message.AuthorBase64)
 	message.DisplayedDate = message.CreatedAt.Format("2 Jan 2006 15:04")
-	message.Color = service.ColorFromBytes(message.AuthorPubKey)
+	author, _ := base64.StdEncoding.DecodeString(message.AuthorBase64)
+	message.Color = service.ColorFromBytes(author)
+	message.Correct = message.VerifyOwnerShip()
 	return message
 }
 

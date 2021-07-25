@@ -3,18 +3,18 @@ package views
 import (
 	"strings"
 
-	"github.com/ewenquim/horkruxes/api"
+	"github.com/ewenquim/horkruxes/model"
 	"github.com/ewenquim/horkruxes/service"
 	"github.com/gofiber/fiber/v2"
 )
 
-func FromFormToPayload(c *fiber.Ctx) api.NewMessagePayload {
-	message := api.NewMessagePayload{}
+func FromFormToPayload(c *fiber.Ctx) model.Message {
+	message := model.Message{}
 
-	message.Signature = strings.TrimSpace(c.FormValue("signature"))
-	message.PublicKey = strings.TrimSpace(c.FormValue("public-key"))
+	message.SignatureBase64 = strings.TrimSpace(c.FormValue("signature"))
+	message.AuthorBase64 = strings.TrimSpace(c.FormValue("public-key"))
 	message.Content = strings.TrimSpace(c.FormValue("message"))
-	message.Name = strings.TrimSpace(c.FormValue("name"))
+	message.DisplayedName = strings.TrimSpace(c.FormValue("name"))
 	message.MessageID = strings.TrimSpace(c.FormValue("answer-to"))
 	message.Pod = strings.TrimSpace(c.FormValue("pod-to-post-to"))
 

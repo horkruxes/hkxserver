@@ -11,18 +11,16 @@ type Message struct {
 	ID              string `gorm:"primary_key"`
 	CreatedAt       time.Time
 	DisplayedName   string `json:"displayedName"` // Name Chosen by author, no restriction but < 50 char
-	Content         string `json:"content"`
-	AuthorPubKey    []byte `json:"authorPubKey"`
-	AuthorBase64    string `json:"authorBase64"`
-	Signature       []byte `json:"signature"`
-	SignatureBase64 string `json:"signatureBase64"`
-	Correct         bool
-	Color           string
+	AuthorBase64    string
+	Content         string
+	SignatureBase64 string
 	MessageID       string // Used if the message is a comment to a publication
-	// Only for display, computed from known values
-	AuthorURLSafe string `json:"authorURLSafe" gorm:"-"`
-	DisplayedDate string `gorm:"-"`
-	Pod           string `gorm:"-"`
+	// Only for display on client, computed from known values
+	Correct       bool   `json:"-" gorm:"-"`
+	Color         string `json:"-" gorm:"-"`
+	AuthorURLSafe string `json:"-"  gorm:"-"`
+	DisplayedDate string `json:"-" gorm:"-"`
+	Pod           string `gorm:"-"` // Not saved in db but tell where it is sent from so remains in JSON
 }
 
 func GetCommentsTo(s service.Service, messageID string) []Message {
@@ -41,9 +39,7 @@ func GetMessagesFromDB(s service.Service) []Message {
 
 func GetMessagesFromAuthor(s service.Service, pubKeyBase64 string) []Message {
 	var messages []Message
-	// s.DB.Where("correct = ?", true).Find(&messages)
 	s.DB.Where("author_base64 = ?", pubKeyBase64).Order("created_at desc").Find(&messages)
-
 	return CleanMessagesOutFromDB(messages, s.GeneralConfig.URL)
 }
 
@@ -69,7 +65,6 @@ func NewMessage(s service.Service, message Message) error {
 	if _, err := message.VerifyConditions(s); err != nil {
 		return err
 	}
-	message.Correct = true
 	message.ID = uuid.NewString()
 	message.CreatedAt = time.Now()
 	return s.DB.Create(&message).Error

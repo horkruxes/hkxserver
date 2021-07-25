@@ -6,7 +6,6 @@ A decentralized social network based on a distributed authentication system.
 
 Unlike Mastodont, the horkrux installation on a linux server is **DEAD SIMPLE**.
 
-
 ### Basic installation, 30s chrono
 
 ```bash
@@ -29,7 +28,7 @@ server {
 }
 ```
 
-Then run 
+Then run
 
 ```bash
 sudo ln -s /etc/nginx/sites-available/horkruxes /etc/nginx/sites-enabled/horkruxes
@@ -38,3 +37,11 @@ sudo certbot --nginx #For HTTPS
 ```
 
 And that's all folks
+
+### What is signed ?
+
+A list of bytes generated from strings with different encodings, in this order:
+
+- The message (utf-8)
+- The public key (base64)
+- The Displayed Name (utf-8)

@@ -2,6 +2,7 @@ package model
 
 import (
 	"crypto/ed25519"
+	"encoding/base64"
 	"fmt"
 	"time"
 
@@ -41,10 +42,23 @@ func (message Message) VerifyOwnerShip() bool {
 			fmt.Println("Recovered:", r)
 		}
 	}()
-	if message.AuthorPubKey == nil || message.Signature == nil || len(message.AuthorPubKey) == 0 || len(message.Signature) == 0 {
+	pubBytes, err := base64.StdEncoding.DecodeString(message.AuthorBase64)
+	if err != nil {
 		return false
 	}
-	return ed25519.Verify(message.AuthorPubKey, []byte(message.Content+string(message.AuthorPubKey)), message.Signature)
+	sigBytes, err := base64.StdEncoding.DecodeString(message.SignatureBase64)
+	if err != nil {
+		return false
+	}
+	if len(pubBytes) == 0 || len(sigBytes) == 0 {
+		return false
+	}
+	fmt.Println("\n\n\nVERIFYING", message.Content[:20], message.AuthorBase64, message.DisplayedName)
+	messageWithInfo := append([]byte(message.Content), pubBytes...)
+	messageWithInfo = append(messageWithInfo, []byte(message.DisplayedName)...)
+	fmt.Println("msg 2 verify", messageWithInfo)
+
+	return ed25519.Verify(pubBytes, messageWithInfo, sigBytes)
 }
 
 func (message Message) authorTrusted(s service.Service) bool {
