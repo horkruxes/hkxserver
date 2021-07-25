@@ -57,8 +57,9 @@ func setupServer(s service.Service) (fiber.App, int64) {
 
 	if s.ServerConfig.Debug {
 		app.Use(logger.New())
+	} else {
+		app.Use(cache.New())
 	}
-	app.Use(cache.New())
 
 	// Backend - DB operations routes (potentially online)
 	api.SetupApiRoutes(s, app)
