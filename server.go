@@ -12,7 +12,6 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/cache"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/filesystem"
-	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/helmet/v2"
 	"github.com/gofiber/template/html"
@@ -43,11 +42,6 @@ func setupServer(s service.Service) (fiber.App, int64) {
 		Views:   engine,
 		AppName: "Horkruxes",
 	})
-
-	// Limit server access to 5/min
-	if !s.ServerConfig.Debug {
-		app.Use(limiter.New())
-	}
 
 	app.Use(helmet.New())
 	app.Use(cors.New())

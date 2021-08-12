@@ -126,6 +126,10 @@ enabled = true # default: true
 # Port to listen to
 port = 80 # default: 80
 
+# Set to false if you want deploy an horkrux instance,
+# or true if you want just to run the client or test anything
+testing = true # default: true
+
 # Is this server private ? 
 # If private, only trusted keys will be able to post (details below)
 private = false # default: false
@@ -153,10 +157,6 @@ emergency_lock_url = "%v"
 # The one already existing is randomly generated but you can set it to whatever you like
 emergency_unlock_enabled = false
 emergency_unlock_url  = "%v"
-
-# Set to false if you want deploy an horkrux instance,
-# or true if you want just to run the client or test anything
-testing = true # default: true
 
 
 
