@@ -11,6 +11,13 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+func GetAllJSON(s service.Service) func(*fiber.Ctx) error {
+	return func(c *fiber.Ctx) error {
+		data := model.GetAllFromDB(s)
+		return c.Status(200).JSON(data)
+	}
+}
+
 func GetMessagesJSON(s service.Service) func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
 		data := model.GetMessagesFromDB(s)

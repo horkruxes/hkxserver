@@ -7,6 +7,7 @@ import (
 
 func SetupApiRoutes(s service.Service, app *fiber.App) {
 	if s.ServerConfig.Enabled {
+		app.Get("/api/all", GetAllJSON(s))
 		app.Get("/api/message", GetMessagesJSON(s))
 		app.Get("/api/message/:id", GetMessageJSON(s))
 		app.Get("/api/comments/:id", GetCommentsJSON(s))

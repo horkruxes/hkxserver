@@ -8,13 +8,17 @@ import (
 )
 
 type Message struct {
-	ID              string `gorm:"primary_key"`
-	CreatedAt       time.Time
-	DisplayedName   string `json:"displayedName"` // Name Chosen by author, no restriction but < 50 char
+	// Stored and generated
+	ID        string `gorm:"primary_key"`
+	CreatedAt time.Time
+
+	// Stored and given by user
+	DisplayedName   string // Name Chosen by author, no restriction but < 50 char
 	AuthorBase64    string
 	Content         string
 	SignatureBase64 string
 	MessageID       string // Used if the message is a comment to a publication
+
 	// Only for display on client, computed from known values
 	Correct       bool   `json:"-" gorm:"-"`
 	Color         string `json:"-" gorm:"-"`
@@ -26,6 +30,14 @@ type Message struct {
 func GetCommentsTo(s service.Service, messageID string) []Message {
 	var messages []Message
 	s.DB.Where("message_id = ?", messageID).Order("created_at desc").Find(&messages)
+	return CleanMessagesOutFromDB(messages, s.GeneralConfig.URL)
+}
+
+// GetAllFromDB get data from db and checks some things
+func GetAllFromDB(s service.Service) []Message {
+	var messages []Message
+	// s.DB.Where("correct = ?", true).Find(&messages)
+	s.DB.Order("created_at desc").Find(&messages)
 	return CleanMessagesOutFromDB(messages, s.GeneralConfig.URL)
 }
 
