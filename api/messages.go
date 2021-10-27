@@ -11,6 +11,13 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// GetAllJSON godoc
+// @Id all
+// @Summary Show all messages (original messages and comments) without any more structure
+// @Description get string by ID
+// @Produce application/json
+// @Success 200 {array} model.Message
+// @Router /all [get]
 func GetAllJSON(s service.Service) func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
 		data := model.GetAllFromDB(s)
@@ -18,6 +25,13 @@ func GetAllJSON(s service.Service) func(*fiber.Ctx) error {
 	}
 }
 
+// GetMessagesJSON godoc
+// @Id messages
+// @Summary Show all original messages (for the front page)
+// @Description get string by ID
+// @Produce application/json
+// @Success 200 {array} model.Message
+// @Router /message [get]
 func GetMessagesJSON(s service.Service) func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
 		data := model.GetMessagesFromDB(s)
@@ -25,6 +39,13 @@ func GetMessagesJSON(s service.Service) func(*fiber.Ctx) error {
 	}
 }
 
+// GetCommentsJSON godoc
+// @Summary Show comments to a specific message
+// @Description get string by ID
+// @Produce application/json
+// @Param uuid path string true "UUID of original message corresponding to comments"
+// @Success 200 {array} model.Message
+// @Router /comments/{uuid} [get]
 func GetCommentsJSON(s service.Service) func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
 		id := c.Params("id")
@@ -33,6 +54,13 @@ func GetCommentsJSON(s service.Service) func(*fiber.Ctx) error {
 	}
 }
 
+// GetCommentsJSON godoc
+// @Summary Show a specific message
+// @Description get string by ID
+// @Produce application/json
+// @Param uuid path string true "Message UUID"
+// @Success 200 {object} model.Message
+// @Router /message/{uuid} [get]
 func GetMessageJSON(s service.Service) func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
 		id := c.Params("id")
@@ -44,6 +72,13 @@ func GetMessageJSON(s service.Service) func(*fiber.Ctx) error {
 	}
 }
 
+// GetMessagesFromAuthorJSON godoc
+// @Summary Show messages of a specific user
+// @Description get string by ID
+// @Produce application/json
+// @Param pubkey path string true "Author ed25519 public key"
+// @Success 200 {array} model.Message
+// @Router /user/{pubkey} [get]
 func GetMessagesFromAuthorJSON(s service.Service) func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
 		id := c.Params("pubKey")
@@ -53,6 +88,11 @@ func GetMessagesFromAuthorJSON(s service.Service) func(*fiber.Ctx) error {
 	}
 }
 
+// NewMessage godoc
+// @Summary Post a new message
+// @Description get string by ID
+// @Produce json
+// @Router /new [post]
 func NewMessage(s service.Service) func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
 		fmt.Println("Received POST request to create new message")

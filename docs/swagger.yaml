@@ -1,0 +1,126 @@
+basePath: /api
+definitions:
+  model.Message:
+    properties:
+      authorBase64:
+        type: string
+      content:
+        type: string
+      createdAt:
+        type: string
+      displayedName:
+        description: Stored and given by user
+        type: string
+      id:
+        description: Stored and generated
+        type: string
+      messageID:
+        description: Used if the message is a comment to a publication
+        type: string
+      pod:
+        description: Not saved in db but tell where it is sent from so remains in
+          JSON
+        type: string
+      signatureBase64:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: Swagger for the Horkruxes API
+  license:
+    name: AGPLv3
+    url: https://www.gnu.org/licenses/agpl-3.0.html
+  title: Horkruxes API
+  version: "1.0"
+paths:
+  /all:
+    get:
+      description: get string by ID
+      operationId: all
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Message'
+            type: array
+      summary: Show all messages (original messages and comments) without any more
+        structure
+  /comments/{uuid}:
+    get:
+      description: get string by ID
+      parameters:
+      - description: UUID of original message corresponding to comments
+        in: path
+        name: uuid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Message'
+            type: array
+      summary: Show comments to a specific message
+  /message:
+    get:
+      description: get string by ID
+      operationId: messages
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Message'
+            type: array
+      summary: Show all original messages (for the front page)
+  /message/{uuid}:
+    get:
+      description: get string by ID
+      parameters:
+      - description: Message UUID
+        in: path
+        name: uuid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Message'
+      summary: Show a specific message
+  /new:
+    post:
+      description: get string by ID
+      produces:
+      - application/json
+      summary: Post a new message
+  /user/{pubkey}:
+    get:
+      description: get string by ID
+      parameters:
+      - description: Author ed25519 public key
+        in: path
+        name: pubkey
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Message'
+            type: array
+      summary: Show messages of a specific user
+swagger: "2.0"

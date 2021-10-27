@@ -13,6 +13,12 @@ var templatesFS embed.FS
 //go:embed static/*
 var staticFS embed.FS
 
+// @title Horkruxes API
+// @version 1.0
+// @description Swagger for the Horkruxes API
+// @license.name AGPLv3
+// @license.url https://www.gnu.org/licenses/agpl-3.0.html
+// @BasePath /api
 func main() {
 
 	flag.Parse()
