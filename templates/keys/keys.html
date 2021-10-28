@@ -96,6 +96,11 @@
       <input type="text" name="displayed-name" value="{{ .DisplayedName }}" />
     </div>
     <div class="form-item">
+      <label>This message is an comment to:</label><br />
+      <input type="text" name="answer-to"
+        placeholder="Optional: leave empty for an original post / enter message UUID for a comment" />
+    </div>
+    <div class="form-item">
       <label>Message:</label><br />
       <textarea rows="7" name="message">{{ .Content }}</textarea>
     </div>

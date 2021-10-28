@@ -30,16 +30,17 @@ func PostKeys(c *fiber.Ctx) error {
 	outputData.Pub = strings.TrimSpace(c.FormValue("public-key"))
 	outputData.DisplayedName = strings.TrimSpace(c.FormValue("displayed-name"))
 	outputData.Content = strings.TrimSpace(c.FormValue("message"))
+	outputData.MessageID = strings.TrimSpace(c.FormValue("answer-to"))
 	outputData.Verif = true
 
 	if outputData.Sig == "" {
 		// Answers to the signature GENERATION form
-		outputData.Sig = model.SignMessage(outputData.Sec, outputData.Pub, outputData.DisplayedName, outputData.Content)
-		outputData.Valid = model.VerifyFromString(outputData.Pub, outputData.Sig, outputData.DisplayedName, outputData.Content)
+		outputData.Sig = model.SignMessage(outputData.Sec, outputData.Pub, outputData.DisplayedName, outputData.Content, outputData.MessageID)
+		outputData.Valid = model.VerifyFromString(outputData.Pub, outputData.Sig, outputData.DisplayedName, outputData.Content, outputData.MessageID)
 		outputData.Sec = ""
 	} else {
 		// Answers to the signature VERIFICATION form
-		outputData.Valid = model.VerifyFromString(outputData.Pub, outputData.Sig, outputData.DisplayedName, outputData.Content)
+		outputData.Valid = model.VerifyFromString(outputData.Pub, outputData.Sig, outputData.DisplayedName, outputData.Content, outputData.MessageID)
 		outputData.Sig = ""
 	}
 

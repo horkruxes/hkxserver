@@ -13,6 +13,10 @@ import (
 
 // VerifyConditions returns HTTP status code and an error
 func (message Message) VerifyConditions(s service.Service) (int, error) {
+	if s.ServerConfig.Debug {
+		return fiber.StatusAccepted, nil
+	}
+
 	if len(message.Content) > 50000 || len(message.DisplayedName) > 50 {
 		return fiber.StatusBadRequest, exceptions.ErrorFieldsTooLong
 	} else if len(message.Content) < 140 {
@@ -53,9 +57,10 @@ func (message Message) VerifyOwnerShip() bool {
 	if len(pubBytes) == 0 || len(sigBytes) == 0 {
 		return false
 	}
-	fmt.Println("\n\n\nVERIFYING", message.Content[:20], message.AuthorBase64, message.DisplayedName)
+	fmt.Println("\n\n\nVERIFYING", message.Content[:20], message.AuthorBase64, message.DisplayedName, message.MessageID)
 	messageWithInfo := append([]byte(message.Content), pubBytes...)
 	messageWithInfo = append(messageWithInfo, []byte(message.DisplayedName)...)
+	messageWithInfo = append(messageWithInfo, []byte(message.MessageID)...)
 	fmt.Println("msg 2 verify", messageWithInfo)
 
 	return ed25519.Verify(pubBytes, messageWithInfo, sigBytes)

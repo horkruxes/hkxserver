@@ -14,11 +14,12 @@ type KeyGen struct {
 	Sig           string
 	DisplayedName string
 	Content       string
+	MessageID     string
 	Verif         bool
 	Valid         bool
 }
 
-func VerifyFromString(pub, sig, displayedName, msg string) bool {
+func VerifyFromString(pub, sig, displayedName, msg, msgId string) bool {
 	if pub == "" || sig == "" || displayedName == "" || msg == "" {
 		return false
 	}
@@ -28,6 +29,7 @@ func VerifyFromString(pub, sig, displayedName, msg string) bool {
 		DisplayedName:   displayedName,
 		Content:         msg,
 		SignatureBase64: sig,
+		MessageID:       msgId,
 	}
 
 	return message.VerifyOwnerShip()
@@ -42,7 +44,12 @@ func GenKeys() KeyGen {
 }
 
 // SignMessage signs messages from base64 and return a base64 signature
-func SignMessage(secBase64, pubBase64, displayedName, message string) string {
+// The signature contains these elements concatenated:
+// The message (UTF-8 to bytes)
+// The author's public key
+// The author's declared name
+// The eventual messageId, empty if this is an original post
+func SignMessage(secBase64, pubBase64, displayedName, message, messageId string) string {
 	defer func() {
 		if r := recover(); r != nil {
 			fmt.Println("Recovered:", r)
@@ -50,10 +57,12 @@ func SignMessage(secBase64, pubBase64, displayedName, message string) string {
 	}()
 	sec, _ := base64.URLEncoding.DecodeString(secBase64)
 	pub, _ := base64.URLEncoding.DecodeString(pubBase64)
-	fmt.Println("\n\n\nSIGNING", message, pubBase64, displayedName)
+
+	fmt.Println("\n\n\nSIGNING", message, pubBase64, displayedName, messageId)
 
 	msgToSign := append([]byte(message), pub...)
 	msgToSign = append(msgToSign, []byte(displayedName)...)
+	msgToSign = append(msgToSign, []byte(messageId)...)
 	fmt.Println("msg 2 sign", msgToSign)
 
 	signature := ed25519.Sign(sec, msgToSign)
