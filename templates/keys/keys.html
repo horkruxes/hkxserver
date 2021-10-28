@@ -73,9 +73,12 @@
     messages. If you need a new identity, just take new keys.
   </p>
   <h4>Secret/Private key</h4>
-  <p>{{ .NewSec }}</p>
+  <p id="generatedPrivateKey">{{ .NewSec }}</p>
+  <button onclick="copyToClipboard('generatedPrivateKey')">Copy to clipboard</button>
   <h4>Public key</h4>
-  <p>{{ .NewPub }}</p>
+  <p id="generatedPublicKey">{{ .NewPub }}</p>
+  <button onclick="copyToClipboard('generatedPublicKey')">Copy to clipboard</button>
+
 
   <hr />
   <h3>Get a signature</h3>
@@ -98,6 +101,9 @@
     </div>
     <input type="submit" value="generate" />
   </form>
-  <p id="signature-generated">Signature: {{ .Sig }}</p>
+  <h4>Signature:</h4>
+  <p id="signature-generated">{{ .Sig }}</p>
+  <button onclick="copyToClipboard('signature-generated')">Copy to clipboard</button>
+
 </div>
 {{end}}
