@@ -4,24 +4,9 @@ import (
 	"encoding/binary"
 	"fmt"
 	"html/template"
-	"strings"
 
 	"github.com/russross/blackfriday"
 )
-
-func Base64ToSafeURL(s string) string {
-	s = strings.ReplaceAll(s, "+", ".")
-	s = strings.ReplaceAll(s, "/", "-")
-	s = strings.ReplaceAll(s, "=", "_")
-	return s
-}
-
-func SafeURLToBase64(s string) string {
-	s = strings.ReplaceAll(s, ".", "+")
-	s = strings.ReplaceAll(s, "-", "/")
-	s = strings.ReplaceAll(s, "_", "=")
-	return s
-}
 
 func ColorFromBytes(b []byte) string {
 	if len(b) < 11 {

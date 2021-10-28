@@ -33,10 +33,11 @@ func VerifyFromString(pub, sig, displayedName, msg string) bool {
 	return message.VerifyOwnerShip()
 }
 
+// GenKeys generates (cryptographically secured) a new pair of ed25519 keys
 func GenKeys() KeyGen {
 	pub, sec, _ := ed25519.GenerateKey(nil)
-	pubString := base64.StdEncoding.EncodeToString(pub)
-	secString := base64.StdEncoding.EncodeToString(sec)
+	pubString := base64.URLEncoding.EncodeToString(pub)
+	secString := base64.URLEncoding.EncodeToString(sec)
 	return KeyGen{NewPub: pubString, NewSec: secString}
 }
 
@@ -47,8 +48,8 @@ func SignMessage(secBase64, pubBase64, displayedName, message string) string {
 			fmt.Println("Recovered:", r)
 		}
 	}()
-	sec, _ := base64.StdEncoding.DecodeString(secBase64)
-	pub, _ := base64.StdEncoding.DecodeString(pubBase64)
+	sec, _ := base64.URLEncoding.DecodeString(secBase64)
+	pub, _ := base64.URLEncoding.DecodeString(pubBase64)
 	fmt.Println("\n\n\nSIGNING", message, pubBase64, displayedName)
 
 	msgToSign := append([]byte(message), pub...)
@@ -56,7 +57,7 @@ func SignMessage(secBase64, pubBase64, displayedName, message string) string {
 	fmt.Println("msg 2 sign", msgToSign)
 
 	signature := ed25519.Sign(sec, msgToSign)
-	sigString := base64.StdEncoding.EncodeToString(signature)
+	sigString := base64.URLEncoding.EncodeToString(signature)
 	return sigString
 
 }

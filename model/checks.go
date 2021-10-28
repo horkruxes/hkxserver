@@ -42,11 +42,11 @@ func (message Message) VerifyOwnerShip() bool {
 			fmt.Println("Recovered:", r)
 		}
 	}()
-	pubBytes, err := base64.StdEncoding.DecodeString(message.AuthorBase64)
+	pubBytes, err := base64.URLEncoding.DecodeString(message.AuthorBase64)
 	if err != nil {
 		return false
 	}
-	sigBytes, err := base64.StdEncoding.DecodeString(message.SignatureBase64)
+	sigBytes, err := base64.URLEncoding.DecodeString(message.SignatureBase64)
 	if err != nil {
 		return false
 	}

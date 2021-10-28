@@ -33,9 +33,8 @@ func CleanMessagesClientSide(messages []Message) []Message {
 }
 
 func CleanSingleMessageClientSide(message Message) Message {
-	message.AuthorURLSafe = service.Base64ToSafeURL(message.AuthorBase64)
 	message.DisplayedDate = message.CreatedAt.Format("2 Jan 2006 15:04")
-	author, _ := base64.StdEncoding.DecodeString(message.AuthorBase64)
+	author, _ := base64.URLEncoding.DecodeString(message.AuthorBase64)
 	message.Color = service.ColorFromBytes(author)
 	message.Correct = message.VerifyOwnerShip()
 	return message

@@ -81,8 +81,7 @@ func GetMessageJSON(s service.Service) func(*fiber.Ctx) error {
 // @Router /user/{pubkey} [get]
 func GetMessagesFromAuthorJSON(s service.Service) func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
-		id := c.Params("pubKey")
-		pubKey := service.SafeURLToBase64(id)
+		pubKey := c.Params("pubKey")
 		message := model.GetMessagesFromAuthor(s, pubKey)
 		return c.JSON(message)
 	}
@@ -128,12 +127,12 @@ func PayloadToValidMessage(s service.Service, payload model.Message) (model.Mess
 	var err error
 
 	message.SignatureBase64 = strings.TrimSpace(payload.SignatureBase64)
-	_, err = base64.StdEncoding.DecodeString(message.SignatureBase64)
+	_, err = base64.URLEncoding.DecodeString(message.SignatureBase64)
 	if err != nil {
 		return message, fiber.StatusBadRequest, exceptions.ErrorWrongSignature
 	}
 	message.AuthorBase64 = strings.TrimSpace(payload.AuthorBase64)
-	_, err = base64.StdEncoding.DecodeString(message.AuthorBase64)
+	_, err = base64.URLEncoding.DecodeString(message.AuthorBase64)
 	if err != nil {
 		return message, fiber.StatusBadRequest, exceptions.ErrorWrongSignature
 	}

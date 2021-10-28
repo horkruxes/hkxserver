@@ -59,7 +59,7 @@ func GetAuthorMessagesAndMainPageInfo(s service.Service, pubKey string) PageData
 	messages := model.GetMessagesFromAuthor(s, pubKey)
 
 	// Get other pods messages
-	remoteMessages := getMessagesFrom(s, "/api/user/"+service.Base64ToSafeURL(pubKey))
+	remoteMessages := getMessagesFrom(s, "/api/user/"+pubKey)
 	messages = append(messages, remoteMessages...)
 
 	messages = model.SortByDate(messages)

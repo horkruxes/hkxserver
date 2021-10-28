@@ -72,8 +72,8 @@ Then, re-run horkruxes. No further configuration is required!
 func defaultConfig() string {
 	_, lock, _ := ed25519.GenerateKey(nil)
 	_, unlock, _ := ed25519.GenerateKey(nil)
-	lock_url := service.Base64ToSafeURL(base64.StdEncoding.EncodeToString(lock))
-	unlock_url := service.Base64ToSafeURL(base64.StdEncoding.EncodeToString(unlock))
+	lock_url := base64.URLEncoding.EncodeToString(lock)
+	unlock_url := base64.URLEncoding.EncodeToString(unlock)
 
 	return fmt.Sprintf(`###############################
 ### HORKRUXES CONFIGURATION ###
