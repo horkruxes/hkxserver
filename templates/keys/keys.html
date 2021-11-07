@@ -106,9 +106,12 @@
     </div>
     <input type="submit" value="generate" />
   </form>
+
+  {{ if .Sig }}
   <h4>Signature:</h4>
   <p id="signature-generated">{{ .Sig }}</p>
   <button onclick="copyToClipboard('signature-generated')">Copy to clipboard</button>
+  {{ end }}
 
 </div>
 {{end}}

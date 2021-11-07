@@ -5,19 +5,17 @@
     <div class="little-colored-box" style="background-color:{{.ColorSecondary}};"></div>
     <a href="/user/{{.AuthorBase64}}">
       <strong>{{.DisplayedName}}</strong>
-      <span class="pubKeys">
-        {{ .AuthorBase64 }} {{ if not .Correct }}
-        <span
-          title="DO NOT TRUST THIS CONTENT! The message content could have been changed in the database by a pod admin or a hacker"
-          style="color: red"
-          >wrong signature
-          <span style="text-decoration: underline dotted">(more)</span></span
-        >
-        {{ end }}
-      </span>
     </a>
+     {{ if not .Correct }}
+    <span
+      title="DO NOT TRUST THIS CONTENT! The message content could have been changed in the database by a pod admin or a hacker"
+      style="color: red">
+      &nbsp; wrong signature
+      <span style="text-decoration: underline dotted">(more)</span></span
+    >
+    {{ end }}
   </h5>
-
+  
   <h6 class="message-additional-info">
     <span class="post-date"> {{ .DisplayedDate }} </span>
     on
@@ -25,14 +23,19 @@
     <span class="message-context-link">
       -
       {{ if .MessageID }}
-        answer to <a href="/comments/{{.MessageID}}" class="comments-link">this post</a>
+      answer to <a href="/comments/{{.MessageID}}" class="comments-link">this post</a>
       {{ else }}
-        <a href="/comments/{{.ID}}" class="comments-link">full post & comments</a>
+      <a href="/comments/{{.ID}}" class="comments-link">full post & comments</a>
       {{ end }}
     </span>
   </h6>
-
-  <p class="signature">{{ if .Correct }} ✓ {{ end }} {{ .SignatureBase64 }}</p>
+  
+  <p class="signature">
+    Author: {{ .AuthorBase64 }}
+  </p>
+  <p class="signature">
+    Signature: {{ .SignatureBase64 }}
+  </p>
 
   <div class="content">{{.Content | md}}</div>
 
