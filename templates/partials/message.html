@@ -1,8 +1,9 @@
 {{ define "message" }}
 <div class="message">
-  <h5 class="message-title">
-    <div class="little-colored-box" style="background-color:{{.Color}};"></div>
-    <a href="/user/{{.AuthorURLSafe}}">
+  <h5 class="message-title bg-white dark:bg-gray-800">
+    <div class="little-colored-box" style="background-color:{{.ColorPrimary}};"></div>
+    <div class="little-colored-box" style="background-color:{{.ColorSecondary}};"></div>
+    <a href="/user/{{.AuthorBase64}}">
       <strong>{{.DisplayedName}}</strong>
       <span class="pubKeys">
         {{ .AuthorBase64 }} {{ if not .Correct }}

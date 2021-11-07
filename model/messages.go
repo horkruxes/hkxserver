@@ -20,10 +20,11 @@ type Message struct {
 	MessageID       string // Used if the message is a comment to a publication
 
 	// Only for display on client, computed from known values
-	Correct       bool   `json:"-" gorm:"-"`
-	Color         string `json:"-" gorm:"-"`
-	DisplayedDate string `json:"-" gorm:"-"`
-	Pod           string `gorm:"-"` // Not saved in db but tell where it is sent from so remains in JSON
+	Correct        bool   `json:"-" gorm:"-"`
+	ColorPrimary   string `json:"-" gorm:"-"`
+	ColorSecondary string `json:"-" gorm:"-"`
+	DisplayedDate  string `json:"-" gorm:"-"`
+	Pod            string `gorm:"-"` // Not saved in db but tell where it is sent from so remains in JSON
 }
 
 func GetCommentsTo(s service.Service, messageID string) []Message {

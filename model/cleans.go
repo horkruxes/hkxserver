@@ -1,7 +1,6 @@
 package model
 
 import (
-	"encoding/base64"
 	"sort"
 
 	"github.com/ewenquim/horkruxes/service"
@@ -34,8 +33,8 @@ func CleanMessagesClientSide(messages []Message) []Message {
 
 func CleanSingleMessageClientSide(message Message) Message {
 	message.DisplayedDate = message.CreatedAt.Format("2 Jan 2006 15:04")
-	author, _ := base64.URLEncoding.DecodeString(message.AuthorBase64)
-	message.Color = service.ColorFromBytes(author)
+
+	message.ColorPrimary, message.ColorSecondary = service.ColorsFromBase64(message.AuthorBase64)
 	message.Correct = message.VerifyOwnerShip()
 	return message
 }
