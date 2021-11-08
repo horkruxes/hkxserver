@@ -6,7 +6,7 @@ import (
 	"hash/fnv"
 	"html/template"
 
-	"github.com/russross/blackfriday"
+	"github.com/russross/blackfriday/v2"
 )
 
 // getRandomNumber returns a seemingly random but deterministic number between 16 & 239=255-16.
@@ -44,6 +44,6 @@ func ColorsFromBase64(name string) (string, string) {
 }
 
 func MarkDowner(args ...interface{}) template.HTML {
-	s := blackfriday.MarkdownBasic([]byte(fmt.Sprintf("%s", args...)))
+	s := blackfriday.Run([]byte(fmt.Sprintf("%s", args...)))
 	return template.HTML(s)
 }
