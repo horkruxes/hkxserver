@@ -4,19 +4,23 @@ import (
 	"crypto/ed25519"
 	"encoding/base64"
 	"fmt"
+
+	"github.com/ewenquim/horkruxes/service"
 )
 
 type KeyGen struct {
-	Pub           string
-	NewPub        string
-	Sec           string
-	NewSec        string
-	Sig           string
-	DisplayedName string
-	Content       string
-	MessageID     string
-	Verif         bool
-	Valid         bool
+	Pub            string
+	NewPub         string
+	ColorPrimary   string // Preview of the primary color of generated key pair
+	ColorSecondary string // Preview of the secondary color of generated key pair
+	Sec            string
+	NewSec         string
+	Sig            string
+	DisplayedName  string
+	Content        string
+	MessageID      string
+	Verif          bool
+	Valid          bool
 }
 
 func VerifyFromString(pub, sig, displayedName, msg, msgId string) bool {
@@ -40,7 +44,8 @@ func GenKeys() KeyGen {
 	pub, sec, _ := ed25519.GenerateKey(nil)
 	pubString := base64.URLEncoding.EncodeToString(pub)
 	secString := base64.URLEncoding.EncodeToString(sec)
-	return KeyGen{NewPub: pubString, NewSec: secString}
+	primary, secondary := service.ColorsFromBase64(pubString)
+	return KeyGen{NewPub: pubString, NewSec: secString, ColorPrimary: primary, ColorSecondary: secondary}
 }
 
 // SignMessage signs messages from base64 and return a base64 signature

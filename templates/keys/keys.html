@@ -76,7 +76,11 @@
   <p id="generatedPrivateKey">{{ .NewSec }}</p>
   <button onclick="copyToClipboard('generatedPrivateKey')">Copy to clipboard</button>
   <h4>Public key</h4>
+  <span class=keysBox>
+  <div class="little-colored-box" style="background-color:{{.ColorPrimary}};"></div>
+  <div class="little-colored-box" style="background-color:{{.ColorSecondary}};"></div>
   <p id="generatedPublicKey">{{ .NewPub }}</p>
+  </span>
   <button onclick="copyToClipboard('generatedPublicKey')">Copy to clipboard</button>
 
 

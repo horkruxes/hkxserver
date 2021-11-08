@@ -113,6 +113,12 @@ input#signatures-switch:checked ~ #triptych .signature {
   margin-right: 0.5em;
   border-radius: 3px;
 }
+.keysBox {
+	flex-direction: row;
+	display: flex;
+	align-items: center;
+  margin-top: -1em;
+}
 .form-item {
   margin: 0.5em 0;
 }
