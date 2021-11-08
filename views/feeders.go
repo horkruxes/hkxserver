@@ -42,9 +42,16 @@ func GetMessagesAndMainPageInfo(s service.Service) PageData {
 
 	messages = model.SortByDate(messages)
 
+	messages = model.CleanMessagesClientSide(messages)
+	for i, msg := range messages {
+		if len(msg.Content) > 250 {
+			messages[i].Content = msg.Content[:250] + "..."
+		}
+	}
+
 	// Inject view
 	return PageData{
-		Messages: model.CleanMessagesClientSide(messages),
+		Messages: messages,
 		Server:   s.GeneralConfig,
 		// Client:   ClientData{PublicPods: s.ClientConfig.PublicPods, PrivatePods: s.ClientConfig.SpecificPods, PodsString: s.ClientConfig.SpecificPodsListString},
 		PageInfo: PageInfo{MainPage: true, Title: "All Messages"},
