@@ -1,5 +1,7 @@
 package main
 
+//go:generate npx tailwindcss -o static/tailwindstyles.css -m
+
 import (
 	"fmt"
 	"io/fs"

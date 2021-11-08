@@ -5,3 +5,4 @@ function copyToClipboard(element) {
     /* Copy the text inside the text field */
     navigator.clipboard.writeText(copyText.innerHTML.trim());
 }
+
