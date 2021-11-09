@@ -5,7 +5,7 @@ import (
 	"encoding/base64"
 	"fmt"
 
-	"github.com/ewenquim/horkruxes/service"
+	"github.com/horkruxes/hkxserver/service"
 )
 
 type KeyGen struct {

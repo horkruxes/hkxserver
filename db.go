@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/ewenquim/horkruxes/model"
+	"github.com/horkruxes/hkxserver/model"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"

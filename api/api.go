@@ -1,8 +1,8 @@
 package api
 
 import (
-	"github.com/ewenquim/horkruxes/service"
 	"github.com/gofiber/fiber/v2"
+	"github.com/horkruxes/hkxserver/service"
 )
 
 func SetupApiRoutes(s service.Service, app *fiber.App) {

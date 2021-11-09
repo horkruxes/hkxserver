@@ -3,9 +3,9 @@ package views
 import (
 	"strings"
 
-	"github.com/ewenquim/horkruxes/model"
-	"github.com/ewenquim/horkruxes/service"
 	"github.com/gofiber/fiber/v2"
+	"github.com/horkruxes/hkxserver/model"
+	"github.com/horkruxes/hkxserver/service"
 )
 
 func FromFormToPayload(c *fiber.Ctx) model.Message {

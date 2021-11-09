@@ -1,4 +1,4 @@
-module github.com/ewenquim/horkruxes
+module github.com/horkruxes/hkxserver
 
 go 1.16
 

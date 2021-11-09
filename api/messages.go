@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/ewenquim/horkruxes/exceptions"
-	"github.com/ewenquim/horkruxes/model"
-	"github.com/ewenquim/horkruxes/service"
 	"github.com/gofiber/fiber/v2"
+	"github.com/horkruxes/hkxserver/exceptions"
+	"github.com/horkruxes/hkxserver/model"
+	"github.com/horkruxes/hkxserver/service"
 )
 
 // GetAllJSON godoc

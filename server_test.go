@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/ewenquim/horkruxes/service"
+	"github.com/horkruxes/hkxserver/service"
 	"github.com/stretchr/testify/assert"
 )
 

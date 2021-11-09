@@ -8,11 +8,11 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/ewenquim/horkruxes/api"
-	"github.com/ewenquim/horkruxes/model"
-	"github.com/ewenquim/horkruxes/service"
 	"github.com/fatih/structs"
 	"github.com/gofiber/fiber/v2"
+	"github.com/horkruxes/hkxserver/api"
+	"github.com/horkruxes/hkxserver/model"
+	"github.com/horkruxes/hkxserver/service"
 )
 
 func GetKeys(c *fiber.Ctx) error {

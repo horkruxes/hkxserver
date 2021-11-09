@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/ewenquim/horkruxes/exceptions"
-	"github.com/ewenquim/horkruxes/service"
 	"github.com/gofiber/fiber/v2"
+	"github.com/horkruxes/hkxserver/exceptions"
+	"github.com/horkruxes/hkxserver/service"
 )
 
 // VerifyConditions returns HTTP status code and an error

@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	"github.com/ewenquim/horkruxes/service"
+	"github.com/horkruxes/hkxserver/service"
 	toml "github.com/pelletier/go-toml"
 )
 

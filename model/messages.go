@@ -3,8 +3,8 @@ package model
 import (
 	"time"
 
-	"github.com/ewenquim/horkruxes/service"
 	"github.com/google/uuid"
+	"github.com/horkruxes/hkxserver/service"
 )
 
 type Message struct {

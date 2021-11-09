@@ -3,8 +3,8 @@ package views
 import (
 	"fmt"
 
-	"github.com/ewenquim/horkruxes/model"
-	"github.com/ewenquim/horkruxes/service"
+	"github.com/horkruxes/hkxserver/model"
+	"github.com/horkruxes/hkxserver/service"
 )
 
 type ClientData struct {

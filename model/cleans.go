@@ -3,7 +3,7 @@ package model
 import (
 	"sort"
 
-	"github.com/ewenquim/horkruxes/service"
+	"github.com/horkruxes/hkxserver/service"
 )
 
 // CleanMessagesOutFromDB get data from DB and do some checks and verifications
