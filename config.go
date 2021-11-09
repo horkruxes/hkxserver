@@ -12,7 +12,7 @@ import (
 
 func loadConfig() service.Service {
 	createDefaultConfigIfDoesNotExist()
-	config, err := toml.LoadFile("config.toml")
+	config, err := toml.LoadFile("hkxconfig.toml")
 	if err != nil {
 		panicWithErrorMessage()
 	}
@@ -51,20 +51,20 @@ func loadConfig() service.Service {
 
 // Creates a default config fil if it doesn't exist
 func createDefaultConfigIfDoesNotExist() {
-	_, err := ioutil.ReadFile("config.toml")
+	_, err := ioutil.ReadFile("hkxconfig.toml")
 	if err != nil {
 		b := []byte(defaultConfig())
-		ioutil.WriteFile("config.toml", b, 0644)
+		ioutil.WriteFile("hkxconfig.toml", b, 0644)
 		panic(`It's the first time running Horkruxes, Thank you!
 
-The server needs to be configured with a "config.toml" file.
+The server needs to be configured with a "hkxconfig.toml" file.
 Luckily for you, a template has been created <3
 
-Just type "vim config.toml" or "nano config.toml" to custom your server, and you'll be ready to go!
+Just type "vim hkxconfig.toml" or "nano hkxconfig.toml" to custom your server, and you'll be ready to go!
 
 Then, re-run horkruxes. No further configuration is required!
 
-(of course, you could simply re-run horkruxes without editing the config.toml file, but that's not the spirit)
+(of course, you could simply re-run horkruxes without editing the hkxconfig.toml file, but that's not the spirit)
 `)
 	}
 }
@@ -175,10 +175,10 @@ markdown = false # default: false
 }
 
 func panicWithErrorMessage() {
-	panic(`Can't load server configuration file (config.toml not found or badly formatted).
+	panic(`Can't load server configuration file (hkxconfig.toml not found or badly formatted).
 You might simply have forgotten a quote or an equal sign.
 
-If you delete or rename the 'config.toml' file, and then relaunch the app,
-Horxruxes will automatically regenerate a correct 'config.toml' file.
+If you delete or rename the 'hkxconfig.toml' file, and then relaunch the app,
+Horxruxes will automatically regenerate a correct 'hkxconfig.toml' file.
 `)
 }

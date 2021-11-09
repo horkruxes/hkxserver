@@ -1,6 +1,6 @@
 tmp
 db*.sqlite3
-config.toml
+hkxconfig.toml
 .DS_Store
 horkruxes
 hkxserver
