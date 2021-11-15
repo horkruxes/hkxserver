@@ -17,7 +17,6 @@ func doUpdate(url string) error {
 	fmt.Println("Applying update")
 	err = update.Apply(resp.Body, update.Options{})
 	if err != nil {
-		// error handling
 		fmt.Println("Can't update")
 		return err
 	}
@@ -25,5 +24,5 @@ func doUpdate(url string) error {
 }
 
 func version() {
-	fmt.Println("Horkruxes v0.1")
+	fmt.Println("hkxserver v0.7.7")
 }

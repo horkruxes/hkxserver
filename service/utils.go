@@ -44,6 +44,6 @@ func ColorsFromBase64(name string) (string, string) {
 }
 
 func MarkDowner(args ...interface{}) template.HTML {
-	s := blackfriday.Run([]byte(fmt.Sprintf("%s", args...)))
+	s := blackfriday.Run([]byte(fmt.Sprintf("%s", args...)), blackfriday.WithExtensions(blackfriday.HardLineBreak|blackfriday.NoEmptyLineBeforeBlock))
 	return template.HTML(s)
 }

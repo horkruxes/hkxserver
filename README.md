@@ -10,8 +10,9 @@ Unlike Mastodont, the horkrux installation on a linux server is **DEAD SIMPLE**.
 
 ```bash
 mkdir horkruxes && cd horkruxes
-wget https://github.com/horkruxes/hkxserver/releases/latest/download/hkxserver_0.7.0_linux_amd64.tar.gz
-tar -xzvf horkruxes_xxx.yyy.zzz_linux_amd64.tar.gz #insert version or use auto-completion
+wget https://github.com/horkruxes/hkxserver/releases/latest/download/hkxserver_linux_amd64.tar.gz
+tar -xzvf horkruxes_linux_amd64.tar.gz #insert version or use auto-completion
+./horkruxes version
 ./horkruxes
 ```
 
