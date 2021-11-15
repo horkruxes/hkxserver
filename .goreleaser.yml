@@ -3,15 +3,11 @@ before:
     - go mod tidy
     - go generate ./...
 builds:
-  - goos:
+  - id: hkx
+    goos:
       - linux
 archives:
-  - id: "archives"
   - name_template: "{{.Binary}}_{{.Os}}_{{.Arch}}"
-  - replacements:
-      linux: Linux
-      386: i386
-      amd64: x86_64
 changelog:
   sort: asc
   filters:
