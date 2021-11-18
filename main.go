@@ -34,7 +34,7 @@ func main() {
 	case "help":
 		help()
 	case "update":
-		err := downloadAndSaveFile("https://github.com/horkruxes/hkxserver/releases/latest/download/hkxserver_linux_amd64.tar.gz")
+		err := downloadAndSaveLastVersion()
 		if err != nil {
 			panic(err)
 		}

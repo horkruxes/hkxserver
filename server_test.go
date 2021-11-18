@@ -3,6 +3,7 @@ package main
 import (
 	"io/ioutil"
 	"net/http"
+	"os"
 	"testing"
 
 	"github.com/horkruxes/hkxserver/service"
@@ -11,7 +12,8 @@ import (
 
 func mockService() service.Service {
 	// Database setup
-	db := initDatabase(dbOptions{test: true})
+	os.Remove("db_test.sqlite3")
+	db := initDatabase("db_test.sqlite3")
 
 	// Service init
 	s := service.Service{

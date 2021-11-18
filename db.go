@@ -16,12 +16,8 @@ type dbOptions struct {
 	test bool
 }
 
-func initDatabase(options dbOptions) *gorm.DB {
-	db_name := "db.sqlite3"
-	if options.test {
-		db_name = "db_test.sqlite3"
-		os.Remove(db_name)
-	}
+func initDatabase(db_name string) *gorm.DB {
+
 	var err error
 	newLogger := logger.New(
 		log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
@@ -41,7 +37,9 @@ func initDatabase(options dbOptions) *gorm.DB {
 		panic("failed to connect database")
 	}
 	fmt.Println("Connection Opened to Database")
-	db.AutoMigrate(&model.Message{})
+	if err := db.AutoMigrate(&model.Message{}); err != nil {
+		panic("failed to migrate database")
+	}
 	fmt.Println("Database Migrated")
 	return db
 }

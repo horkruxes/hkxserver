@@ -13,12 +13,13 @@ require (
 	github.com/google/uuid v1.3.0
 	github.com/klauspost/compress v1.13.6 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
+	github.com/microcosm-cc/bluemonday v1.0.16
 	github.com/pelletier/go-toml v1.9.4
 	github.com/russross/blackfriday/v2 v2.1.0
 	github.com/stretchr/testify v1.7.0
 	github.com/swaggo/swag v1.7.4
 	github.com/valyala/fasthttp v1.31.0 // indirect
-	golang.org/x/net v0.0.0-20211020060615-d418f374d309 // indirect
+	golang.org/x/net v0.0.0-20211116231205-47ca1ff31462 // indirect
 	golang.org/x/sys v0.0.0-20211025201205-69cdffdb9359 // indirect
 	golang.org/x/tools v0.1.7 // indirect
 	gorm.io/driver/sqlite v1.2.0

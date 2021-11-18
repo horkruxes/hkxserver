@@ -21,6 +21,8 @@ func (message Message) VerifyConditions(s service.Service) (int, error) {
 		return fiber.StatusBadRequest, exceptions.ErrorFieldsTooLong
 	} else if len(message.Content) < 140 {
 		return fiber.StatusBadRequest, exceptions.ErrorContentTooShort
+	} else if html := s.ContentPolicy.Sanitize(message.Content); html == message.Content {
+		return fiber.StatusBadRequest, exceptions.ErrorContentWithHTML
 	} else if !message.VerifyOwnerShip() {
 		return fiber.StatusBadRequest, exceptions.ErrorWrongSignature
 	} else {

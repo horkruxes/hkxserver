@@ -17,6 +17,7 @@ func getMessagesFrom(s service.Service, path string) []model.Message {
 			adress := "https://" + pod.URL + path
 
 			fmt.Println("rq to", adress)
+			//#nosec TODO avoid SSRF
 			resp, err := http.Get(adress)
 			if err != nil {
 				fmt.Println("err", err)
@@ -51,6 +52,7 @@ func getSingleMessageFromEachPod(s service.Service, path string) []model.Message
 			adress := "https://" + pod.URL + path
 
 			fmt.Println("rq to", adress)
+			//#nosec TODO avoid SSRF
 			resp, err := http.Get(adress)
 			if err != nil {
 				fmt.Println("err", err)

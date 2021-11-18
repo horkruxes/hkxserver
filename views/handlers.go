@@ -120,7 +120,7 @@ func NewMessage(s service.Service) func(*fiber.Ctx) error {
 				}
 				fmt.Println(string(body))
 
-				c.SendString("error sending the message " + string(body))
+				return c.SendString("error sending the message " + string(body))
 			}
 		}
 

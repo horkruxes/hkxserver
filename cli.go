@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"path/filepath"
 )
 
 func help() {
@@ -17,10 +18,9 @@ func version() {
 	fmt.Println("hkxserver v0.7.7")
 }
 
-// downloadAndSaveFile downloads file from url
-func downloadAndSaveFile(url string) error {
+func downloadAndSaveLastVersion() error {
 	fmt.Println("Downloading latest version")
-	resp, err := http.Get(url)
+	resp, err := http.Get("https://github.com/horkruxes/hkxserver/releases/latest/download/hkxserver_linux_amd64.tar.gz")
 	if err != nil {
 		fmt.Println("Can't fetch latest upgrade online")
 		return err
@@ -69,7 +69,7 @@ func Untar(r io.Reader) error {
 		}
 
 		// the target location where the dir/file should be created
-		target := header.Name
+		target := filepath.Clean(header.Name)
 		fmt.Println(target)
 
 		// the following switch could also be done using fi.Mode(), not sure if there
@@ -82,26 +82,29 @@ func Untar(r io.Reader) error {
 		// if its a dir and it doesn't exist create it
 		case tar.TypeDir:
 			if _, err := os.Stat(target); err != nil {
-				if err := os.MkdirAll(target, 0755); err != nil {
+				if err := os.MkdirAll(target, 0750); err != nil {
 					return err
 				}
 			}
 
 		// if it's a file create it
 		case tar.TypeReg:
-			f, err := os.OpenFile(target, os.O_CREATE|os.O_RDWR, os.FileMode(header.Mode))
+			f, err := os.OpenFile(target, os.O_CREATE|os.O_WRONLY, os.FileMode(header.Mode))
 			if err != nil {
 				return err
 			}
 
 			// copy over contents
+			//#nosec
 			if _, err := io.Copy(f, tr); err != nil {
 				return err
 			}
 
 			// manually close here after each file operation; defering would cause each file close
 			// to wait until all operations have completed.
-			f.Close()
+			if err := f.Close(); err != nil {
+				return err
+			}
 		}
 	}
 }
