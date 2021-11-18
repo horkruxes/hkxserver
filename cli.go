@@ -1,28 +1,107 @@
 package main
 
 import (
+	"archive/tar"
+	"compress/gzip"
 	"fmt"
+	"io"
 	"net/http"
-
-	"github.com/inconshreveable/go-update"
+	"os"
 )
 
-func doUpdate(url string) error {
+func help() {
+	fmt.Println("Usage : hkxserver help / version / update / run")
+}
+
+func version() {
+	fmt.Println("hkxserver v0.7.7")
+}
+
+// downloadAndSaveFile downloads file from url
+func downloadAndSaveFile(url string) error {
+	fmt.Println("Downloading latest version")
 	resp, err := http.Get(url)
 	if err != nil {
 		fmt.Println("Can't fetch latest upgrade online")
 		return err
 	}
 	defer resp.Body.Close()
-	fmt.Println("Applying update")
-	err = update.Apply(resp.Body, update.Options{})
+
+	err = Untar(resp.Body)
 	if err != nil {
-		fmt.Println("Can't update")
+		fmt.Println("Can't untar the downloaded doc")
 		return err
 	}
-	return err
+	fmt.Println("Downloaded latest version. Please restart server.")
+
+	return nil
+
 }
 
-func version() {
-	fmt.Println("hkxserver v0.7.7")
+// Untar takes a destination path and a reader; a tar reader loops over the tarfile
+// creating the file structure at 'dst' along the way, and writing any files
+func Untar(r io.Reader) error {
+
+	gzr, err := gzip.NewReader(r)
+	if err != nil {
+		return err
+	}
+	defer gzr.Close()
+
+	tr := tar.NewReader(gzr)
+
+	for {
+		header, err := tr.Next()
+
+		switch {
+
+		// if no more files are found return
+		case err == io.EOF:
+			return nil
+
+		// return any other error
+		case err != nil:
+			return err
+
+		// if the header is nil, just skip it (not sure how this happens)
+		case header == nil:
+			continue
+		}
+
+		// the target location where the dir/file should be created
+		target := header.Name
+		fmt.Println(target)
+
+		// the following switch could also be done using fi.Mode(), not sure if there
+		// a benefit of using one vs. the other.
+		// fi := header.FileInfo()
+
+		// check the file type
+		switch header.Typeflag {
+
+		// if its a dir and it doesn't exist create it
+		case tar.TypeDir:
+			if _, err := os.Stat(target); err != nil {
+				if err := os.MkdirAll(target, 0755); err != nil {
+					return err
+				}
+			}
+
+		// if it's a file create it
+		case tar.TypeReg:
+			f, err := os.OpenFile(target, os.O_CREATE|os.O_RDWR, os.FileMode(header.Mode))
+			if err != nil {
+				return err
+			}
+
+			// copy over contents
+			if _, err := io.Copy(f, tr); err != nil {
+				return err
+			}
+
+			// manually close here after each file operation; defering would cause each file close
+			// to wait until all operations have completed.
+			f.Close()
+		}
+	}
 }

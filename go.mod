@@ -11,7 +11,6 @@ require (
 	github.com/gofiber/helmet/v2 v2.2.3
 	github.com/gofiber/template v1.6.18
 	github.com/google/uuid v1.3.0
-	github.com/inconshreveable/go-update v0.0.0-20160112193335-8152e7eb6ccf
 	github.com/klauspost/compress v1.13.6 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/pelletier/go-toml v1.9.4

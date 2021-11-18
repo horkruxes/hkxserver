@@ -31,11 +31,20 @@ func main() {
 	switch arg {
 	case "version":
 		version()
+	case "help":
+		help()
 	case "update":
-		doUpdate("")
+		err := downloadAndSaveFile("https://github.com/horkruxes/hkxserver/releases/latest/download/hkxserver_linux_amd64.tar.gz")
+		if err != nil {
+			panic(err)
+		}
 	default:
 		s := setupService()
 		app, port := setupServer(s)
-		app.Listen(fmt.Sprintf(":%v", port))
+		err := app.Listen(fmt.Sprintf(":%v", port))
+		if err != nil {
+			fmt.Println("Can't start server")
+			panic(err)
+		}
 	}
 }
