@@ -16,11 +16,6 @@ func loadConfig() service.Service {
 	if err != nil {
 		panicWithErrorMessage()
 	}
-	defer func() {
-		if r := recover(); r != nil {
-			panicWithErrorMessage()
-		}
-	}()
 
 	serviceConfig := service.Service{}
 	serviceConfig.GeneralConfig.Name = config.Get("general.name").(string)
@@ -54,8 +49,8 @@ func createDefaultConfigIfDoesNotExist() {
 	_, err := ioutil.ReadFile("hkxconfig.toml")
 	if err != nil {
 		b := []byte(defaultConfig())
-		ioutil.WriteFile("hkxconfig.toml", b, 0644)
-		panic(`It's the first time running Horkruxes, Thank you!
+		ioutil.WriteFile("hkxconfig.toml", b, 0600)
+		fmt.Println(`It's the first time running Horkruxes, Thank you!
 
 The server needs to be configured with a "hkxconfig.toml" file.
 Luckily for you, a template has been created <3
@@ -64,8 +59,7 @@ Just type "vim hkxconfig.toml" or "nano hkxconfig.toml" to custom your server, a
 
 Then, re-run horkruxes. No further configuration is required!
 
-(of course, you could simply re-run horkruxes without editing the hkxconfig.toml file, but that's not the spirit)
-`)
+(of course, you could simply re-run horkruxes without editing the hkxconfig.toml file, but that's not the spirit)`)
 	}
 }
 
@@ -124,7 +118,7 @@ sources = ['horkruxes.amethysts.studio',
 enabled = true # default: true 
 
 # Port to listen to
-port = 80 # default: 80
+port = 8000 # default: 8000
 
 # Set to false if you want deploy an horkrux instance,
 # or true if you want just to run the client or test anything
