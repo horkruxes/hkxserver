@@ -6,6 +6,7 @@ import (
 	"hash/fnv"
 	"html/template"
 
+	"github.com/microcosm-cc/bluemonday"
 	"github.com/russross/blackfriday/v2"
 )
 
@@ -13,6 +14,7 @@ import (
 // It does not uses a cryptographically secure hash for the moment
 func getRandomNumber(b []byte) uint8 {
 	h := fnv.New32a()
+	//#nosec
 	h.Write(b)
 	return uint8(h.Sum32()%223 + 16)
 }
@@ -43,7 +45,11 @@ func ColorsFromBase64(name string) (string, string) {
 	// return fmt.Sprintf("hsl(%v, 100%%, %v%%)", hue, light)
 }
 
-func MarkDowner(args ...interface{}) template.HTML {
-	s := blackfriday.Run([]byte(fmt.Sprintf("%s", args...)), blackfriday.WithExtensions(blackfriday.HardLineBreak|blackfriday.NoEmptyLineBeforeBlock))
-	return template.HTML(s)
+func MarkDowner(policy *bluemonday.Policy) func(string) template.HTML {
+	return func(content string) template.HTML {
+		content = policy.Sanitize(content)
+		s := blackfriday.Run([]byte(content), blackfriday.WithExtensions(blackfriday.HardLineBreak|blackfriday.NoEmptyLineBeforeBlock))
+		//#nosec gosec false positive: content already escaped
+		return template.HTML(s)
+	}
 }
