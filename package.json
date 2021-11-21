@@ -1,0 +1,13 @@
+{
+  "name": "horkruxes",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:horkruxes/hkxserver.git",
+  "author": "EwenQuim <ewen.quimerch@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "tailwindcss": "^2.2.19",
+    "autoprefixer": "^10.4.0",
+    "postcss-cli": "^9.0.1"
+  }
+}

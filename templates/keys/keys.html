@@ -10,22 +10,15 @@
   <hr />
   <h3>Verify a signature</h3>
   <form method="POST">
-    <div class="form-item">
-      <label>Public Key:</label><br />
-      <input type="text" name="public-key" value="{{ .Pub }}" />
-    </div>
-    <div class="form-item">
-      <label>Author Name:</label><br />
-      <input type="text" name="displayed-name" value="{{ .DisplayedName }}" />
-    </div>
-    <div class="form-item">
-      <label>Message:</label><br />
-      <textarea rows="7" name="message">{{ .Content }}</textarea>
-    </div>
-    <div class="form-item">
-      <label>Signature:</label><br />
-      <input type="text" name="signature" value="{{ .Sig }}" />
-    </div>
+    <label>Public Key</label>
+    <input type="text" name="public-key" value="{{ .Pub }}" />
+    <label>Author Name</label>
+    <input type="text" name="displayed-name" value="{{ .DisplayedName }}" />
+    <label>Message</label>
+    <textarea rows="7" name="message">{{ .Content }}</textarea>
+    <label>Signature</label>
+    <input type="text" name="signature" value="{{ .Sig }}" />
+
     <input type="submit" value="verify" />
   </form>
   {{ if .Verif }} {{ if .Valid }}
@@ -87,27 +80,19 @@
   <hr />
   <h3>Get a signature</h3>
   <form method="POST">
-    <div class="form-item">
-      <label>Secret Key:</label><br />
-      <input type="text" name="secret-key" value="{{ .Sec }}" />
-    </div>
-    <div class="form-item">
-      <label>Public Key:</label><br />
-      <input type="text" name="public-key" value="{{ .Pub }}" />
-    </div>
-    <div class="form-item">
-      <label>Author Name:</label><br />
-      <input type="text" name="displayed-name" value="{{ .DisplayedName }}" />
-    </div>
-    <div class="form-item">
-      <label>This message is an comment to:</label><br />
-      <input type="text" name="answer-to"
-        placeholder="Optional: leave empty for an original post / enter message UUID for a comment" />
-    </div>
-    <div class="form-item">
-      <label>Message:</label><br />
-      <textarea rows="7" name="message">{{ .Content }}</textarea>
-    </div>
+    <label>Secret Key</label>
+    <input type="text" name="secret-key" value="{{ .Sec }}" />
+    <label>Public Key</label>
+    <input type="text" name="public-key" value="{{ .Pub }}" />
+    <label>Author Name</label>
+    <input type="text" name="displayed-name" value="{{ .DisplayedName }}" />
+    <label>This message is a comment to</label>
+    <input type="text" name="answer-to"
+      placeholder="Optional: leave empty for an original post / enter message UUID for a comment" />
+    <label>Message</label>
+    <textarea rows="9" name="message" id="message">{{ .Content }}</textarea>
+    <p id="countChars"></p>
+
     <input type="submit" value="generate" />
   </form>
 

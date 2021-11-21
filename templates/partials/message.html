@@ -1,10 +1,10 @@
 {{ define "message" }}
 <div class="message">
-  <h5 class="message-title bg-white dark:bg-gray-800">
+  <h5 class="message-title">
     <div class="little-colored-box" style="background-color:{{.ColorPrimary}};"></div>
     <div class="little-colored-box" style="background-color:{{.ColorSecondary}};"></div>
     <a href="/user/{{.AuthorBase64}}">
-      <strong>{{.DisplayedName}}</strong>
+      {{.DisplayedName}}
     </a>
      {{ if not .Correct }}
     <span
@@ -30,15 +30,18 @@
     </span>
   </h6>
   
-  <p class="signature">
-    Author: {{ .AuthorBase64 }}
-  </p>
-  <p class="signature">
-    Signature: {{ .SignatureBase64 }}
+  <p class="msg-crypto-info signature">
+    <code>
+      Author: {{ .AuthorBase64 }}
+    </code>
+    <br>
+    <code>
+      Signature: {{ .SignatureBase64 }}
+    </code>
   </p>
 
   <div class="content">{{ .Content | md }}</div>
 
 </div>
-<hr />
+
 {{end}}

@@ -1,40 +1,36 @@
 {{define "keys"}}
-<div class="panel">
+<div class="panel keys">
   {{ if .PageInfo.PostToMessageID }}
   <h3>Comment</h3>
   {{ else }}
   <h3>Post a message</h3>
   {{ end }}
   <form method="POST" action="/new">
-    <div class="form-item">
-      <label>Name:</label><br />
+      <label>Name</label>
       <input
         type="text"
         name="name"
         placeholder="Displayed name, can be anything"
       />
-    </div>
-    <div class="form-item">
-      <label>Message:</label><br />
+  
+      <label>Message</label>
       <textarea
-        rows="7"
+        id="message"
+        rows="9"
         name="message"
         placeholder="Write anything without being censored!"
       >
 {{ .Content }}</textarea
       >
-    </div>
-    <div class="form-item">
-      <label>Public Key:</label><br />
+      <p id="countChars"></p>
+      <label>Public Key</label>
       <input
         type="text"
         name="public-key"
         value="{{ .Pub }}"
         placeholder="Your public key is unique and define your identity"
       />
-    </div>
-    <div class="form-item">
-      <label>Signature:</label><br />
+      <label>Signature</label>
       <input
         type="text"
         name="signature"
@@ -42,17 +38,14 @@
       /><br />
       <small id="passwordHelpBlock" class="form-text text-muted">
         <a href="/faq">How do I get one ?</a>
-      </small>
-    </div>
-    <div class="form-item">
-      <label>Send to specific pod</label><br />
+      </small> <br>
+      <label>Send to specific pod</label>
       <input
         type="text"
         name="pod-to-post-to"
         id="pod-to-post-to"
         placeholder="Leave empty to send to {{ .Server.IP }}"
       />
-    </div>
 
     <input
       type="text"

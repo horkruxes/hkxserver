@@ -46,3 +46,8 @@ A list of bytes generated from strings with different encodings, in this order:
 - The message (utf-8)
 - The public key (base64)
 - The Displayed Name (utf-8)
+
+### Development
+
+NODE_ENV=production go generate ./...
+NODE_ENV=production npx tailwindcss -o static/tailwindstyles.css -m

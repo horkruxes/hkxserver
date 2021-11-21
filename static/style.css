@@ -3,33 +3,16 @@ body {
   overflow-wrap: break-word;
 }
 
-body {
-  margin: 0 auto;
-  /* line-height: 1.6; */
-  color: #444;
-  padding: 0 10px;
-  font-family: "Arial";
-}
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  /* font-weight: normal; */
-  color: black;
-}
-
 h1 {
   text-align: center;
 }
 
-hr {
+/* hr {
   color: #eee;
   background-color: #eee;
   border-width: 0;
   height: 2px;
-}
+} */
 
 .message p,
 ul,
@@ -38,13 +21,10 @@ summary {
   margin-top: 0;
 }
 a#title {
-  color: black;
   text-decoration: unset;
 }
 
-strong {
-  color: black;
-}
+
 
 /* MAIN */
 #triptych {
@@ -76,22 +56,11 @@ h5 {
   margin: 0.5em;
 }
 
-.message {
-  padding: 4px;
-}
 
-.pubKeys,
-.signature,
-.message-additional-info {
-  color: #757575;
-  font-style: italic;
-}
+
 .pubKeys,
 .signature {
   word-break: break-all;
-}
-.signature {
-  font-size: 0.83em;
 }
 
 input.signatures-switch {
@@ -117,34 +86,11 @@ input#signatures-switch:checked ~ #triptych .signature {
 	flex-direction: row;
 	display: flex;
 	align-items: center;
-  margin-top: -1em;
-}
-.form-item {
-  margin: 0.5em 0;
-}
-.message h6 {
-  margin: 0 0 0.5em 0;
-  font-weight: normal;
-}
-.message a {
-  text-decoration: dotted;
-}
-input#comments-switch:checked ~ #triptych .message .message-context-link {
-  display: none;
-}
-.message > .content h1,
-.message > .content h2,
-.message > .content h3,
-.message > .content h4,
-.message > .content h5,
-.message > .content h6,
-.message > .content strong {
-  color: #444 !important;
 }
 
-#top-message {
-  background-color: lightyellow;
-  border-radius: 4px;
+
+input#comments-switch:checked ~ #triptych .message .message-context-link {
+  display: none;
 }
 
 /* KEYS */
@@ -195,9 +141,6 @@ summary:hover {
   cursor: pointer;
 }
 
-details[open] > summary {
-  color: black;
-}
 
 /* FAQ */
 #faq-page {

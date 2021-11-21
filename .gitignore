@@ -4,3 +4,4 @@ hkxconfig.toml
 .DS_Store
 horkruxes
 hkxserver
+node_modules
