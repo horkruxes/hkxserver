@@ -59,11 +59,11 @@ func (message Message) VerifyOwnerShip() bool {
 	if len(pubBytes) == 0 || len(sigBytes) == 0 {
 		return false
 	}
-	fmt.Println("\n\n\nVERIFYING", message.Content[:20], message.AuthorBase64, message.DisplayedName, message.MessageID)
 	messageWithInfo := append([]byte(message.Content), pubBytes...)
 	messageWithInfo = append(messageWithInfo, []byte(message.DisplayedName)...)
 	messageWithInfo = append(messageWithInfo, []byte(message.MessageID)...)
-	fmt.Println("msg 2 verify", messageWithInfo)
+	// fmt.Println("\n\n\nVERIFYING", message.Content[:20], message.AuthorBase64, message.DisplayedName, message.MessageID)
+	// fmt.Println(messageWithInfo)
 
 	return ed25519.Verify(pubBytes, messageWithInfo, sigBytes)
 }

@@ -1,7 +1,9 @@
+env:
+  - ENV=production
 before:
   hooks:
     - go mod tidy
-    - ENV=production go generate ./...
+    - go generate ./...
 builds:
   - id: hkx
     goos:
