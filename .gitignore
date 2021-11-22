@@ -1,7 +1,14 @@
+# Temporary directories & files used for builds or with go generate ./...
 tmp
+node_modules
+static/tailwindstyles.css
+
+# User-specific directories
 db*.sqlite3
 hkxconfig.toml
+
+# Misc
 .DS_Store
-horkruxes
-hkxserver
-node_modules
+
+# Executables
+hkxserver*
