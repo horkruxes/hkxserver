@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/gofiber/fiber/v2"
 	"github.com/horkruxes/hkxserver/exceptions"
 	"github.com/horkruxes/hkxserver/service"
 )
@@ -14,17 +13,17 @@ import (
 // VerifyConditions returns HTTP status code and an error
 func (message Message) VerifyConditions(s service.Service) (int, error) {
 	if s.ServerConfig.Debug {
-		return fiber.StatusAccepted, nil
+		return 202, nil
 	}
 
 	if len(message.Content) > 50000 || len(message.DisplayedName) > 50 {
-		return fiber.StatusBadRequest, exceptions.ErrorFieldsTooLong
+		return 400, exceptions.ErrorFieldsTooLong
 	} else if len(message.Content) < 140 {
-		return fiber.StatusBadRequest, exceptions.ErrorContentTooShort
+		return 400, exceptions.ErrorContentTooShort
 	} else if html := s.ContentPolicy.Sanitize(message.Content); html == message.Content {
-		return fiber.StatusBadRequest, exceptions.ErrorContentWithHTML
+		return 400, exceptions.ErrorContentWithHTML
 	} else if !message.VerifyOwnerShip() {
-		return fiber.StatusBadRequest, exceptions.ErrorWrongSignature
+		return 400, exceptions.ErrorWrongSignature
 	} else {
 		var lastPost time.Time
 		if message.MessageID == "" {
@@ -34,12 +33,12 @@ func (message Message) VerifyConditions(s service.Service) (int, error) {
 		}
 		trusted := message.authorTrusted(s)
 		if !trusted && time.Since(lastPost) < time.Hour {
-			return fiber.StatusNotAcceptable, exceptions.ErrorTooSoonUnregistered
+			return 406, exceptions.ErrorTooSoonUnregistered
 		} else if trusted && time.Since(lastPost) < 30*time.Second {
-			return fiber.StatusNotAcceptable, exceptions.ErrorTooSoonRegistered
+			return 406, exceptions.ErrorTooSoonRegistered
 		}
 	}
-	return fiber.StatusAccepted, nil
+	return 202, nil
 }
 
 func (message Message) VerifyOwnerShip() bool {
