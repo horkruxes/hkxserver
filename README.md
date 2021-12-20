@@ -49,5 +49,10 @@ A list of bytes generated from strings with different encodings, in this order:
 
 ### Development
 
-NODE_ENV=production go generate ./...
-NODE_ENV=production npx tailwindcss -o static/tailwindstyles.css -m
+I like to use [air](https://github.com/cosmtrek/air) to run my projects.
+
+```
+go generate ./... # Generates Tailwind styles
+ENV=production go generate ./... # Optimize for production
+go run .
+```
