@@ -26,26 +26,56 @@
       <label>Public Key</label>
       <input
         type="text"
+        id="public-key"
         name="public-key"
         value="{{ .Pub }}"
         placeholder="Your public key is unique and define your identity"
-      />
-      <label>Signature</label>
+        pattern="^.{44}$"
+      /> <br>
+      <!-- <small id="publicKeyHelpBlock" class="form-text text-muted">
+        The public key is the shortest one
+      </small> <br> -->
       <input
+        type="checkbox"
+        name="use-secret-key"
+        id="use-secret-key" /> 
+      <label for="use-secret-key">Use secret key instead (dangerous)</label> <br>
+      <div id="signature">
+        <label>Signature</label>
+        <input
         type="text"
         name="signature"
         placeholder="The signature is different for every message"
-      /><br />
-      <small id="passwordHelpBlock" class="form-text text-muted">
-        <a href="/faq">How do I get one ?</a>
-      </small> <br>
-      <label>Send to specific pod</label>
+        pattern="^.{88}$"
+        /><br />
+        <small id="passwordHelpBlock" class="form-text text-muted">
+          <a href="/faq">How do I get one ?</a>
+        </small> <br>
+      </div>
+      <div id="secret-key">
+        <label>Secret Key</label>
+        <input
+          type="text"
+          name="secret-key"
+          value=""
+          placeholder="Private key"
+          pattern="^.{88}$"
+        /> <br>
+
+      </div>
+
+      <input
+        type="checkbox"
+        name="use-different-server"
+        id="use-different-server" /> 
+      <label for="use-different-server">Send to specific server</label>
       <input
         type="text"
         name="pod-to-post-to"
         id="pod-to-post-to"
-        placeholder="Leave empty to send to {{ .Server.IP }}"
-      />
+        pattern="^[a-ZA-Z0-9\.]$"
+        placeholder="Empty to send to {{ .Server.URL }}"
+      /> <br>
 
     <input
       type="text"

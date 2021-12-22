@@ -81,9 +81,9 @@
   <h3>Get a signature</h3>
   <form method="POST">
     <label>Secret Key</label>
-    <input type="text" name="secret-key" value="{{ .Sec }}" />
+    <input type="text" name="secret-key" value="{{ .Sec }}" autocomplete="current-password" />
     <label>Public Key</label>
-    <input type="text" name="public-key" value="{{ .Pub }}" />
+    <input type="text" name="public-key" value="{{ .Pub }}" autocomplete="username" />
     <label>Author Name</label>
     <input type="text" name="displayed-name" value="{{ .DisplayedName }}" />
     <label>This message is a comment to</label>
