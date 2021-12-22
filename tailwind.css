@@ -37,7 +37,7 @@
     }
 
     button, input[type="submit"] {
-        @apply py-2 mb-2;
+        @apply py-2 my-2;
         @apply px-4;
         @apply rounded;
     }
@@ -56,11 +56,14 @@
     }
 
     textarea, input[type="text"] {
-        /* @apply outline-none; */
         @apply box-content;
         @apply p-2 mb-2;
         @apply rounded;
         @apply bg-gray-200 dark:bg-gray-800;
+    }
+
+    input:invalid {
+        @apply bg-red-100;
     }
 
     ul {
@@ -88,6 +91,30 @@
         @apply text-purple-900;
     }
 
+}
+
+#publicKeyHelpBlock {
+    display: none;
+}
+#public-key:invalid ~ #publicKeyHelpBlock {
+    display: unset;
+}
+
+#secret-key {
+    display: none;
+}
+#use-secret-key:checked ~ #secret-key {
+    display: unset;
+}
+#use-secret-key:checked ~ #signature {
+    display: none;
+}
+
+#pod-to-post-to {
+    display: none;
+}
+#use-different-server:checked ~ #pod-to-post-to {
+    display: unset;
 }
 
 #top-message {
