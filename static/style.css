@@ -130,13 +130,6 @@ textarea {
   font-style: italic;
 }
 
-textarea#pods {
-  display: none;
-}
-input#private-pods:checked ~ textarea#pods {
-  display: unset;
-}
-
 summary:hover {
   cursor: pointer;
 }

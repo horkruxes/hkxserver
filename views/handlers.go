@@ -68,7 +68,7 @@ func GetAuthor(s service.Service) func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
 		s.ClientConfig = parseFormsToService(c, s)
 		pubKey := c.Params("pubKey")
-		fmt.Println("pods list", s.ClientConfig.AllPodsList)
+		fmt.Println("pods list", s.GeneralConfig.TrustedPods)
 		localData := GetAuthorMessagesAndMainPageInfo(s, pubKey)
 		return c.Render("templates/main/root", structs.Map(localData))
 	}

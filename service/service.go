@@ -41,48 +41,14 @@ type ServerConfig struct {
 }
 
 type ClientConfig struct {
-	Enabled                bool
-	Markdown               bool // Is markdown allowed on this pod ?
-	PublicPods             bool
-	SpecificPods           bool
-	SpecificPodsList       []string // List of pods requested by the user
-	SpecificPodsListString string   // List of pods requested by the user and displayed back into the field
-	AllPodsList            []Pod    // List of all pods (public + requested)
+	Enabled    bool
+	Markdown   bool // Is markdown allowed on this pod ?
+	PublicPods bool
 }
 
 type Pod struct {
 	URL      string
 	Selected bool
-}
-
-func (s *Service) UpdateClientPodsList() {
-
-	s.ClientConfig.AllPodsList = []Pod{}
-
-	// Add public pods from server to client
-	if s.ClientConfig.PublicPods {
-		for _, name := range s.GeneralConfig.TrustedPods {
-			s.ClientConfig.AllPodsList = append(s.ClientConfig.AllPodsList, Pod{URL: name, Selected: true})
-		}
-	}
-
-	// Add custom pods from client to themselves
-	if s.ClientConfig.SpecificPods {
-		for _, name := range s.ClientConfig.SpecificPodsList {
-
-			// Checks for duplicates
-			var alreadyIn bool
-			for _, alreadyInPod := range s.ClientConfig.AllPodsList {
-				if alreadyInPod.URL == name {
-					alreadyIn = true
-					break
-				}
-			}
-			if !alreadyIn {
-				s.ClientConfig.AllPodsList = append(s.ClientConfig.AllPodsList, Pod{URL: name, Selected: true})
-			}
-		}
-	}
 }
 
 // InitializeDetectors is heavy and should be initialized once only

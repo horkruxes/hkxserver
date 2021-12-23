@@ -3,6 +3,7 @@ package views
 import (
 	"fmt"
 
+	"github.com/horkruxes/hkxserver/client"
 	"github.com/horkruxes/hkxserver/model"
 	"github.com/horkruxes/hkxserver/service"
 )
@@ -37,8 +38,10 @@ func GetMessagesAndMainPageInfo(s service.Service) PageData {
 	messages := model.GetMessagesFromDB(s)
 
 	// Get other pods messages
-	remoteMessages := getMessagesFrom(s, "/api/message")
-	messages = append(messages, remoteMessages...)
+	if s.ClientConfig.PublicPods {
+		remoteMessages := client.GetMessagesFrom(s, "/api/message")
+		messages = append(messages, remoteMessages...)
+	}
 
 	messages = model.SortByDate(messages)
 
@@ -66,7 +69,7 @@ func GetAuthorMessagesAndMainPageInfo(s service.Service, pubKey string) PageData
 	messages := model.GetMessagesFromAuthor(s, pubKey)
 
 	// Get other pods messages
-	remoteMessages := getMessagesFrom(s, "/api/user/"+pubKey)
+	remoteMessages := client.GetMessagesFrom(s, "/api/user/"+pubKey)
 	messages = append(messages, remoteMessages...)
 
 	messages = model.SortByDate(messages)
@@ -88,7 +91,7 @@ func GetCommentsAndMainPageInfo(s service.Service, messageID string) PageData {
 	messages = append(messages, model.GetCommentsTo(s, messageID)...)
 
 	// Get other pods comments
-	remoteMessages := getMessagesFrom(s, "/api/comments/"+messageID)
+	remoteMessages := client.GetMessagesFrom(s, "/api/comments/"+messageID)
 	messages = append(messages, remoteMessages...)
 
 	messages = model.SortByDate(messages)
@@ -99,7 +102,7 @@ func GetCommentsAndMainPageInfo(s service.Service, messageID string) PageData {
 	if err != nil {
 		fmt.Println("err:", err)
 		// Asks other pods to get comment
-		remoteOPs := getSingleMessageFromEachPod(s, "/api/message/"+messageID)
+		remoteOPs := client.GetSingleMessageFromEachPod(s, "/api/message/"+messageID)
 		fmt.Println(remoteOPs)
 		if len(remoteOPs) > 0 {
 			op = remoteOPs[0]
