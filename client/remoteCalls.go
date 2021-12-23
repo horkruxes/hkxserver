@@ -8,15 +8,13 @@ import (
 	"sync"
 
 	"github.com/horkruxes/hkxserver/model"
-	"github.com/horkruxes/hkxserver/service"
 )
 
-func GetMessagesFrom(s service.Service, path string) []model.Message {
+func GetMessagesFrom(servers []string, path string) []model.Message {
 	chanMessages := make(chan []model.Message, len(path))
-	chanFinal := make(chan []model.Message, len(path))
 
 	var wg sync.WaitGroup
-	for _, pod := range s.GeneralConfig.TrustedPods {
+	for _, pod := range servers {
 		wg.Add(1)
 
 		go func(chanMessages chan<- []model.Message, pod string) {
@@ -54,48 +52,61 @@ func GetMessagesFrom(s service.Service, path string) []model.Message {
 
 	var messages []model.Message
 
-	go func(chanMessages <-chan []model.Message, chanFinal chan<- []model.Message) {
-		for msgs := range chanMessages {
-			messages = append(messages, msgs...)
-		}
-
-	}(chanMessages, chanFinal)
 	wg.Wait()
 	close(chanMessages)
+	for msgs := range chanMessages {
+		messages = append(messages, msgs...)
+	}
 
 	return messages
 }
 
-func GetSingleMessageFromEachPod(s service.Service, path string) []model.Message {
-	var messages []model.Message
-	for _, pod := range s.GeneralConfig.TrustedPods {
-		adress := "https://" + pod + path
+// Try to get a singl message from each pod specified
+func GetSingleMessageFromEachPod(servers []string, path string) []model.Message {
+	chanMessages := make(chan model.Message, len(path))
 
-		fmt.Println("rq to", adress)
-		//#nosec TODO avoid SSRF
-		resp, err := http.Get(adress)
-		if err != nil {
-			fmt.Println("err", err)
-			continue
-		}
-		defer resp.Body.Close()
-		body, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			fmt.Println("err", err)
-			continue
-		}
-		if !json.Valid(body) {
-			continue
-		}
+	var wg sync.WaitGroup
+	for _, pod := range servers {
+		wg.Add(1)
+		go func(chanMessages chan<- model.Message, pod string) {
+			defer wg.Done()
+			adress := "https://" + pod + path
 
-		msg := &model.Message{}
-		err = json.Unmarshal(body, msg)
-		if err != nil {
-			fmt.Println("err", err)
-			continue
-		}
-		messages = append(messages, *msg)
+			fmt.Println("rq to", adress)
+			//#nosec TODO avoid SSRF
+			resp, err := http.Get(adress)
+			if err != nil {
+				fmt.Println("err", err)
+				return
+			}
+			defer resp.Body.Close()
+			body, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				fmt.Println("err", err)
+				return
+			}
+			if !json.Valid(body) {
+				return
+			}
 
+			msg := model.Message{}
+			err = json.Unmarshal(body, &msg)
+			if err != nil {
+				fmt.Println("err", err)
+				return
+			}
+			chanMessages <- msg
+
+		}(chanMessages, pod)
 	}
+
+	var messages []model.Message
+
+	wg.Wait()
+	close(chanMessages)
+	for msg := range chanMessages {
+		messages = append(messages, msg)
+	}
+
 	return messages
 }

@@ -39,7 +39,7 @@ func GetMessagesAndMainPageInfo(s service.Service) PageData {
 
 	// Get other pods messages
 	if s.ClientConfig.PublicPods {
-		remoteMessages := client.GetMessagesFrom(s, "/api/message")
+		remoteMessages := client.GetMessagesFrom(s.GeneralConfig.TrustedPods, "/api/message")
 		messages = append(messages, remoteMessages...)
 	}
 
@@ -69,7 +69,7 @@ func GetAuthorMessagesAndMainPageInfo(s service.Service, pubKey string) PageData
 	messages := model.GetMessagesFromAuthor(s, pubKey)
 
 	// Get other pods messages
-	remoteMessages := client.GetMessagesFrom(s, "/api/user/"+pubKey)
+	remoteMessages := client.GetMessagesFrom(s.GeneralConfig.TrustedPods, "/api/user/"+pubKey)
 	messages = append(messages, remoteMessages...)
 
 	messages = model.SortByDate(messages)
@@ -91,7 +91,7 @@ func GetCommentsAndMainPageInfo(s service.Service, messageID string) PageData {
 	messages = append(messages, model.GetCommentsTo(s, messageID)...)
 
 	// Get other pods comments
-	remoteMessages := client.GetMessagesFrom(s, "/api/comments/"+messageID)
+	remoteMessages := client.GetMessagesFrom(s.GeneralConfig.TrustedPods, "/api/comments/"+messageID)
 	messages = append(messages, remoteMessages...)
 
 	messages = model.SortByDate(messages)
@@ -102,7 +102,7 @@ func GetCommentsAndMainPageInfo(s service.Service, messageID string) PageData {
 	if err != nil {
 		fmt.Println("err:", err)
 		// Asks other pods to get comment
-		remoteOPs := client.GetSingleMessageFromEachPod(s, "/api/message/"+messageID)
+		remoteOPs := client.GetSingleMessageFromEachPod(s.GeneralConfig.TrustedPods, "/api/message/"+messageID)
 		fmt.Println(remoteOPs)
 		if len(remoteOPs) > 0 {
 			op = remoteOPs[0]
