@@ -51,7 +51,11 @@ func setupServer(s service.Service) (fiber.App, int64) {
 		AppName: "Horkruxes",
 	})
 
-	app.Use(helmet.New())
+	app.Use(helmet.New(helmet.Config{
+		HSTSMaxAge:            31536000,
+		HSTSExcludeSubdomains: true,
+		ReferrerPolicy:        "same-origin",
+	}))
 	app.Use(cors.New())
 	// app.Use(csrf.New()) // Useless and blocks post requests...
 
@@ -77,7 +81,8 @@ func setupServer(s service.Service) (fiber.App, int64) {
 
 	// Static routes
 	app.Use(filesystem.New(filesystem.Config{
-		Root: http.FS(fsub),
+		Root:   http.FS(fsub),
+		MaxAge: 604_800, // 1 week cache (7*24*3600 = 604 800 seconds)
 	}))
 	// app.Static("", "./static")
 	fmt.Println("Static server started")
