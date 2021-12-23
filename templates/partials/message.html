@@ -1,6 +1,6 @@
 {{ define "message" }}
 <div class="message">
-  <h5 class="message-title">
+  <h5 class="message-title sticky top-0 backdrop-blur-sm ">
     <div class="little-colored-box" style="background-color:{{.ColorPrimary}};"></div>
     <div class="little-colored-box" style="background-color:{{.ColorSecondary}};"></div>
     <a href="/user/{{.AuthorBase64}}">
@@ -15,7 +15,7 @@
     >
     {{ end }}
   </h5>
-  
+
   <h6 class="message-additional-info">
     <span class="post-date"> {{ .DisplayedDate }} </span>
     on
@@ -29,7 +29,7 @@
       {{ end }}
     </span>
   </h6>
-  
+
   <p class="msg-crypto-info signature">
     <code>
       Author: {{ .AuthorBase64 }}
