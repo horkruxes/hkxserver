@@ -32,7 +32,7 @@ func setupService() service.Service {
 	s := loadConfig()
 	s.DB = db
 	s.Regexes = service.InitializeDetectors()
-	s.ContentPolicy = bluemonday.StrictPolicy()
+	s.ContentPolicy = bluemonday.UGCPolicy()
 	return s
 }
 

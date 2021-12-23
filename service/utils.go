@@ -47,9 +47,8 @@ func ColorsFromBase64(name string) (string, string) {
 
 func MarkDowner(policy *bluemonday.Policy) func(string) template.HTML {
 	return func(content string) template.HTML {
-		content = policy.Sanitize(content)
-		s := blackfriday.Run([]byte(content), blackfriday.WithExtensions(blackfriday.HardLineBreak|blackfriday.NoEmptyLineBeforeBlock))
-		//#nosec gosec false positive: content already escaped
-		return template.HTML(s)
+		markdownBytes := blackfriday.Run([]byte(content), blackfriday.WithExtensions(blackfriday.HardLineBreak|blackfriday.NoEmptyLineBeforeBlock))
+		safeBytes := policy.SanitizeBytes(markdownBytes)
+		return template.HTML(safeBytes)
 	}
 }
