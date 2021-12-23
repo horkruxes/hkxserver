@@ -66,8 +66,14 @@ Then, re-run horkruxes. No further configuration is required!
 }
 
 func defaultConfig() string {
-	_, lock, _ := ed25519.GenerateKey(nil)
-	_, unlock, _ := ed25519.GenerateKey(nil)
+	_, lock, err := ed25519.GenerateKey(nil)
+	if err != nil {
+		panic(err)
+	}
+	_, unlock, err := ed25519.GenerateKey(nil)
+	if err != nil {
+		panic(err)
+	}
 	lock_url := base64.URLEncoding.EncodeToString(lock)
 	unlock_url := base64.URLEncoding.EncodeToString(unlock)
 
@@ -117,7 +123,7 @@ sources = ['horkruxes.amethysts.studio',
 
 [server]
 # If false, will only act as a "relay" client : no data on this server, only data from other servers
-enabled = true # default: true 
+enabled = true # default: true
 
 # Port to listen to
 port = 8000 # default: 8000
@@ -126,7 +132,7 @@ port = 8000 # default: 8000
 # or true if you want just to run the client or test anything
 testing = true # default: true
 
-# Is this server private ? 
+# Is this server private ?
 # If private, only trusted keys will be able to post (details below)
 private = false # default: false
 
@@ -163,7 +169,7 @@ emergency_unlock_url  = "%v"
 [client]
 # If false, it will only behave like an API
 # Can be used to limit charge on the server
-enabled = true # default: true 
+enabled = true # default: true
 
 # Is markdown syntax allowed on this pod ?
 markdown = false # default: false

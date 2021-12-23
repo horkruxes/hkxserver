@@ -94,8 +94,8 @@ func Untar(r io.Reader) error {
 				return err
 			}
 
+			//#nosec G110 -- Copying trusted content (downloading the new executable from the github CI)
 			// copy over contents
-			//#nosec
 			if _, err := io.Copy(f, tr); err != nil {
 				return err
 			}

@@ -41,14 +41,17 @@ func VerifyFromString(pub, sig, displayedName, msg, msgId string) bool {
 
 // GenKeys generates (cryptographically secured) a new pair of ed25519 keys
 func GenKeys() KeyGen {
-	pub, sec, _ := ed25519.GenerateKey(nil)
+	pub, sec, err := ed25519.GenerateKey(nil)
+	if err != nil {
+		panic("can't generate keys: the environment is not secure. On Linux, verify that /dev/urandom is available: " + err.Error())
+	}
 	pubString := base64.URLEncoding.EncodeToString(pub)
 	secString := base64.URLEncoding.EncodeToString(sec)
 	primary, secondary := service.ColorsFromBase64(pubString)
 	return KeyGen{NewPub: pubString, NewSec: secString, ColorPrimary: primary, ColorSecondary: secondary}
 }
 
-// SignMessage signs messages from base64 and return a base64 signature
+// SignMessage signs messages from base64 and return a base64 signature (empty string if the signature can't be generated)
 // The signature contains these elements concatenated:
 // The message (UTF-8 to bytes)
 // The author's public key
@@ -60,8 +63,14 @@ func SignMessage(secBase64, pubBase64, displayedName, message, messageId string)
 			fmt.Println("Recovered:", r)
 		}
 	}()
-	sec, _ := base64.URLEncoding.DecodeString(secBase64)
-	pub, _ := base64.URLEncoding.DecodeString(pubBase64)
+	sec, err := base64.URLEncoding.DecodeString(secBase64)
+	if err != nil || len(sec) != ed25519.PrivateKeySize {
+		return ""
+	}
+	pub, err := base64.URLEncoding.DecodeString(pubBase64)
+	if err != nil {
+		return ""
+	}
 
 	fmt.Println("\n\n\nSIGNING", message, pubBase64, displayedName, messageId)
 
