@@ -1,14 +1,17 @@
 package views
 
 import (
+	"html/template"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/horkruxes/hkxserver/model"
 	"github.com/horkruxes/hkxserver/service"
+	"github.com/microcosm-cc/bluemonday"
+	"github.com/russross/blackfriday/v2"
 )
 
-func FromFormToPayload(c *fiber.Ctx) model.Message {
+func FormToBasicMessage(c *fiber.Ctx) model.Message {
 	message := model.Message{}
 
 	message.SignatureBase64 = strings.TrimSpace(c.FormValue("signature"))
@@ -27,4 +30,12 @@ func parseFormsToService(c *fiber.Ctx, s service.Service) service.ClientConfig {
 	s.ClientConfig.PublicPods = public
 
 	return s.ClientConfig
+}
+
+func MarkDowner(policy *bluemonday.Policy) func(string) template.HTML {
+	return func(content string) template.HTML {
+		markdownBytes := blackfriday.Run([]byte(content), blackfriday.WithExtensions(blackfriday.HardLineBreak|blackfriday.NoEmptyLineBeforeBlock))
+		safeBytes := policy.SanitizeBytes(markdownBytes)
+		return template.HTML(safeBytes)
+	}
 }

@@ -45,7 +45,7 @@ func GetMessagesAndMainPageInfo(s service.Service) PageData {
 
 	messages = model.SortByDate(messages)
 
-	messages = model.CleanMessagesClientSide(messages)
+	messages = client.CleanMessagesClientSide(messages)
 	for i, msg := range messages {
 		if len(msg.Content) > 250 {
 			messages[i].Content = msg.Content[:250] + "..."
@@ -76,7 +76,7 @@ func GetAuthorMessagesAndMainPageInfo(s service.Service, pubKey string) PageData
 
 	// Inject view
 	return PageData{
-		Messages: model.CleanMessagesClientSide(messages),
+		Messages: client.CleanMessagesClientSide(messages),
 		Server:   s.GeneralConfig,
 		PageInfo: PageInfo{Title: "Author", SubTitle: pubKey},
 	}
@@ -95,7 +95,7 @@ func GetCommentsAndMainPageInfo(s service.Service, messageID string) PageData {
 	messages = append(messages, remoteMessages...)
 
 	messages = model.SortByDate(messages)
-	messages = model.CleanMessagesClientSide(messages)
+	messages = client.CleanMessagesClientSide(messages)
 
 	// Try to get local OP
 	op, err := model.GetMessageFromDB(s, messageID)
@@ -108,7 +108,7 @@ func GetCommentsAndMainPageInfo(s service.Service, messageID string) PageData {
 			op = remoteOPs[0]
 		}
 	}
-	op = model.CleanSingleMessageClientSide(op)
+	op = client.CleanSingleMessageClientSide(op)
 
 	// Inject view
 	return PageData{

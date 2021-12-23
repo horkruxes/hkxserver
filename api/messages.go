@@ -129,12 +129,12 @@ func PayloadToValidMessage(s service.Service, payload model.Message) (model.Mess
 	message.SignatureBase64 = strings.TrimSpace(payload.SignatureBase64)
 	_, err = base64.URLEncoding.DecodeString(message.SignatureBase64)
 	if err != nil {
-		return message, fiber.StatusBadRequest, exceptions.ErrorWrongSignature
+		return message, 400, exceptions.ErrorWrongSignature
 	}
 	message.AuthorBase64 = strings.TrimSpace(payload.AuthorBase64)
 	_, err = base64.URLEncoding.DecodeString(message.AuthorBase64)
 	if err != nil {
-		return message, fiber.StatusBadRequest, exceptions.ErrorWrongSignature
+		return message, 400, exceptions.ErrorWrongSignature
 	}
 	message.Content = strings.TrimSpace(payload.Content)
 	message.DisplayedName = strings.TrimSpace(payload.DisplayedName)

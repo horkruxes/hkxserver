@@ -10,19 +10,19 @@ import (
 
 	"github.com/fatih/structs"
 	"github.com/gofiber/fiber/v2"
-	"github.com/horkruxes/hkxserver/api"
+	"github.com/horkruxes/hkxserver/client"
 	"github.com/horkruxes/hkxserver/model"
 	"github.com/horkruxes/hkxserver/service"
 )
 
 func GetKeys(c *fiber.Ctx) error {
-	outputData := model.GenKeys()
+	outputData := client.GenKeys()
 	return c.Render("templates/keys/root", structs.Map(outputData))
 }
 
 func PostKeys(c *fiber.Ctx) error {
 
-	outputData := model.GenKeys()
+	outputData := client.GenKeys()
 
 	// Get form data and reinject into output data
 	outputData.Sig = strings.TrimSpace(c.FormValue("signature"))
@@ -86,26 +86,24 @@ func GetComments(s service.Service) func(*fiber.Ctx) error {
 func NewMessage(s service.Service) func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
 
-		payload := FromFormToPayload(c)
-
-		reader, err := json.Marshal(payload)
-		if err != nil {
-			fmt.Println("err:", err)
-		}
+		payload := FormToBasicMessage(c)
 
 		fmt.Println("try to post to:", payload.Pod)
 		// Check if can do the db operations right now or if it should transfer the payload to another API
 		if payload.Pod == "" {
-			message, statusCode, err := api.PayloadToValidMessage(s, payload)
-			if err != nil {
+			if statusCode, err := payload.VerifyConditions(s); err != nil {
 				return c.Status(statusCode).SendString(err.Error())
 			}
-			fmt.Println("new msg", message)
-			err = model.NewMessage(s, message)
+			fmt.Println("new msg", payload)
+			err := model.NewMessage(s, payload)
 			if err != nil {
-				return c.Status(statusCode).SendString(err.Error())
+				return c.Status(422).SendString(err.Error())
 			}
 		} else {
+			reader, err := json.Marshal(payload)
+			if err != nil {
+				fmt.Println("err:", err)
+			}
 			resp, err := http.Post("https://"+payload.Pod+"/api/message", "application/json", bytes.NewBuffer(reader))
 			if err != nil {
 				fmt.Println("err:", err)

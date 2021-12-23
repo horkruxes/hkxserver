@@ -2,8 +2,6 @@ package model
 
 import (
 	"sort"
-
-	"github.com/horkruxes/hkxserver/service"
 )
 
 // CleanMessagesOutFromDB get data from DB and do some checks and verifications
@@ -19,23 +17,6 @@ func CleanSingleMessageOutFromDB(message Message, url ...string) Message {
 	if len(url) > 0 {
 		message.Pod = url[0]
 	}
-	return message
-}
-
-// CleanMessagesOutFromDB get data from DB and do some checks and verifications
-func CleanMessagesClientSide(messages []Message) []Message {
-	for i, message := range messages {
-		message = CleanSingleMessageOutFromDB(message)
-		messages[i] = CleanSingleMessageClientSide(message)
-	}
-	return messages
-}
-
-func CleanSingleMessageClientSide(message Message) Message {
-	message.DisplayedDate = message.CreatedAt.Format("2 Jan 2006 15:04")
-
-	message.ColorPrimary, message.ColorSecondary = service.ColorsFromBase64(message.AuthorBase64)
-	message.Correct = message.VerifyOwnerShip()
 	return message
 }
 

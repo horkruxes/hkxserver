@@ -1,13 +1,11 @@
-package service
+package client
 
 import (
 	"encoding/base64"
 	"fmt"
 	"hash/fnv"
-	"html/template"
 
-	"github.com/microcosm-cc/bluemonday"
-	"github.com/russross/blackfriday/v2"
+	"github.com/horkruxes/hkxserver/model"
 )
 
 // getRandomNumber returns a seemingly random but deterministic number between 16 & 239=255-16.
@@ -19,7 +17,7 @@ func getRandomNumber(b []byte) uint8 {
 	return uint8(h.Sum32()%223 + 16)
 }
 
-func ColorsFromBase64(name string) (string, string) {
+func colorsFromBase64(name string) (string, string) {
 	b, err := base64.URLEncoding.DecodeString(name)
 	if err != nil {
 		return "red", "red"
@@ -45,10 +43,19 @@ func ColorsFromBase64(name string) (string, string) {
 	// return fmt.Sprintf("hsl(%v, 100%%, %v%%)", hue, light)
 }
 
-func MarkDowner(policy *bluemonday.Policy) func(string) template.HTML {
-	return func(content string) template.HTML {
-		markdownBytes := blackfriday.Run([]byte(content), blackfriday.WithExtensions(blackfriday.HardLineBreak|blackfriday.NoEmptyLineBeforeBlock))
-		safeBytes := policy.SanitizeBytes(markdownBytes)
-		return template.HTML(safeBytes)
+// CleanMessagesOutFromDB get data from DB and do some checks and verifications
+func CleanMessagesClientSide(messages []model.Message) []model.Message {
+	for i, message := range messages {
+		message = model.CleanSingleMessageOutFromDB(message)
+		messages[i] = CleanSingleMessageClientSide(message)
 	}
+	return messages
+}
+
+func CleanSingleMessageClientSide(message model.Message) model.Message {
+	message.DisplayedDate = message.CreatedAt.Format("2 Jan 2006 15:04")
+
+	message.ColorPrimary, message.ColorSecondary = colorsFromBase64(message.AuthorBase64)
+	message.Correct = message.VerifyOwnerShip()
+	return message
 }
