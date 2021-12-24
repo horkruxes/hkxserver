@@ -36,6 +36,7 @@ func MarkDowner(policy *bluemonday.Policy) func(string) template.HTML {
 	return func(content string) template.HTML {
 		markdownBytes := blackfriday.Run([]byte(content), blackfriday.WithExtensions(blackfriday.HardLineBreak|blackfriday.NoEmptyLineBeforeBlock))
 		safeBytes := policy.SanitizeBytes(markdownBytes)
+		//#nosec
 		return template.HTML(safeBytes)
 	}
 }

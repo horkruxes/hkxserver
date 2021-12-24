@@ -52,8 +52,10 @@ func setupServer(s service.Service) (fiber.App, int64) {
 	app := fiber.New(fiber.Config{
 		Views:                   engine,
 		AppName:                 "Horkruxes",
+		ServerHeader:            "hkxserver",
 		EnableTrustedProxyCheck: true,
 		TrustedProxies:          []string{"127.0.0.1", "0.0.0.0"},
+		ProxyHeader:             "X-Forwarded-For",
 	})
 
 	// Security
