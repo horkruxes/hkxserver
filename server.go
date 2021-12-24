@@ -71,8 +71,6 @@ func setupServer(s service.Service) (fiber.App, int64) {
 		LimiterMiddleware: limiter.SlidingWindow{},
 	}))
 
-	app.Use(compress.New())
-
 	app.Use(cors.New())
 
 	if s.ServerConfig.Debug {
@@ -80,6 +78,8 @@ func setupServer(s service.Service) (fiber.App, int64) {
 	} else {
 		app.Use(cache.New())
 	}
+
+	app.Use(compress.New())
 
 	// Swagger
 	app.Get("/swagger/*", swagger.Handler)

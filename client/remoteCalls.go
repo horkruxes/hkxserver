@@ -11,7 +11,7 @@ import (
 )
 
 func GetMessagesFrom(servers []string, path string) []model.Message {
-	chanMessages := make(chan []model.Message, len(path))
+	chanMessages := make(chan []model.Message, len(servers))
 
 	var wg sync.WaitGroup
 	for _, pod := range servers {
@@ -63,7 +63,7 @@ func GetMessagesFrom(servers []string, path string) []model.Message {
 
 // Try to get a singl message from each pod specified
 func GetSingleMessageFromEachPod(servers []string, path string) []model.Message {
-	chanMessages := make(chan model.Message, len(path))
+	chanMessages := make(chan model.Message, len(servers))
 
 	var wg sync.WaitGroup
 	for _, pod := range servers {
