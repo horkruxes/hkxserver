@@ -43,12 +43,14 @@ func setupServer(s service.Service) (fiber.App, int64) {
 	engine := html.NewFileSystem(http.FS(templatesFS), ".html")
 	engine.Debug(s.ServerConfig.Debug)
 
-	engine.AddFunc("md", service.MarkDowner(s.ContentPolicy))
+	engine.AddFunc("md", views.MarkDowner(s.ContentPolicy))
 
 	// Server and middlewares
 	app := fiber.New(fiber.Config{
-		Views:   engine,
-		AppName: "Horkruxes",
+		Views:                   engine,
+		AppName:                 "Horkruxes",
+		EnableTrustedProxyCheck: true,
+		TrustedProxies:          []string{"127.0.0.1", "0.0.0.0"},
 	})
 
 	app.Use(helmet.New(helmet.Config{
