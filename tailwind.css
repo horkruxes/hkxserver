@@ -54,7 +54,7 @@
     label {
         @apply mt-2;
     }
-    
+
     textarea, input[type="text"] {
         /* @apply outline-none; */
         @apply box-content;
@@ -75,19 +75,19 @@
     a {
         @apply text-blue-500;
     }
-    
+
     a:hover {
         @apply text-blue-800;
     }
-    
+
     a:visited {
         @apply text-purple-500;
     }
-    
+
     a:visited:hover {
         @apply text-purple-900;
     }
-    
+
 }
 
 #top-message {
@@ -97,11 +97,8 @@
     @apply border-gray-200 dark:border-gray-800;
 }
 
-.message {
-    @apply py-2;
-}
-.message > .content {
-    @apply mt-2;
+#top-message h5.message-title {
+    @apply bg-gray-200/90 dark:bg-gray-800/90 !important;
 }
 
 .message-additional-info, .signature {
