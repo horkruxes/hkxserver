@@ -55,7 +55,7 @@
         @apply mt-2;
     }
 
-    textarea, input[type="text"] {
+    textarea, input[type="text"], input[type="password"] {
         @apply box-content;
         @apply p-2 mb-2;
         @apply rounded;

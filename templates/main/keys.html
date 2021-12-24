@@ -20,8 +20,8 @@
         name="message"
         placeholder="Write anything without being censored!"
       >
-{{ .Content }}</textarea
-      >
+        {{ .Content }}
+      </textarea>
       <p id="countChars"></p>
       <label>Public Key</label>
       <input
@@ -31,6 +31,7 @@
         value="{{ .Pub }}"
         placeholder="Your public key is unique and define your identity"
         pattern="^.{44}$"
+        autocomplete="username"
       /> <br>
       <!-- <small id="publicKeyHelpBlock" class="form-text text-muted">
         The public key is the shortest one
@@ -38,7 +39,7 @@
       <input
         type="checkbox"
         name="use-secret-key"
-        id="use-secret-key" /> 
+        id="use-secret-key" />
       <label for="use-secret-key">Use secret key instead (dangerous)</label> <br>
       <div id="signature">
         <label>Signature</label>
@@ -55,11 +56,12 @@
       <div id="secret-key">
         <label>Secret Key</label>
         <input
-          type="text"
+          type="password"
           name="secret-key"
           value=""
           placeholder="Private key"
           pattern="^.{88}$"
+          autocomplete="current-password"
         /> <br>
 
       </div>
@@ -67,7 +69,7 @@
       <input
         type="checkbox"
         name="use-different-server"
-        id="use-different-server" /> 
+        id="use-different-server" />
       <label for="use-different-server">Send to specific server</label>
       <input
         type="text"
