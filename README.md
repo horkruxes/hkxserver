@@ -47,12 +47,24 @@ A list of bytes generated from strings with different encodings, in this order:
 - The public key (base64)
 - The Displayed Name (utf-8)
 
-### Development
+## Development
 
 I like to use [air](https://github.com/cosmtrek/air) to run my projects.
 
 ```
 go generate ./... # Generates Tailwind styles
-ENV=production go generate ./... # Optimize for production
-go run .
+go run . # Or use `air`
 ```
+
+## Project structure
+
+- `/api`: the API routes and definitions
+- `/client`: a Golang client for Horkruxes. This is the base for the web client and the cli, and must not depend on service.Service (stateless)
+- `/docs`: Swagger generated documentation
+- `/exceptions`: explicit
+- `/model`: models, independant from anything
+- `/query`: database-related operations given a provided service.Service
+- `/service`: contain some server state (db and server config)
+- `/static`: static resources for the web client
+- `/templates`: templates for the web client
+- `/views`: web client (mostly Go SSR)

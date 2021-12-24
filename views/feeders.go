@@ -5,6 +5,7 @@ import (
 
 	"github.com/horkruxes/hkxserver/client"
 	"github.com/horkruxes/hkxserver/model"
+	"github.com/horkruxes/hkxserver/query"
 	"github.com/horkruxes/hkxserver/service"
 )
 
@@ -35,7 +36,7 @@ type PageInfo struct {
 func GetMessagesAndMainPageInfo(s service.Service) PageData {
 
 	// Get local messages
-	messages := model.GetMessagesFromDB(s)
+	messages := query.GetMessages(s)
 
 	// Get other pods messages
 	if s.ClientConfig.PublicPods {
@@ -66,7 +67,7 @@ func GetMessagesAndMainPageInfo(s service.Service) PageData {
 func GetAuthorMessagesAndMainPageInfo(s service.Service, pubKey string) PageData {
 
 	// Get local messages
-	messages := model.GetMessagesFromAuthor(s, pubKey)
+	messages := query.GetMessagesFromAuthor(s, pubKey)
 
 	// Get other pods messages
 	remoteMessages := client.GetMessagesFrom(s.GeneralConfig.TrustedPods, "/api/user/"+pubKey)
@@ -88,7 +89,7 @@ func GetCommentsAndMainPageInfo(s service.Service, messageID string) PageData {
 	messages := []model.Message{}
 
 	// Get local comments
-	messages = append(messages, model.GetCommentsTo(s, messageID)...)
+	messages = append(messages, query.GetCommentsTo(s, messageID)...)
 
 	// Get other pods comments
 	remoteMessages := client.GetMessagesFrom(s.GeneralConfig.TrustedPods, "/api/comments/"+messageID)
@@ -98,15 +99,11 @@ func GetCommentsAndMainPageInfo(s service.Service, messageID string) PageData {
 	messages = client.CleanMessagesClientSide(messages)
 
 	// Try to get local OP
-	op, err := model.GetMessageFromDB(s, messageID)
+	op, err := query.GetMessage(s, messageID)
 	if err != nil {
 		fmt.Println("err:", err)
 		// Asks other pods to get comment
-		remoteOPs := client.GetSingleMessageFromEachPod(s.GeneralConfig.TrustedPods, "/api/message/"+messageID)
-		fmt.Println(remoteOPs)
-		if len(remoteOPs) > 0 {
-			op = remoteOPs[0]
-		}
+		op = client.GetSingleMessageFromEachPod(s.GeneralConfig.TrustedPods, "/api/message/"+messageID)
 	}
 	op = client.CleanSingleMessageClientSide(op)
 

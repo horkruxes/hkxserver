@@ -4,41 +4,23 @@ import (
 	"crypto/ed25519"
 	"encoding/base64"
 	"fmt"
-	"time"
 
 	"github.com/horkruxes/hkxserver/exceptions"
-	"github.com/horkruxes/hkxserver/service"
 )
 
-// VerifyConditions returns HTTP status code and an error
-func (message Message) VerifyConditions(s service.Service) (int, error) {
-	if s.ServerConfig.Debug {
-		return 202, nil
-	}
+// VerifyConstraints returns HTTP status code and an error
+// Checks that the messages constraints are inherently met
+// -independently from the database & server.
+func (message Message) VerifyConstraints() error {
 
 	if len(message.Content) > 50000 || len(message.DisplayedName) > 50 {
-		return 400, exceptions.ErrorFieldsTooLong
+		return exceptions.ErrorFieldsTooLong
 	} else if len(message.Content) < 140 {
-		return 400, exceptions.ErrorContentTooShort
-	} else if html := s.ContentPolicy.Sanitize(message.Content); html == message.Content {
-		return 400, exceptions.ErrorContentWithHTML
+		return exceptions.ErrorContentTooShort
 	} else if !message.VerifyOwnerShip() {
-		return 400, exceptions.ErrorWrongSignature
-	} else {
-		var lastPost time.Time
-		if message.MessageID == "" {
-			lastPost = GetMostRecentMessage(s).CreatedAt
-		} else {
-			lastPost = GetMostRecentComment(s, message.MessageID).CreatedAt
-		}
-		trusted := message.authorTrusted(s)
-		if !trusted && time.Since(lastPost) < time.Hour {
-			return 406, exceptions.ErrorTooSoonUnregistered
-		} else if trusted && time.Since(lastPost) < 30*time.Second {
-			return 406, exceptions.ErrorTooSoonRegistered
-		}
+		return exceptions.ErrorWrongSignature
 	}
-	return 202, nil
+	return nil
 }
 
 func (message Message) VerifyOwnerShip() bool {
@@ -65,13 +47,4 @@ func (message Message) VerifyOwnerShip() bool {
 	// fmt.Println(messageWithInfo)
 
 	return ed25519.Verify(pubBytes, messageWithInfo, sigBytes)
-}
-
-func (message Message) authorTrusted(s service.Service) bool {
-	for _, key := range s.ServerConfig.TrustedKeys {
-		if key == message.AuthorBase64 {
-			return true
-		}
-	}
-	return false
 }

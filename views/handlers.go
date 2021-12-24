@@ -12,6 +12,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/horkruxes/hkxserver/client"
 	"github.com/horkruxes/hkxserver/model"
+	"github.com/horkruxes/hkxserver/query"
 	"github.com/horkruxes/hkxserver/service"
 )
 
@@ -91,11 +92,11 @@ func NewMessage(s service.Service) func(*fiber.Ctx) error {
 		fmt.Println("try to post to:", payload.Pod)
 		// Check if can do the db operations right now or if it should transfer the payload to another API
 		if payload.Pod == "" {
-			if statusCode, err := payload.VerifyConditions(s); err != nil {
-				return c.Status(statusCode).SendString(err.Error())
+			if err := payload.VerifyConstraints(); err != nil {
+				return c.Status(400).SendString(err.Error())
 			}
 			fmt.Println("new msg", payload)
-			err := model.NewMessage(s, payload)
+			err := query.NewMessage(s, payload)
 			if err != nil {
 				return c.Status(422).SendString(err.Error())
 			}

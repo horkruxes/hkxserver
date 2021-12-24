@@ -8,6 +8,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/horkruxes/hkxserver/exceptions"
 	"github.com/horkruxes/hkxserver/model"
+	"github.com/horkruxes/hkxserver/query"
 	"github.com/horkruxes/hkxserver/service"
 )
 
@@ -20,7 +21,7 @@ import (
 // @Router /all [get]
 func GetAllJSON(s service.Service) func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
-		data := model.GetAllFromDB(s)
+		data := query.GetAll(s)
 		return c.Status(200).JSON(data)
 	}
 }
@@ -34,7 +35,7 @@ func GetAllJSON(s service.Service) func(*fiber.Ctx) error {
 // @Router /message [get]
 func GetMessagesJSON(s service.Service) func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
-		data := model.GetMessagesFromDB(s)
+		data := query.GetMessages(s)
 		return c.Status(200).JSON(data)
 	}
 }
@@ -49,7 +50,7 @@ func GetMessagesJSON(s service.Service) func(*fiber.Ctx) error {
 func GetCommentsJSON(s service.Service) func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
 		id := c.Params("id")
-		data := model.GetCommentsTo(s, id)
+		data := query.GetCommentsTo(s, id)
 		return c.Status(200).JSON(data)
 	}
 }
@@ -64,7 +65,7 @@ func GetCommentsJSON(s service.Service) func(*fiber.Ctx) error {
 func GetMessageJSON(s service.Service) func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
 		id := c.Params("id")
-		message, err := model.GetMessageFromDB(s, id)
+		message, err := query.GetMessage(s, id)
 		if err != nil {
 			return err
 		}
@@ -82,7 +83,7 @@ func GetMessageJSON(s service.Service) func(*fiber.Ctx) error {
 func GetMessagesFromAuthorJSON(s service.Service) func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
 		pubKey := c.Params("pubKey")
-		message := model.GetMessagesFromAuthor(s, pubKey)
+		message := query.GetMessagesFromAuthor(s, pubKey)
 		return c.JSON(message)
 	}
 }
@@ -112,7 +113,7 @@ func NewMessage(s service.Service) func(*fiber.Ctx) error {
 		}
 
 		// Register
-		err = model.NewMessage(s, message)
+		err = query.NewMessage(s, message)
 		if err != nil {
 			fmt.Println("err:", err)
 			return c.Status(statusCode).SendString(err.Error())
@@ -140,8 +141,11 @@ func PayloadToValidMessage(s service.Service, payload model.Message) (model.Mess
 	message.DisplayedName = strings.TrimSpace(payload.DisplayedName)
 	message.MessageID = strings.TrimSpace(payload.MessageID)
 
-	if statusCode, err := message.VerifyConditions(s); err != nil {
-		return message, statusCode, err
+	if err := message.VerifyConstraints(); err != nil {
+		return message, 400, err
+	}
+	if err := query.VerifyServerConstraints(s, message); err != nil {
+		return message, 400, err
 	}
 	return message, fiber.StatusOK, nil
 }

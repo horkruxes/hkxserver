@@ -62,7 +62,7 @@ func GetMessagesFrom(servers []string, path string) []model.Message {
 }
 
 // Try to get a singl message from each pod specified
-func GetSingleMessageFromEachPod(servers []string, path string) []model.Message {
+func GetSingleMessageFromEachPod(servers []string, path string) model.Message {
 	chanMessages := make(chan model.Message, len(servers))
 
 	var wg sync.WaitGroup
@@ -108,5 +108,8 @@ func GetSingleMessageFromEachPod(servers []string, path string) []model.Message 
 		messages = append(messages, msg)
 	}
 
-	return messages
+	if len(messages) == 0 {
+		return model.Message{}
+	}
+	return messages[0]
 }
