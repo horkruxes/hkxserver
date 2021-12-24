@@ -6,11 +6,13 @@ import (
 	"fmt"
 	"io/fs"
 	"net/http"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cache"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/filesystem"
+	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/helmet/v2"
 	"github.com/gofiber/template/html"
@@ -53,15 +55,20 @@ func setupServer(s service.Service) (fiber.App, int64) {
 		TrustedProxies:          []string{"127.0.0.1", "0.0.0.0"},
 	})
 
+	// Security
 	app.Use(helmet.New(helmet.Config{
 		HSTSMaxAge:            31536000,
 		HSTSExcludeSubdomains: true,
 		ReferrerPolicy:        "same-origin",
 	}))
-	app.Use(cors.New())
-	// app.Use(csrf.New()) // Useless and blocks post requests...
 
-	// app.Use(favicon.New(favicon.Config{FileSystem: http.FS(fsub)}))
+	app.Use(limiter.New(limiter.Config{
+		Max:               50,
+		Expiration:        1 * time.Minute,
+		LimiterMiddleware: limiter.SlidingWindow{},
+	}))
+
+	app.Use(cors.New())
 
 	if s.ServerConfig.Debug {
 		app.Use(logger.New())
