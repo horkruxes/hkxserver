@@ -60,9 +60,11 @@ func setupServer(s service.Service) (fiber.App, int64) {
 
 	// Security
 	app.Use(helmet.New(helmet.Config{
+		HSTSPreloadEnabled:    true,
 		HSTSMaxAge:            31536000,
 		HSTSExcludeSubdomains: true,
 		ReferrerPolicy:        "same-origin",
+		ContentSecurityPolicy: "default-src 'self'; img-src https: data:;",
 	}))
 
 	app.Use(limiter.New(limiter.Config{
