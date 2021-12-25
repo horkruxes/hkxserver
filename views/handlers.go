@@ -11,7 +11,6 @@ import (
 	"github.com/fatih/structs"
 	"github.com/gofiber/fiber/v2"
 	"github.com/horkruxes/hkxserver/client"
-	"github.com/horkruxes/hkxserver/model"
 	"github.com/horkruxes/hkxserver/query"
 	"github.com/horkruxes/hkxserver/service"
 )
@@ -36,12 +35,12 @@ func PostKeys(c *fiber.Ctx) error {
 
 	if outputData.Sig == "" {
 		// Answers to the signature GENERATION form
-		outputData.Sig = model.SignMessage(outputData.Sec, outputData.Pub, outputData.DisplayedName, outputData.Content, outputData.MessageID)
-		outputData.Valid = model.VerifyFromString(outputData.Pub, outputData.Sig, outputData.DisplayedName, outputData.Content, outputData.MessageID)
+		outputData.Sig = client.SignMessage(outputData.Sec, outputData.Pub, outputData.DisplayedName, outputData.Content, outputData.MessageID)
+		outputData.Valid = client.VerifyFromString(outputData.Pub, outputData.Sig, outputData.DisplayedName, outputData.Content, outputData.MessageID)
 		outputData.Sec = ""
 	} else {
 		// Answers to the signature VERIFICATION form
-		outputData.Valid = model.VerifyFromString(outputData.Pub, outputData.Sig, outputData.DisplayedName, outputData.Content, outputData.MessageID)
+		outputData.Valid = client.VerifyFromString(outputData.Pub, outputData.Sig, outputData.DisplayedName, outputData.Content, outputData.MessageID)
 		outputData.Sig = ""
 	}
 

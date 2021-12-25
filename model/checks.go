@@ -3,7 +3,6 @@ package model
 import (
 	"crypto/ed25519"
 	"encoding/base64"
-	"fmt"
 
 	"github.com/horkruxes/hkxserver/exceptions"
 )
@@ -24,13 +23,8 @@ func (message Message) VerifyConstraints() error {
 }
 
 func (message Message) VerifyOwnerShip() bool {
-	defer func() {
-		if r := recover(); r != nil {
-			fmt.Println("Recovered:", r)
-		}
-	}()
 	pubBytes, err := base64.URLEncoding.DecodeString(message.AuthorBase64)
-	if err != nil {
+	if err != nil || len(pubBytes) != ed25519.PublicKeySize {
 		return false
 	}
 	sigBytes, err := base64.URLEncoding.DecodeString(message.SignatureBase64)
