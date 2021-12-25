@@ -19,6 +19,7 @@ func SetupLocalRoutes(s service.Service, app *fiber.App) {
 		app.Post("/keys", PostKeys)
 		// FAQ
 		app.Get("/faq", GetFaq)
+		app.Get("/404", page404)
 	} else {
 		app.Get("/", GetMainNoFront)
 	}
@@ -27,4 +28,8 @@ func SetupLocalRoutes(s service.Service, app *fiber.App) {
 // Healthcheck
 func pong(c *fiber.Ctx) error {
 	return c.SendString("pong")
+}
+
+func page404(c *fiber.Ctx) error {
+	return c.SendString("404: wrong url")
 }

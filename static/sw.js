@@ -32,7 +32,7 @@ const MAX_TTL = {
 
 const CACHE_BLACKLIST = [
   (str) => {
-    return !str.startsWith('http://localhost');
+    return !str.startsWith('http://127.0.0.1');
   },
 ];
 
