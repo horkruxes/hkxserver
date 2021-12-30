@@ -13,7 +13,7 @@
     <label>Public Key</label>
     <input type="text" name="public-key" value="{{ .Pub }}" />
     <label>Author Name</label>
-    <input type="text" name="displayed-name" value="{{ .DisplayedName }}" />
+    <input type="text" name="title" value="{{ .DisplayedName }}" />
     <label>Message</label>
     <textarea rows="7" name="message">{{ .Content }}</textarea>
     <label>Signature</label>
@@ -85,7 +85,7 @@
     <label>Public Key</label>
     <input type="text" name="public-key" value="{{ .Pub }}" autocomplete="username" />
     <label>Author Name</label>
-    <input type="text" name="displayed-name" value="{{ .DisplayedName }}" />
+    <input type="text" name="title" value="{{ .DisplayedName }}" />
     <label>This message is a comment to</label>
     <input type="text" name="answer-to"
       placeholder="Optional: leave empty for an original post / enter message UUID for a comment" />

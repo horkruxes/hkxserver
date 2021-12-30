@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/horkruxes/hkxserver/client"
 	"github.com/horkruxes/hkxserver/exceptions"
 	"github.com/horkruxes/hkxserver/model"
 	"github.com/horkruxes/hkxserver/query"
@@ -90,9 +91,9 @@ func GetMessagesFromAuthorJSON(s service.Service) func(*fiber.Ctx) error {
 
 // NewMessage godoc
 // @Summary Post a new message
-// @Description get string by ID
+// @Description Post a new message
 // @Produce json
-// @Router /new [post]
+// @Router /message [post]
 func NewMessage(s service.Service) func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
 		fmt.Println("Received POST request to create new message")
@@ -101,9 +102,14 @@ func NewMessage(s service.Service) func(*fiber.Ctx) error {
 
 		// Read Body
 		if err := c.BodyParser(&payload); err != nil {
+			fmt.Println("can't parse payload:", err)
 			return c.Status(500).SendString(err.Error())
 		}
 		fmt.Println("content:", payload)
+		secretKey := strings.TrimSpace(c.FormValue("secret-key"))
+		if secretKey != "" && strings.TrimSpace(c.FormValue("signature")) == "" {
+			payload.SignatureBase64 = client.SignMessage(secretKey, payload.AuthorBase64, payload.DisplayedName, payload.Content, payload.MessageID)
+		}
 
 		// Translate into Message struct and verify conditions
 		message, statusCode, err := PayloadToValidMessage(s, payload)

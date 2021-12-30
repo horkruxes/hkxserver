@@ -5,11 +5,11 @@
   {{ else }}
   <h3>Post a message</h3>
   {{ end }}
-  <form method="POST" action="/new">
+  <form method="POST" action="/api/message" target="_parent">
       <label>Name</label>
       <input
         type="text"
-        name="name"
+        name="title"
         placeholder="Displayed name, can be anything"
       />
 
@@ -19,9 +19,7 @@
         rows="9"
         name="message"
         placeholder="Write anything without being censored!"
-      >
-        {{ .Content }}
-      </textarea>
+      >{{ .Content }}</textarea>
       <p id="countChars"></p>
       <label>Public Key</label>
       <input

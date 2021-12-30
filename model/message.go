@@ -10,11 +10,11 @@ type Message struct {
 	CreatedAt time.Time
 
 	// Stored and given by user
-	DisplayedName   string // Name Chosen by author, no restriction but < 50 char
-	AuthorBase64    string // Encoded in URL-safe Base64
-	Content         string
-	SignatureBase64 string // Encoded in URL-safe Base64
-	MessageID       string // Used if the message is a comment to a publication
+	DisplayedName   string `form:"title" json:"title"`           // Name Chosen by author, no restriction but < 50 char
+	AuthorBase64    string `form:"public-key" json:"public-key"` // Encoded in URL-safe Base64
+	Content         string `form:"message" json:"message"`
+	SignatureBase64 string `form:"signature" json:"signature"` // Encoded in URL-safe Base64
+	MessageID       string `form:"answer-to" json:"answer-to"` // Used if the message is a comment to a publication
 
 	// Only for display on client, computed from known values
 	Correct        bool   `json:"-" gorm:"-"`

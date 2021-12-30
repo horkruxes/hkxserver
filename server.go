@@ -64,7 +64,7 @@ func setupServer(s service.Service) (fiber.App, int64) {
 		HSTSMaxAge:            31536000,
 		HSTSExcludeSubdomains: true,
 		ReferrerPolicy:        "same-origin",
-		ContentSecurityPolicy: "default-src 'self'; img-src https: data:; style-src 'self' 'unsafe-inline';",
+		ContentSecurityPolicy: "default-src 'self'; img-src https: data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'",
 	}))
 
 	app.Use(limiter.New(limiter.Config{

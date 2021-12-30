@@ -96,6 +96,13 @@ var doc = `{
                         }
                     }
                 }
+            },
+            "post": {
+                "description": "Post a new message",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Post a new message"
             }
         },
         "/message/{uuid}": {
@@ -122,15 +129,6 @@ var doc = `{
                         }
                     }
                 }
-            }
-        },
-        "/new": {
-            "post": {
-                "description": "get string by ID",
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "Post a new message"
             }
         },
         "/user/{pubkey}": {
@@ -167,32 +165,34 @@ var doc = `{
         "model.Message": {
             "type": "object",
             "properties": {
-                "authorBase64": {
-                    "type": "string"
-                },
-                "content": {
+                "answer-to": {
+                    "description": "Used if the message is a comment to a publication",
                     "type": "string"
                 },
                 "createdAt": {
-                    "type": "string"
-                },
-                "displayedName": {
-                    "description": "Stored and given by user",
                     "type": "string"
                 },
                 "id": {
                     "description": "Stored and generated",
                     "type": "string"
                 },
-                "messageID": {
-                    "description": "Used if the message is a comment to a publication",
+                "message": {
+                    "type": "string"
+                },
+                "name": {
+                    "description": "Stored and given by user",
                     "type": "string"
                 },
                 "pod": {
                     "description": "Not saved in db but tell where it is sent from so remains in JSON",
                     "type": "string"
                 },
+                "public-key": {
+                    "description": "Encoded in URL-safe Base64",
+                    "type": "string"
+                },
                 "signatureBase64": {
+                    "description": "Encoded in URL-safe Base64",
                     "type": "string"
                 }
             }
