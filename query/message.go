@@ -14,7 +14,7 @@ func GetCommentsTo(s service.Service, messageID string) []model.Message {
 	return model.CleanMessagesOutFromDB(messages, s.GeneralConfig.URL)
 }
 
-// GetAllFromDB get data from db and checks some things
+// GetAll gets data from db and checks some things
 func GetAll(s service.Service) []model.Message {
 	var messages []model.Message
 	// s.DB.Where("correct = ?", true).Find(&messages)
@@ -22,7 +22,7 @@ func GetAll(s service.Service) []model.Message {
 	return model.CleanMessagesOutFromDB(messages, s.GeneralConfig.URL)
 }
 
-// GetMessagesFromDB get data from db and checks some things
+// GetMessages get data from db and checks some things
 func GetMessages(s service.Service) []model.Message {
 	var messages []model.Message
 	// s.DB.Where("correct = ?", true).Find(&messages)
@@ -54,15 +54,16 @@ func GetMessage(s service.Service, id string) (model.Message, error) {
 	return model.CleanSingleMessageOutFromDB(message, s.GeneralConfig.URL), err
 }
 
+// NewMessage sanitizes, checks validity and eligibilty and saves the message to the database
 func NewMessage(s service.Service, message model.Message) (model.Message, error) {
-	if err := message.VerifyConstraints(); err != nil {
+	message.ID = uuid.NewString()
+	message.CreatedAt = time.Now()
+	if err := message.Sanitize(true); err != nil {
 		return model.Message{}, err
 	}
 	if err := VerifyServerConstraints(s, message); err != nil {
 		return model.Message{}, err
 	}
-	message.ID = uuid.NewString()
-	message.CreatedAt = time.Now()
 	err := s.DB.Create(&message).Error
 	return message, err
 }

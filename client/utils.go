@@ -56,6 +56,6 @@ func CleanSingleMessageClientSide(message model.Message) model.Message {
 	message.DisplayedDate = message.CreatedAt.Format("2 Jan 2006 15:04")
 
 	message.ColorPrimary, message.ColorSecondary = colorsFromBase64(message.AuthorBase64)
-	message.Correct = message.VerifyOwnerShip()
+	message.Correct = message.Sanitize(true) == nil
 	return message
 }

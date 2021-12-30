@@ -9,9 +9,6 @@ import (
 )
 
 func VerifyServerConstraints(s service.Service, message model.Message) error {
-	if html := s.ContentPolicy.Sanitize(message.Content); html != message.Content {
-		return exceptions.ErrorContentWithHTML
-	}
 	if err := VerifyTiming(s, message); err != nil {
 		return err
 	}

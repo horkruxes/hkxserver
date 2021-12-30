@@ -3,25 +3,47 @@ package model
 import (
 	"crypto/ed25519"
 	"encoding/base64"
+	"strings"
 
+	"github.com/google/uuid"
 	"github.com/horkruxes/hkxserver/exceptions"
+	"github.com/microcosm-cc/bluemonday"
 )
 
-// VerifyConstraints returns HTTP status code and an error
+// Sanitizes, normalizes and optionally verifies the message signature
+func (message *Message) Sanitize(verifySignature bool) error {
+	message.AuthorBase64 = strings.TrimSpace(message.AuthorBase64)
+	message.SignatureBase64 = strings.TrimSpace(message.SignatureBase64)
+
+	message.Content = strings.TrimSpace(message.Content)
+	message.Content = bluemonday.UGCPolicy().Sanitize(message.Content)
+
+	message.DisplayedName = strings.TrimSpace(message.DisplayedName)
+	message.DisplayedName = bluemonday.StrictPolicy().Sanitize(message.DisplayedName)
+
+	message.MessageID = strings.TrimSpace(message.MessageID)
+
+	return message.verifyConstraints(verifySignature)
+}
+
+// VerifyConstraints returns an error.
 // Checks that the messages constraints are inherently met
 // -independently from the database & server.
-func (message Message) VerifyConstraints() error {
+func (message Message) verifyConstraints(verifySignature bool) error {
 	if len(message.Content) > 50000 || len(message.DisplayedName) > 50 {
 		return exceptions.ErrorFieldsTooLong
 	} else if len(message.Content) < 140 {
 		return exceptions.ErrorContentTooShort
-	} else if !message.VerifyOwnerShip() {
+	} else if _, err := uuid.Parse(message.ID); err != nil {
+		return err
+	} else if verifySignature && !message.verifyOwnerShip() {
 		return exceptions.ErrorWrongSignature
 	}
 	return nil
 }
 
-func (message Message) VerifyOwnerShip() bool {
+// VerifyOwnerShip returns true if the signature is valid.
+func (message Message) verifyOwnerShip() bool {
 	pubBytes, err := base64.URLEncoding.DecodeString(message.AuthorBase64)
 	if err != nil || len(pubBytes) != ed25519.PublicKeySize {
 		return false

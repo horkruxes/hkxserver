@@ -1,9 +1,7 @@
 package api
 
 import (
-	"encoding/base64"
 	"fmt"
-	"strings"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/horkruxes/hkxserver/model"
@@ -95,57 +93,21 @@ func GetMessagesFromAuthorJSON(s service.Service) func(*fiber.Ctx) error {
 func NewMessage(s service.Service) func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
 		fmt.Println("Received POST request to create new message")
-		// Get message
-		payload := model.Message{}
 
 		// Read Body
+		payload := model.Message{}
 		if err := c.BodyParser(&payload); err != nil {
 			fmt.Println("can't parse payload:", err)
 			return c.Status(500).SendString(err.Error())
 		}
 		fmt.Println("content:", payload)
 
-		// Translate into Message struct and verify conditions
-		message, err := PayloadToValidMessage(s, payload)
-		if err != nil {
-			fmt.Println("error:", err)
-			return c.Status(400).SendString(err.Error())
-		}
-
 		// Register message
-		newMessage, err := query.NewMessage(s, message)
+		newMessage, err := query.NewMessage(s, payload)
 		if err != nil {
 			fmt.Println("error:", err)
 			return c.Status(400).SendString(err.Error())
 		}
 		return c.JSON(newMessage)
 	}
-}
-
-func PayloadToValidMessage(s service.Service, payload model.Message) (model.Message, error) {
-	message := model.Message{}
-
-	var err error
-
-	message.SignatureBase64 = strings.TrimSpace(payload.SignatureBase64)
-	_, err = base64.URLEncoding.DecodeString(message.SignatureBase64)
-	if err != nil {
-		return message, err
-	}
-	message.AuthorBase64 = strings.TrimSpace(payload.AuthorBase64)
-	_, err = base64.URLEncoding.DecodeString(message.AuthorBase64)
-	if err != nil {
-		return message, err
-	}
-	message.Content = strings.TrimSpace(payload.Content)
-	message.DisplayedName = strings.TrimSpace(payload.DisplayedName)
-	message.MessageID = strings.TrimSpace(payload.MessageID)
-
-	if err := message.VerifyConstraints(); err != nil {
-		return message, err
-	}
-	if err := query.VerifyServerConstraints(s, message); err != nil {
-		return message, err
-	}
-	return message, nil
 }

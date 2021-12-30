@@ -90,8 +90,15 @@ func GetComments(s service.Service) func(*fiber.Ctx) error {
 
 func NewMessage(s service.Service) func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
-		payload := FormToBasicMessage(c)
+		// Read Body
+		payload := model.Message{}
+		if err := c.BodyParser(&payload); err != nil {
+			fmt.Println("can't parse payload:", err)
+			return c.Status(500).SendString(err.Error())
+		}
+		fmt.Println("content:", payload)
 
+		// Sign if necessary
 		secretKey := strings.TrimSpace(c.FormValue("secret-key"))
 		if secretKey != "" && payload.SignatureBase64 == "" {
 			fmt.Println("signing server-side")
@@ -106,10 +113,6 @@ func NewMessage(s service.Service) func(*fiber.Ctx) error {
 		fmt.Println("try to post to:", payload.Pod)
 		// Check if can do the db operations right now or if it should transfer the payload to another API
 		if payload.Pod == "" {
-			if err := payload.VerifyConstraints(); err != nil {
-				fmt.Println("error:", err)
-				return c.Status(400).SendString(err.Error())
-			}
 			fmt.Println("new msg", payload)
 
 			var err error
