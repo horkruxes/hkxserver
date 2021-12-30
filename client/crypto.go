@@ -57,7 +57,7 @@ func VerifyFromString(pub, sig, displayedName, msg, msgId string) bool {
 // The author's public key
 // The author's declared name
 // The eventual messageId, empty if this is an original post
-func SignMessage(secBase64, pubBase64, displayedName, message, messageId string) string {
+func SignStrings(secBase64, pubBase64, displayedName, message, messageId string) string {
 	sec, err := base64.URLEncoding.DecodeString(secBase64)
 	if err != nil || len(sec) != ed25519.PrivateKeySize {
 		return ""
@@ -77,4 +77,8 @@ func SignMessage(secBase64, pubBase64, displayedName, message, messageId string)
 	signature := ed25519.Sign(sec, msgToSign)
 	sigString := base64.URLEncoding.EncodeToString(signature)
 	return sigString
+}
+
+func SignMessage(msg model.Message, secretKey string) string {
+	return SignStrings(secretKey, msg.AuthorBase64, msg.DisplayedName, msg.Content, msg.MessageID)
 }

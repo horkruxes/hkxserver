@@ -17,7 +17,7 @@ func FormToBasicMessage(c *fiber.Ctx) model.Message {
 	message.SignatureBase64 = strings.TrimSpace(c.FormValue("signature"))
 	message.AuthorBase64 = strings.TrimSpace(c.FormValue("public-key"))
 	message.Content = strings.TrimSpace(c.FormValue("message"))
-	message.DisplayedName = strings.TrimSpace(c.FormValue("name"))
+	message.DisplayedName = strings.TrimSpace(c.FormValue("title"))
 	message.MessageID = strings.TrimSpace(c.FormValue("answer-to"))
 	message.Pod = strings.TrimSpace(c.FormValue("pod-to-post-to"))
 

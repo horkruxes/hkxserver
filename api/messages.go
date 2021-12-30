@@ -6,8 +6,6 @@ import (
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/horkruxes/hkxserver/client"
-	"github.com/horkruxes/hkxserver/exceptions"
 	"github.com/horkruxes/hkxserver/model"
 	"github.com/horkruxes/hkxserver/query"
 	"github.com/horkruxes/hkxserver/service"
@@ -106,29 +104,25 @@ func NewMessage(s service.Service) func(*fiber.Ctx) error {
 			return c.Status(500).SendString(err.Error())
 		}
 		fmt.Println("content:", payload)
-		secretKey := strings.TrimSpace(c.FormValue("secret-key"))
-		if secretKey != "" && strings.TrimSpace(c.FormValue("signature")) == "" {
-			payload.SignatureBase64 = client.SignMessage(secretKey, payload.AuthorBase64, payload.DisplayedName, payload.Content, payload.MessageID)
-		}
 
 		// Translate into Message struct and verify conditions
-		message, statusCode, err := PayloadToValidMessage(s, payload)
+		message, err := PayloadToValidMessage(s, payload)
 		if err != nil {
-			fmt.Println("err:", err)
-			return c.Status(statusCode).SendString(err.Error())
+			fmt.Println("error:", err)
+			return c.Status(400).SendString(err.Error())
 		}
 
-		// Register
-		err = query.NewMessage(s, message)
+		// Register message
+		newMessage, err := query.NewMessage(s, message)
 		if err != nil {
-			fmt.Println("err:", err)
-			return c.Status(statusCode).SendString(err.Error())
+			fmt.Println("error:", err)
+			return c.Status(400).SendString(err.Error())
 		}
-		return c.Redirect("/")
+		return c.JSON(newMessage)
 	}
 }
 
-func PayloadToValidMessage(s service.Service, payload model.Message) (model.Message, int, error) {
+func PayloadToValidMessage(s service.Service, payload model.Message) (model.Message, error) {
 	message := model.Message{}
 
 	var err error
@@ -136,22 +130,22 @@ func PayloadToValidMessage(s service.Service, payload model.Message) (model.Mess
 	message.SignatureBase64 = strings.TrimSpace(payload.SignatureBase64)
 	_, err = base64.URLEncoding.DecodeString(message.SignatureBase64)
 	if err != nil {
-		return message, 400, exceptions.ErrorWrongSignature
+		return message, err
 	}
 	message.AuthorBase64 = strings.TrimSpace(payload.AuthorBase64)
 	_, err = base64.URLEncoding.DecodeString(message.AuthorBase64)
 	if err != nil {
-		return message, 400, exceptions.ErrorWrongSignature
+		return message, err
 	}
 	message.Content = strings.TrimSpace(payload.Content)
 	message.DisplayedName = strings.TrimSpace(payload.DisplayedName)
 	message.MessageID = strings.TrimSpace(payload.MessageID)
 
 	if err := message.VerifyConstraints(); err != nil {
-		return message, 400, err
+		return message, err
 	}
 	if err := query.VerifyServerConstraints(s, message); err != nil {
-		return message, 400, err
+		return message, err
 	}
-	return message, fiber.StatusOK, nil
+	return message, nil
 }

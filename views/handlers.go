@@ -10,7 +10,9 @@ import (
 
 	"github.com/fatih/structs"
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
 	"github.com/horkruxes/hkxserver/client"
+	"github.com/horkruxes/hkxserver/model"
 	"github.com/horkruxes/hkxserver/query"
 	"github.com/horkruxes/hkxserver/service"
 )
@@ -34,7 +36,7 @@ func PostKeys(c *fiber.Ctx) error {
 
 	if outputData.Sig == "" {
 		// Answers to the signature GENERATION form
-		outputData.Sig = client.SignMessage(outputData.Sec, outputData.Pub, outputData.DisplayedName, outputData.Content, outputData.MessageID)
+		outputData.Sig = client.SignStrings(outputData.Sec, outputData.Pub, outputData.DisplayedName, outputData.Content, outputData.MessageID)
 		outputData.Valid = client.VerifyFromString(outputData.Pub, outputData.Sig, outputData.DisplayedName, outputData.Content, outputData.MessageID)
 		outputData.Sec = ""
 	} else {
@@ -77,6 +79,10 @@ func GetComments(s service.Service) func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
 		s.ClientConfig = parseFormsToService(c, s)
 		id := c.Params("uuid")
+		_, err := uuid.Parse(id)
+		if err != nil {
+			return c.Status(400).SendString("Invalid UUID" + err.Error())
+		}
 		localData := GetCommentsAndMainPageInfo(s, id)
 		return c.Render("templates/main/root", structs.Map(localData))
 	}
@@ -86,15 +92,30 @@ func NewMessage(s service.Service) func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
 		payload := FormToBasicMessage(c)
 
+		secretKey := strings.TrimSpace(c.FormValue("secret-key"))
+		if secretKey != "" && payload.SignatureBase64 == "" {
+			fmt.Println("signing server-side")
+			payload.SignatureBase64 = client.SignMessage(payload, secretKey)
+			if payload.SignatureBase64 == "" {
+				return c.Status(400).SendString("can't sign message")
+			}
+		}
+
+		newMessage := model.Message{}
+
 		fmt.Println("try to post to:", payload.Pod)
 		// Check if can do the db operations right now or if it should transfer the payload to another API
 		if payload.Pod == "" {
 			if err := payload.VerifyConstraints(); err != nil {
+				fmt.Println("error:", err)
 				return c.Status(400).SendString(err.Error())
 			}
 			fmt.Println("new msg", payload)
-			err := query.NewMessage(s, payload)
+
+			var err error
+			newMessage, err = query.NewMessage(s, payload)
 			if err != nil {
+				fmt.Println("error:", err)
 				return c.Status(422).SendString(err.Error())
 			}
 		} else {
@@ -116,10 +137,19 @@ func NewMessage(s service.Service) func(*fiber.Ctx) error {
 				}
 				fmt.Println(string(body))
 
+				err = json.Unmarshal(body, &newMessage)
+				if err != nil {
+					fmt.Println("err:", err)
+				}
+
 				return c.SendString("error sending the message " + string(body))
 			}
 		}
 
-		return c.Redirect("/")
+		if newMessage.MessageID == "" {
+			return c.Redirect("/comments/" + newMessage.ID)
+		} else {
+			return c.Redirect("/comments/" + newMessage.MessageID)
+		}
 	}
 }

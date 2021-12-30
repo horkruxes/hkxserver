@@ -54,14 +54,15 @@ func GetMessage(s service.Service, id string) (model.Message, error) {
 	return model.CleanSingleMessageOutFromDB(message, s.GeneralConfig.URL), err
 }
 
-func NewMessage(s service.Service, message model.Message) error {
+func NewMessage(s service.Service, message model.Message) (model.Message, error) {
 	if err := message.VerifyConstraints(); err != nil {
-		return err
+		return model.Message{}, err
 	}
 	if err := VerifyServerConstraints(s, message); err != nil {
-		return err
+		return model.Message{}, err
 	}
 	message.ID = uuid.NewString()
 	message.CreatedAt = time.Now()
-	return s.DB.Create(&message).Error
+	err := s.DB.Create(&message).Error
+	return message, err
 }

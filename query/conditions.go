@@ -9,7 +9,7 @@ import (
 )
 
 func VerifyServerConstraints(s service.Service, message model.Message) error {
-	if html := s.ContentPolicy.Sanitize(message.Content); html == message.Content {
+	if html := s.ContentPolicy.Sanitize(message.Content); html != message.Content {
 		return exceptions.ErrorContentWithHTML
 	}
 	if err := VerifyTiming(s, message); err != nil {
@@ -26,6 +26,7 @@ func VerifyTiming(s service.Service, message model.Message) error {
 		lastPost = GetMostRecentComment(s, message.MessageID).CreatedAt
 	}
 	trusted := authorTrusted(s, message)
+
 	if !trusted && time.Since(lastPost) < time.Hour {
 		return exceptions.ErrorTooSoonUnregistered
 	} else if trusted && time.Since(lastPost) < 30*time.Second {

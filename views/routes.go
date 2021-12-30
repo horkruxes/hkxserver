@@ -35,6 +35,7 @@ func page404(c *fiber.Ctx) error {
 	return c.SendString("404: wrong url")
 }
 
+// Offline is used for PWAs
 func offline(c *fiber.Ctx) error {
 	return c.SendString("offline")
 }
