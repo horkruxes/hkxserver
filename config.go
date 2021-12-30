@@ -49,7 +49,7 @@ func createDefaultConfigIfDoesNotExist() {
 	_, err := ioutil.ReadFile("hkxconfig.toml")
 	if err != nil {
 		b := []byte(defaultConfig())
-		if err := ioutil.WriteFile("hkxconfig.toml", b, 0600); err != nil {
+		if err := ioutil.WriteFile("hkxconfig.toml", b, 0o600); err != nil {
 			panic(err)
 		}
 		fmt.Println(`It's the first time running Horkruxes, Thank you!

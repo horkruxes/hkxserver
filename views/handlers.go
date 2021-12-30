@@ -21,7 +21,6 @@ func GetKeys(c *fiber.Ctx) error {
 }
 
 func PostKeys(c *fiber.Ctx) error {
-
 	outputData := client.GenKeys()
 
 	// Get form data and reinject into output data
@@ -85,7 +84,6 @@ func GetComments(s service.Service) func(*fiber.Ctx) error {
 
 func NewMessage(s service.Service) func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
-
 		payload := FormToBasicMessage(c)
 
 		fmt.Println("try to post to:", payload.Pod)

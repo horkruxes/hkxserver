@@ -20,7 +20,6 @@ var staticFS embed.FS
 // @license.url https://www.gnu.org/licenses/agpl-3.0.html
 // @BasePath /api
 func main() {
-
 	flag.Parse()
 
 	arg := ""

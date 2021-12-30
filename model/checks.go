@@ -11,7 +11,6 @@ import (
 // Checks that the messages constraints are inherently met
 // -independently from the database & server.
 func (message Message) VerifyConstraints() error {
-
 	if len(message.Content) > 50000 || len(message.DisplayedName) > 50 {
 		return exceptions.ErrorFieldsTooLong
 	} else if len(message.Content) < 140 {

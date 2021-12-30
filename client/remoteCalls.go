@@ -46,7 +46,6 @@ func GetMessagesFrom(servers []string, path string) []model.Message {
 				return
 			}
 			chanMessages <- msg
-
 		}(chanMessages, pod)
 	}
 
@@ -96,7 +95,6 @@ func GetSingleMessageFromEachPod(servers []string, path string) model.Message {
 				return
 			}
 			chanMessages <- msg
-
 		}(chanMessages, pod)
 	}
 

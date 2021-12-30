@@ -17,7 +17,6 @@ type dbOptions struct {
 }
 
 func initDatabase(db_name string) *gorm.DB {
-
 	var err error
 	newLogger := logger.New(
 		log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer

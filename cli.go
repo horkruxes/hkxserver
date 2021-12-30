@@ -35,13 +35,11 @@ func downloadAndSaveLastVersion() error {
 	fmt.Println("Downloaded latest version. Please restart server.")
 
 	return nil
-
 }
 
 // Untar takes a destination path and a reader; a tar reader loops over the tarfile
 // creating the file structure at 'dst' along the way, and writing any files
 func Untar(r io.Reader) error {
-
 	gzr, err := gzip.NewReader(r)
 	if err != nil {
 		return err
@@ -82,7 +80,7 @@ func Untar(r io.Reader) error {
 		// if its a dir and it doesn't exist create it
 		case tar.TypeDir:
 			if _, err := os.Stat(target); err != nil {
-				if err := os.MkdirAll(target, 0750); err != nil {
+				if err := os.MkdirAll(target, 0o750); err != nil {
 					return err
 				}
 			}

@@ -11,7 +11,6 @@ const (
 )
 
 func TestVerifyConstraints(t *testing.T) {
-
 	correctMessage := Message{
 		ID:              "",
 		CreatedAt:       time.Now(),

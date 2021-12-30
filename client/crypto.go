@@ -77,5 +77,4 @@ func SignMessage(secBase64, pubBase64, displayedName, message, messageId string)
 	signature := ed25519.Sign(sec, msgToSign)
 	sigString := base64.URLEncoding.EncodeToString(signature)
 	return sigString
-
 }

@@ -34,7 +34,6 @@ type PageInfo struct {
 
 // Get Local and online messages, checks validity and return view
 func GetMessagesAndMainPageInfo(s service.Service) PageData {
-
 	// Get local messages
 	messages := query.GetMessages(s)
 
@@ -65,7 +64,6 @@ func GetMessagesAndMainPageInfo(s service.Service) PageData {
 // Get Local and online messages, checks validity and return view
 // Pubkey is in base64 form
 func GetAuthorMessagesAndMainPageInfo(s service.Service, pubKey string) PageData {
-
 	// Get local messages
 	messages := query.GetMessagesFromAuthor(s, pubKey)
 
@@ -85,7 +83,6 @@ func GetAuthorMessagesAndMainPageInfo(s service.Service, pubKey string) PageData
 
 // Get Local and online messages, checks validity and return view
 func GetCommentsAndMainPageInfo(s service.Service, messageID string) PageData {
-
 	messages := []model.Message{}
 
 	// Get local comments
