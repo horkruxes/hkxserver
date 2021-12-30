@@ -7,11 +7,11 @@ const BASE_CACHE_FILES = [
   "/favicon.ico",
 ];
 
-const OFFLINE_CACHE_FILES = ["/404"];
+const OFFLINE_CACHE_FILES = ["/offline"];
 
 const NOT_FOUND_CACHE_FILES = ["/404"];
 
-const OFFLINE_PAGE = "/404";
+const OFFLINE_PAGE = "/offline";
 const NOT_FOUND_PAGE = "/404";
 
 const CACHE_VERSIONS = {

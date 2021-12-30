@@ -20,6 +20,7 @@ func SetupLocalRoutes(s service.Service, app *fiber.App) {
 		// FAQ
 		app.Get("/faq", GetFaq)
 		app.Get("/404", page404)
+		app.Get("/offline", offline)
 	} else {
 		app.Get("/", GetMainNoFront)
 	}
@@ -32,4 +33,8 @@ func pong(c *fiber.Ctx) error {
 
 func page404(c *fiber.Ctx) error {
 	return c.SendString("404: wrong url")
+}
+
+func offline(c *fiber.Ctx) error {
+	return c.SendString("offline")
 }
