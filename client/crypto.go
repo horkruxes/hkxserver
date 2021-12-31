@@ -47,7 +47,7 @@ func VerifyFromString(pub, sig, displayedName, msg, msgId string) bool {
 		MessageID:       msgId,
 	}
 
-	return message.Sanitize(true) == nil
+	return message.Normalize(true) == nil
 }
 
 // SignMessage signs messages from base64 and return a base64 signature (empty string if the signature can't be generated)
@@ -76,6 +76,8 @@ func SignStrings(secBase64, pubBase64, displayedName, message, messageId string)
 }
 
 func SignMessage(msg model.Message, secretKey string) string {
-	msg.Sanitize(false)
+	if err := msg.Normalize(false); err != nil {
+		return ""
+	}
 	return SignStrings(secretKey, msg.AuthorBase64, msg.DisplayedName, msg.Content, msg.MessageID)
 }

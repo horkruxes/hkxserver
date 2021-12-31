@@ -58,9 +58,10 @@ func GetMessage(s service.Service, id string) (model.Message, error) {
 func NewMessage(s service.Service, message model.Message) (model.Message, error) {
 	message.ID = uuid.NewString()
 	message.CreatedAt = time.Now()
-	if err := message.Sanitize(true); err != nil {
+	if err := message.Normalize(true); err != nil {
 		return model.Message{}, err
 	}
+	message.EscapesHTML()
 	if err := VerifyServerConstraints(s, message); err != nil {
 		return model.Message{}, err
 	}

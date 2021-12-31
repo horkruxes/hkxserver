@@ -13,7 +13,7 @@ const (
 	uuidTest = "363de435-0268-4000-a333-fad3e1f6dd1f"
 )
 
-func TestSanitize(t *testing.T) {
+func TestEscapesHTML(t *testing.T) {
 	correctMessage := Message{
 		ID:              uuidTest,
 		CreatedAt:       time.Now(),
@@ -24,7 +24,8 @@ func TestSanitize(t *testing.T) {
 		MessageID:       "",
 	}
 
-	err := correctMessage.Sanitize(false)
+	err := correctMessage.Normalize(false)
+	correctMessage.EscapesHTML()
 	if err != nil {
 		t.Errorf(err.Error())
 	}
@@ -38,7 +39,28 @@ func TestSanitize(t *testing.T) {
 	}
 }
 
-func BenchmarkSanitize(b *testing.B) {
+func TestNormalize(t *testing.T) {
+	correctMessage := Message{
+		ID:              uuidTest,
+		CreatedAt:       time.Now(),
+		DisplayedName:   "  Test Name - Message title ",
+		AuthorBase64:    pubKey,
+		SignatureBase64: "  xO9KBOZaPxmT6IcVUazXTyj7mmCCmf8gnCXtmNd6GuGRW-naj6dubiIPYSEAyt6UE0rNCzV0G71w7xgfF5GcCA==",
+		Content:         " Lorem <script>alert('xss')</script>ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
+		MessageID:       "",
+	}
+
+	err := correctMessage.Normalize(false)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+
+	if correctMessage.DisplayedName != "Test Name - Message title" {
+		t.Errorf("Expected: 'Test Name - Message title', got: %#v", correctMessage.DisplayedName)
+	}
+}
+
+func BenchmarkNormalize(b *testing.B) {
 	correctMessage := Message{
 		ID:              uuid.NewString(),
 		CreatedAt:       time.Now(),
@@ -50,7 +72,7 @@ func BenchmarkSanitize(b *testing.B) {
 	}
 
 	for i := 0; i < b.N; i++ {
-		correctMessage.Sanitize(true)
+		correctMessage.Normalize(true)
 	}
 }
 

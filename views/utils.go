@@ -19,9 +19,11 @@ func parseFormsToService(c *fiber.Ctx, s service.Service) service.ClientConfig {
 
 func MarkDowner(policy *bluemonday.Policy) func(string) template.HTML {
 	return func(content string) template.HTML {
-		markdownBytes := blackfriday.Run([]byte(content), blackfriday.WithExtensions(blackfriday.HardLineBreak|blackfriday.NoEmptyLineBeforeBlock))
-		safeBytes := policy.SanitizeBytes(markdownBytes)
+		markdownBytes := blackfriday.Run(
+			[]byte(content),
+			blackfriday.WithExtensions(blackfriday.HardLineBreak|blackfriday.NoEmptyLineBeforeBlock),
+		)
 		//#nosec
-		return template.HTML(safeBytes)
+		return template.HTML(markdownBytes)
 	}
 }

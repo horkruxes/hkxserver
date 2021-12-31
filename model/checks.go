@@ -10,20 +10,20 @@ import (
 	"github.com/microcosm-cc/bluemonday"
 )
 
-// Sanitizes, normalizes and optionally verifies the message signature
-func (message *Message) Sanitize(verifySignature bool) error {
-	message.AuthorBase64 = strings.TrimSpace(message.AuthorBase64)
-	message.SignatureBase64 = strings.TrimSpace(message.SignatureBase64)
-
-	message.Content = strings.TrimSpace(message.Content)
-	message.Content = bluemonday.UGCPolicy().Sanitize(message.Content)
-
+// Normalizes, verifies integrity and optionally verifies the message signature
+func (message *Message) Normalize(verifySignature bool) error {
 	message.DisplayedName = strings.TrimSpace(message.DisplayedName)
-	message.DisplayedName = bluemonday.StrictPolicy().Sanitize(message.DisplayedName)
-
+	message.AuthorBase64 = strings.TrimSpace(message.AuthorBase64)
+	message.Content = strings.TrimSpace(message.Content)
+	message.SignatureBase64 = strings.TrimSpace(message.SignatureBase64)
 	message.MessageID = strings.TrimSpace(message.MessageID)
 
 	return message.verifyConstraints(verifySignature)
+}
+
+func (message *Message) EscapesHTML() {
+	message.Content = bluemonday.UGCPolicy().Sanitize(message.Content)
+	message.DisplayedName = bluemonday.StrictPolicy().Sanitize(message.DisplayedName)
 }
 
 // VerifyConstraints returns an error.
