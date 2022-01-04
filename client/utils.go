@@ -46,7 +46,6 @@ func colorsFromBase64(name string) (string, string) {
 // CleanMessagesOutFromDB get data from DB and do some checks and verifications
 func CleanMessagesClientSide(messages []model.Message) []model.Message {
 	for i, message := range messages {
-		message = model.CleanSingleMessageOutFromDB(message)
 		messages[i] = CleanSingleMessageClientSide(message)
 	}
 	return messages
@@ -56,6 +55,6 @@ func CleanSingleMessageClientSide(message model.Message) model.Message {
 	message.DisplayedDate = message.CreatedAt.Format("2 Jan 2006 15:04")
 
 	message.ColorPrimary, message.ColorSecondary = colorsFromBase64(message.AuthorBase64)
-	message.Correct = message.Normalize(true) == nil
+	message.Correct = message.Verify() == nil
 	return message
 }

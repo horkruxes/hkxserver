@@ -1,6 +1,7 @@
 package views
 
 import (
+	"html"
 	"html/template"
 
 	"github.com/gofiber/fiber/v2"
@@ -17,13 +18,18 @@ func parseFormsToService(c *fiber.Ctx, s service.Service) service.ClientConfig {
 	return s.ClientConfig
 }
 
-func MarkDowner(policy *bluemonday.Policy) func(string) template.HTML {
-	return func(content string) template.HTML {
-		markdownBytes := blackfriday.Run(
-			[]byte(content),
-			blackfriday.WithExtensions(blackfriday.HardLineBreak|blackfriday.NoEmptyLineBeforeBlock),
-		)
-		//#nosec
-		return template.HTML(markdownBytes)
-	}
+func MarkDowner(content string) template.HTML {
+	// Unescapes from db bacause blackfriday will escape them
+	content = html.UnescapeString(content)
+
+	markdownBytes := blackfriday.Run(
+		[]byte(content),
+		blackfriday.WithExtensions(blackfriday.HardLineBreak|blackfriday.NoEmptyLineBeforeBlock),
+	)
+
+	// Clean Client-side XSS
+	markdownBytes = bluemonday.StrictPolicy().SanitizeBytes(markdownBytes)
+
+	//#nosec
+	return template.HTML(markdownBytes)
 }

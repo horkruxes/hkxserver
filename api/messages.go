@@ -89,6 +89,7 @@ func GetMessagesFromAuthorJSON(s service.Service) func(*fiber.Ctx) error {
 // @Summary Post a new message
 // @Description Post a new message
 // @Produce json
+// @Param message body model.Message true "Message"
 // @Router /message [post]
 func NewMessage(s service.Service) func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
@@ -101,6 +102,13 @@ func NewMessage(s service.Service) func(*fiber.Ctx) error {
 			return c.Status(500).SendString(err.Error())
 		}
 		fmt.Println("content:", payload)
+
+		// Normalize
+		err := payload.Normalize()
+		if err != nil {
+			fmt.Println("can't normalize payload:", err)
+			return c.Status(500).SendString(err.Error())
+		}
 
 		// Register message
 		newMessage, err := query.NewMessage(s, payload)

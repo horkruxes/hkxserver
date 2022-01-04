@@ -98,14 +98,22 @@ func NewMessage(s service.Service) func(*fiber.Ctx) error {
 		}
 		fmt.Println("content:", payload)
 
+		// Normalize
+		err := payload.Normalize()
+		if err != nil {
+			fmt.Println("can't normalize payload:", err)
+			return c.Status(500).SendString(err.Error())
+		}
+
 		// Sign if necessary
-		secretKey := strings.TrimSpace(c.FormValue("secret-key"))
-		if secretKey != "" && payload.SignatureBase64 == "" {
+		if secretKey := strings.TrimSpace(c.FormValue("secret-key")); secretKey != "" && payload.SignatureBase64 == "" {
 			fmt.Println("signing server-side")
-			payload.SignatureBase64 = client.SignMessage(payload, secretKey)
-			if payload.SignatureBase64 == "" {
-				return c.Status(400).SendString("can't sign message")
+			payload.SignatureBase64, err = client.SignMessage(payload, secretKey)
+			if err != nil {
+				fmt.Println("can't sign payload:", err)
+				return c.Status(500).SendString(err.Error())
 			}
+			fmt.Println("signed:", payload.SignatureBase64)
 		}
 
 		newMessage := model.Message{}
@@ -113,12 +121,10 @@ func NewMessage(s service.Service) func(*fiber.Ctx) error {
 		fmt.Println("try to post to:", payload.Pod)
 		// Check if can do the db operations right now or if it should transfer the payload to another API
 		if payload.Pod == "" {
-			fmt.Println("new msg", payload)
 
-			var err error
 			newMessage, err = query.NewMessage(s, payload)
 			if err != nil {
-				fmt.Println("error:", err)
+				fmt.Printf("error uploading message locally: %v\n%+v\n", err, payload)
 				return c.Status(422).SendString(err.Error())
 			}
 		} else {

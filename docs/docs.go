@@ -102,7 +102,18 @@ var doc = `{
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Post a new message"
+                "summary": "Post a new message",
+                "parameters": [
+                    {
+                        "description": "Message",
+                        "name": "message",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    }
+                ]
             }
         },
         "/message/{uuid}": {
@@ -179,10 +190,6 @@ var doc = `{
                 "message": {
                     "type": "string"
                 },
-                "name": {
-                    "description": "Stored and given by user",
-                    "type": "string"
-                },
                 "pod": {
                     "description": "Not saved in db but tell where it is sent from so remains in JSON",
                     "type": "string"
@@ -191,8 +198,12 @@ var doc = `{
                     "description": "Encoded in URL-safe Base64",
                     "type": "string"
                 },
-                "signatureBase64": {
+                "signature": {
                     "description": "Encoded in URL-safe Base64",
+                    "type": "string"
+                },
+                "title": {
+                    "description": "Stored and given by user",
                     "type": "string"
                 }
             }

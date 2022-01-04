@@ -3,7 +3,6 @@ package service
 import (
 	"regexp"
 
-	"github.com/microcosm-cc/bluemonday"
 	"gorm.io/gorm"
 )
 
@@ -12,11 +11,10 @@ import (
 // Storing state is a bad idea.
 type Service struct {
 	DB            *gorm.DB
-	GeneralConfig GeneralConfig      // Only loaded on start up - public information
-	ServerConfig  ServerConfig       // Only loaded on start up - private configuration
-	ClientConfig  ClientConfig       // Can be modified by clients requests and is reset between 2 requests
-	Regexes       regexes            // It is here because it is loaded only on server startup
-	ContentPolicy *bluemonday.Policy // Loaded on server startup, defines user's input policy
+	GeneralConfig GeneralConfig // Only loaded on start up - public information
+	ServerConfig  ServerConfig  // Only loaded on start up - private configuration
+	ClientConfig  ClientConfig  // Can be modified by clients requests and is reset between 2 requests
+	Regexes       regexes       // It is here because it is loaded only on server startup
 }
 
 type regexes struct {
@@ -46,14 +44,7 @@ type ClientConfig struct {
 	PublicPods bool
 }
 
-type Pod struct {
-	URL      string
-	Selected bool
-}
-
 // InitializeDetectors is heavy and should be initialized once only
 func InitializeDetectors() regexes {
-	return regexes{
-		URLs: regexp.MustCompile(`[\w.-]+\.[\w.-]+`),
-	}
+	return regexes{}
 }

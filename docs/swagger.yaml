@@ -12,9 +12,6 @@ definitions:
         type: string
       message:
         type: string
-      name:
-        description: Stored and given by user
-        type: string
       pod:
         description: Not saved in db but tell where it is sent from so remains in
           JSON
@@ -22,8 +19,11 @@ definitions:
       public-key:
         description: Encoded in URL-safe Base64
         type: string
-      signatureBase64:
+      signature:
         description: Encoded in URL-safe Base64
+        type: string
+      title:
+        description: Stored and given by user
         type: string
     type: object
 info:
@@ -85,6 +85,13 @@ paths:
       summary: Show all original messages (for the front page)
     post:
       description: Post a new message
+      parameters:
+      - description: Message
+        in: body
+        name: message
+        required: true
+        schema:
+          $ref: '#/definitions/model.Message'
       produces:
       - application/json
       summary: Post a new message

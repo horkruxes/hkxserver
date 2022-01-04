@@ -3,7 +3,10 @@ package client
 import (
 	"crypto/ed25519"
 	"encoding/base64"
+	"fmt"
+	"strings"
 
+	"github.com/horkruxes/hkxserver/exceptions"
 	"github.com/horkruxes/hkxserver/model"
 )
 
@@ -47,7 +50,7 @@ func VerifyFromString(pub, sig, displayedName, msg, msgId string) bool {
 		MessageID:       msgId,
 	}
 
-	return message.Normalize(true) == nil
+	return message.Verify() == nil
 }
 
 // SignMessage signs messages from base64 and return a base64 signature (empty string if the signature can't be generated)
@@ -75,9 +78,15 @@ func SignStrings(secBase64, pubBase64, displayedName, message, messageId string)
 	return sigString
 }
 
-func SignMessage(msg model.Message, secretKey string) string {
-	if err := msg.Normalize(false); err != nil {
-		return ""
+// SignMessage normalizes the message and signs it with `secretKey`
+func SignMessage(msg model.Message, secretKey string) (string, error) {
+	if err := msg.Normalize(); err != nil {
+		return "", fmt.Errorf("can't sign message: %w", err)
 	}
-	return SignStrings(secretKey, msg.AuthorBase64, msg.DisplayedName, msg.Content, msg.MessageID)
+	secretKey = strings.TrimSpace(secretKey)
+	signature := SignStrings(secretKey, msg.AuthorBase64, msg.DisplayedName, msg.Content, msg.MessageID)
+	if signature == "" {
+		return "", exceptions.ErrorWrongSignature
+	}
+	return signature, nil
 }
