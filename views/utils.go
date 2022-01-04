@@ -28,7 +28,7 @@ func MarkDowner(content string) template.HTML {
 	)
 
 	// Clean Client-side XSS
-	markdownBytes = bluemonday.StrictPolicy().SanitizeBytes(markdownBytes)
+	markdownBytes = bluemonday.UGCPolicy().SanitizeBytes(markdownBytes)
 
 	//#nosec
 	return template.HTML(markdownBytes)
