@@ -12,10 +12,6 @@ import (
 	"gorm.io/gorm/logger"
 )
 
-type dbOptions struct {
-	test bool
-}
-
 func initDatabase(db_name string) *gorm.DB {
 	var err error
 	newLogger := logger.New(
